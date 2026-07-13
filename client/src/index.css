@@ -1,0 +1,34 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --navy: #1B2A4A;
+  --navy-dark: #131f36;
+  --navy-light: #243659;
+  --gold: #C9A84C;
+  --gold-hover: #b8943d;
+  --white: #ffffff;
+  --off-white: #F7F8FA;
+  --gray-100: #f1f3f5;
+  --gray-200: #e9ecef;
+  --gray-400: #ced4da;
+  --gray-600: #6c757d;
+  --gray-800: #343a40;
+  --error: #c0392b;
+  --success: #27ae60;
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--off-white);
+  color: var(--gray-800);
+}
+
+#root {
+  min-height: 100vh;
+}
