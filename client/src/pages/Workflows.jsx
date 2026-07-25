@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const NAVY = '#1B2A4A';
 const GOLD  = '#C9A84C';
@@ -162,6 +165,24 @@ const MASTER_TEMPLATES = [
   },
 ];
 
+function GripIcon() {
+  const dots = [[3,3],[9,3],[3,8],[9,8],[3,13],[9,13]];
+  return (
+    <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+      {dots.map(([cx,cy], i) => <circle key={i} cx={cx} cy={cy} r="1.5" fill="#adb5bd" />)}
+    </svg>
+  );
+}
+
+function SortableItem({ id, children }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  return (
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}>
+      {children(listeners, attributes)}
+    </div>
+  );
+}
+
 const fieldStyle = (focused) => ({
   width: '100%', padding: '9px 12px', fontSize: '14px',
   border: `1.5px solid ${focused ? GOLD : '#dee2e6'}`,
@@ -183,7 +204,7 @@ export default function Workflows() {
 
   const load = useCallback(async () => {
     try {
-      const { data } = await axios.get('/api/workflows/templates');
+      const { data } = await axios.get('/api/workflows');
       setTemplates(data);
     } catch { showToast('Failed to load templates.','error'); }
     finally { setLoading(false); }
@@ -194,12 +215,19 @@ export default function Workflows() {
   const seedMasters = async () => {
     setSeeding(true);
     try {
-      for (const t of MASTER_TEMPLATES) {
-        await axios.post('/api/workflows/templates', t);
+      const res = await axios.post('/api/workflows/seed');
+      if (res.data.error) {
+        showToast(res.data.error, 'error');
+      } else if (res.data.templates) {
+        setTemplates(res.data.templates);
+        showToast('5 workflow templates loaded successfully.');
+      } else {
+        await load();
+        showToast(res.data.message || 'Templates ready.');
       }
-      await load();
-      showToast('5 master templates loaded.');
-    } catch { showToast('Seed failed.','error'); }
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Seed failed — check server logs.', 'error');
+    }
     setSeeding(false);
   };
 
@@ -215,18 +243,56 @@ export default function Workflows() {
   const EMPTY_TEMPLATE = { name:'', description:'', practice_area:'', phases:[] };
   const [form, setForm] = useState(EMPTY_TEMPLATE);
 
+  const sensors = useSensors(useSensor(PointerSensor));
+
   const openNew = () => { setForm(EMPTY_TEMPLATE); setEditing('new'); };
   const openEdit = (t) => {
-    setForm({ name: t.name, description: t.description||'', practice_area: t.practice_area||'', phases: t.phases.map(p => ({ name: p.name, tasks: p.tasks.map(tk => ({ name: tk.name, description: tk.description||'', days_offset: tk.days_offset||0 })) })) });
+    setForm({
+      name: t.name, description: t.description||'', practice_area: t.practice_area||'',
+      phases: t.phases.map((p,pi) => ({
+        id: p.id, _id: p.id?.toString() || `phase-${pi}`, name: p.name,
+        tasks: p.tasks.map((tk,ti) => ({
+          id: tk.id, _id: tk.id?.toString() || `task-${pi}-${ti}`,
+          name: tk.name, description: tk.description||'', days_offset: tk.days_offset||0,
+        })),
+      })),
+    });
     setEditing(t.id);
   };
 
-  const addPhase = () => setForm(f => ({ ...f, phases: [...f.phases, { name:'', tasks:[] }] }));
+  const addPhase = () => setForm(f => ({ ...f, phases: [...f.phases, { _id:`new-${Date.now()}`, name:'', tasks:[] }] }));
   const removePhase = (pi) => setForm(f => ({ ...f, phases: f.phases.filter((_,i)=>i!==pi) }));
   const setPhase = (pi, val) => setForm(f => { const ps=[...f.phases]; ps[pi]={...ps[pi],name:val}; return {...f,phases:ps}; });
-  const addTask = (pi) => setForm(f => { const ps=[...f.phases]; ps[pi]={...ps[pi],tasks:[...ps[pi].tasks,{name:'',description:'',days_offset:0}]}; return {...f,phases:ps}; });
+  const addTask = (pi) => setForm(f => { const ps=[...f.phases]; ps[pi]={...ps[pi],tasks:[...ps[pi].tasks,{_id:`new-${Date.now()}-${pi}`,name:'',description:'',days_offset:0}]}; return {...f,phases:ps}; });
   const removeTask = (pi,ti) => setForm(f => { const ps=[...f.phases]; ps[pi]={...ps[pi],tasks:ps[pi].tasks.filter((_,i)=>i!==ti)}; return {...f,phases:ps}; });
   const setTask = (pi,ti,field,val) => setForm(f => { const ps=[...f.phases]; const ts=[...ps[pi].tasks]; ts[ti]={...ts[ti],[field]:val}; ps[pi]={...ps[pi],tasks:ts}; return {...f,phases:ps}; });
+
+  const handlePhasesDragEnd = ({ active, over }) => {
+    if (!over || active.id === over.id) return;
+    const from = form.phases.findIndex(p => p._id === active.id);
+    const to   = form.phases.findIndex(p => p._id === over.id);
+    if (from === -1 || to === -1) return;
+    const newPhases = arrayMove(form.phases, from, to);
+    setForm(f => ({ ...f, phases: newPhases }));
+    if (editing !== 'new') {
+      const phaseIds = newPhases.filter(p => p.id).map(p => p.id);
+      if (phaseIds.length > 0) axios.put('/api/workflows/phases/reorder', { phase_ids: phaseIds }).catch(() => showToast('Reorder failed.','error'));
+    }
+  };
+
+  const handleTasksDragEnd = (pi, { active, over }) => {
+    if (!over || active.id === over.id) return;
+    const phase = form.phases[pi];
+    const from = phase.tasks.findIndex(t => t._id === active.id);
+    const to   = phase.tasks.findIndex(t => t._id === over.id);
+    if (from === -1 || to === -1) return;
+    const newTasks = arrayMove(phase.tasks, from, to);
+    setForm(f => { const ps=[...f.phases]; ps[pi]={...ps[pi],tasks:newTasks}; return {...f,phases:ps}; });
+    if (editing !== 'new' && phase.id) {
+      const taskIds = newTasks.filter(t => t.id).map(t => t.id);
+      if (taskIds.length > 0) axios.put(`/api/workflows/phases/${phase.id}/tasks/reorder`, { task_ids: taskIds }).catch(() => showToast('Reorder failed.','error'));
+    }
+  };
 
   const saveForm = async () => {
     if (!form.name.trim()) return showToast('Template name is required.','error');
@@ -357,25 +423,43 @@ export default function Workflows() {
                   <button onClick={addPhase} style={{ padding:'5px 12px', background:GOLD, border:'none', borderRadius:'5px', color:'#fff', fontSize:'12px', fontWeight:'600', cursor:'pointer' }}>+ Add Phase</button>
                 </div>
 
-                {form.phases.map((phase, pi) => (
-                  <div key={pi} style={{ background:'#f8f9fa', border:'1px solid #e9ecef', borderRadius:'8px', padding:'14px', marginBottom:'10px' }}>
-                    <div style={{ display:'flex', gap:'8px', marginBottom:'10px' }}>
-                      <input value={phase.name} onChange={e=>setPhase(pi,e.target.value)}
-                        style={{ ...fieldStyle(false), flex:1 }} placeholder={`Phase ${pi+1} name`} />
-                      <button onClick={()=>removePhase(pi)} style={{ background:'none', border:'1px solid #dee2e6', borderRadius:'5px', color:'#c53030', cursor:'pointer', padding:'0 8px', fontSize:'16px', lineHeight:1 }}>×</button>
-                    </div>
-                    {phase.tasks.map((task, ti) => (
-                      <div key={ti} style={{ display:'grid', gridTemplateColumns:'1fr auto auto', gap:'6px', marginBottom:'6px', alignItems:'center' }}>
-                        <input value={task.name} onChange={e=>setTask(pi,ti,'name',e.target.value)}
-                          style={{ ...fieldStyle(false), fontSize:'13px' }} placeholder="Task name" />
-                        <input type="number" min="0" value={task.days_offset} onChange={e=>setTask(pi,ti,'days_offset',parseInt(e.target.value)||0)}
-                          style={{ ...fieldStyle(false), width:'70px', fontSize:'13px' }} title="Days from matter open" />
-                        <button onClick={()=>removeTask(pi,ti)} style={{ background:'none', border:'none', cursor:'pointer', color:'#adb5bd', fontSize:'16px', padding:'0 4px' }}>×</button>
-                      </div>
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePhasesDragEnd}>
+                  <SortableContext items={form.phases.map(p => p._id || '')} strategy={verticalListSortingStrategy}>
+                    {form.phases.map((phase, pi) => (
+                      <SortableItem key={phase._id || pi} id={phase._id || `phase-${pi}`}>
+                        {(gripListeners, gripAttrs) => (
+                          <div style={{ background:'#f8f9fa', border:'1px solid #e9ecef', borderRadius:'8px', padding:'14px', marginBottom:'10px' }}>
+                            <div style={{ display:'flex', gap:'8px', marginBottom:'10px', alignItems:'center' }}>
+                              <div {...gripListeners} {...gripAttrs} style={{ cursor:'grab', padding:'4px 2px', touchAction:'none', flexShrink:0 }}><GripIcon /></div>
+                              <input value={phase.name} onChange={e=>setPhase(pi,e.target.value)}
+                                style={{ ...fieldStyle(false), flex:1 }} placeholder={`Phase ${pi+1} name`} />
+                              <button onClick={()=>removePhase(pi)} style={{ background:'none', border:'1px solid #dee2e6', borderRadius:'5px', color:'#c53030', cursor:'pointer', padding:'0 8px', fontSize:'16px', lineHeight:1 }}>×</button>
+                            </div>
+                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleTasksDragEnd(pi, e)}>
+                              <SortableContext items={phase.tasks.map(t => t._id || '')} strategy={verticalListSortingStrategy}>
+                                {phase.tasks.map((task, ti) => (
+                                  <SortableItem key={task._id || ti} id={task._id || `task-${pi}-${ti}`}>
+                                    {(tListeners, tAttrs) => (
+                                      <div style={{ display:'grid', gridTemplateColumns:'auto 1fr auto auto', gap:'6px', marginBottom:'6px', alignItems:'center' }}>
+                                        <div {...tListeners} {...tAttrs} style={{ cursor:'grab', padding:'4px 2px', touchAction:'none' }}><GripIcon /></div>
+                                        <input value={task.name} onChange={e=>setTask(pi,ti,'name',e.target.value)}
+                                          style={{ ...fieldStyle(false), fontSize:'13px' }} placeholder="Task name" />
+                                        <input type="number" min="0" value={task.days_offset} onChange={e=>setTask(pi,ti,'days_offset',parseInt(e.target.value)||0)}
+                                          style={{ ...fieldStyle(false), width:'70px', fontSize:'13px' }} title="Days from matter open" />
+                                        <button onClick={()=>removeTask(pi,ti)} style={{ background:'none', border:'none', cursor:'pointer', color:'#adb5bd', fontSize:'16px', padding:'0 4px' }}>×</button>
+                                      </div>
+                                    )}
+                                  </SortableItem>
+                                ))}
+                              </SortableContext>
+                            </DndContext>
+                            <button onClick={()=>addTask(pi)} style={{ fontSize:'12px', color:NAVY, background:'none', border:'1px dashed #dee2e6', borderRadius:'4px', padding:'4px 10px', cursor:'pointer', marginTop:'4px' }}>+ task</button>
+                          </div>
+                        )}
+                      </SortableItem>
                     ))}
-                    <button onClick={()=>addTask(pi)} style={{ fontSize:'12px', color:NAVY, background:'none', border:'1px dashed #dee2e6', borderRadius:'4px', padding:'4px 10px', cursor:'pointer', marginTop:'4px' }}>+ task</button>
-                  </div>
-                ))}
+                  </SortableContext>
+                </DndContext>
                 {form.phases.length === 0 && <div style={{ textAlign:'center', color:'#adb5bd', fontSize:'13px', padding:'16px 0' }}>No phases yet. Add a phase to get started.</div>}
               </div>
             </div>

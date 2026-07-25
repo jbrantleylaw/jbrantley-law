@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const pool   = require('../config/db');
 const requireAuth = require('../middleware/auth');
+const activity = require('../utils/activity');
 
 router.use(requireAuth);
 
@@ -37,36 +38,57 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+  console.log('[time-entries POST] body:', req.body, 'user:', req.user?.id);
   const { matter_id, entry_date, hours, rate, description, billable = true } = req.body;
-  if (!hours || !description?.trim()) return res.status(400).json({ error: 'Hours and description are required' });
+  const parsedHours = parseFloat(hours);
+  if (!hours || isNaN(parsedHours) || parsedHours <= 0) return res.status(400).json({ error: 'Valid hours are required' });
+  if (!description?.trim()) return res.status(400).json({ error: 'Description is required' });
   try {
     const { rows: [row] } = await pool.query(
       `INSERT INTO time_entries (matter_id, user_id, entry_date, hours, rate, description, billable)
        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-      [matter_id || null, req.user.id, entry_date || new Date().toISOString().slice(0,10),
-       hours, rate || null, description.trim(), billable]
+      [
+        matter_id ? parseInt(matter_id, 10) : null,
+        req.user.id,
+        entry_date || new Date().toISOString().slice(0, 10),
+        parsedHours,
+        rate ? parseFloat(rate) : null,
+        description.trim(),
+        billable,
+      ]
     );
+    await activity.log({ event_type:'time_entry_added', description:`${parsedHours}h logged: ${description.trim()}`, matter_id: matter_id ? parseInt(matter_id, 10) : null, user_id: req.user.id, meta:{ entry_id: row.id, hours: parsedHours } });
     res.status(201).json(row);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: err.message });
   }
 });
 
 router.put('/:id', async (req, res) => {
   const { matter_id, entry_date, hours, rate, description, billable } = req.body;
-  if (!hours || !description?.trim()) return res.status(400).json({ error: 'Hours and description are required' });
+  const parsedHours = parseFloat(hours);
+  if (!hours || isNaN(parsedHours) || parsedHours <= 0) return res.status(400).json({ error: 'Valid hours are required' });
+  if (!description?.trim()) return res.status(400).json({ error: 'Description is required' });
   try {
     const { rows: [row] } = await pool.query(
       `UPDATE time_entries SET matter_id=$1, entry_date=$2, hours=$3, rate=$4, description=$5, billable=$6
        WHERE id=$7 RETURNING *`,
-      [matter_id || null, entry_date, hours, rate || null, description.trim(), billable ?? true, req.params.id]
+      [
+        matter_id ? parseInt(matter_id, 10) : null,
+        entry_date,
+        parsedHours,
+        rate ? parseFloat(rate) : null,
+        description.trim(),
+        billable ?? true,
+        req.params.id,
+      ]
     );
     if (!row) return res.status(404).json({ error: 'Not found' });
     res.json(row);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: err.message });
   }
 });
 

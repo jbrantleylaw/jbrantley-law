@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
@@ -19,6 +20,7 @@ const FileIcon = ({ mime }) => {
 
 export default function Documents() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [docs,     setDocs]   = useState([]);
   const [matters,  setMat]    = useState([]);
   const [loading,  setLoad]   = useState(true);
@@ -32,23 +34,32 @@ export default function Documents() {
   const [uploadErr,  setUE]   = useState('');
   const [visible,  setVis]    = useState(false);
   const [focused,  setFoc]    = useState(null);
+  const [folders,  setFolders] = useState([]);
+  const [activeFolder, setActiveFolder] = useState(null); // null = All, 'matter' = by matter, folder id = specific folder
+  const [folderForm, setFolderForm] = useState(false);
+  const [folderName, setFolderName] = useState('');
   const fileRef = useRef(null);
   const searchTimer = useRef(null);
 
-  const fetch = useCallback(async (m, s) => {
+  const fetch = useCallback(async (m, s, folderId) => {
     setLoad(true);
     try {
       const params = {};
-      if (m) params.matter_id = m;
-      if (s) params.search    = s;
+      if (m)        params.matter_id = m;
+      if (s)        params.search    = s;
+      if (folderId && folderId !== 'matter') params.folder_id = folderId;
       const { data } = await axios.get('/api/documents', { params });
       setDocs(data);
     } catch { showToast('Failed to load documents.', 'error'); }
     finally { setLoad(false); }
   }, []);
 
-  useEffect(() => { fetch(filter, search); }, [fetch, filter]);
-  useEffect(() => { axios.get('/api/matters').then(({data})=>setMat(data)).catch(()=>{}); }, []);
+  const fetchFolders = useCallback(() => {
+    axios.get('/api/documents/folders').then(({data})=>setFolders(data)).catch(()=>{});
+  }, []);
+
+  useEffect(() => { fetch(filter, search, activeFolder); }, [fetch, filter, activeFolder]);
+  useEffect(() => { axios.get('/api/matters').then(({data})=>setMat(data)).catch(()=>{}); fetchFolders(); }, [fetchFolders]);
 
   const handleSearchChange = (e) => {
     const v = e.target.value; setSearch(v);
@@ -59,6 +70,10 @@ export default function Documents() {
   const showToast = (msg, type='success') => { setToast({message:msg,type}); setTimeout(()=>setToast(null), 3500); };
 
   const openForm = () => { setUF({ document_name:'', document_type:'', matter_id:'' }); setUE(''); setVis(false); setForm(true); setTimeout(()=>setVis(true), 30); };
+
+  useEffect(() => {
+    if (searchParams.get('upload') === 'true') openForm();
+  }, []);
   const closeForm = () => { setVis(false); setTimeout(()=>setForm(false), 280); if(fileRef.current) fileRef.current.value=''; };
 
   const handleUpload = async (e) => {
@@ -88,9 +103,86 @@ export default function Documents() {
   const fld = (f) => ({ width:'100%', padding:'10px 12px', fontSize:'14px', border:`1.5px solid ${focused===f?GOLD:'#dee2e6'}`, borderRadius:'5px', outline:'none', fontFamily:'Inter,sans-serif', color:'#1a1a2e', background:'#fff', transition:'border-color .15s', boxSizing:'border-box' });
   const s = (f) => ({ ...fld(f), appearance:'none', backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat:'no-repeat', backgroundPosition:'right 12px center', paddingRight:'32px' });
 
+  const createFolder = async () => {
+    if (!folderName.trim()) return;
+    try {
+      await axios.post('/api/documents/folders', { name: folderName.trim() });
+      setFolderName(''); setFolderForm(false);
+      fetchFolders();
+      showToast('Folder created.');
+    } catch { showToast('Failed to create folder.', 'error'); }
+  };
+
+  const deleteFolder = async (fId) => {
+    try {
+      await axios.delete(`/api/documents/folders/${fId}`);
+      if (activeFolder === fId) setActiveFolder(null);
+      fetchFolders();
+      showToast('Folder deleted.');
+    } catch { showToast('Failed to delete folder.', 'error'); }
+  };
+
+  const sideItem = (label, value, icon) => {
+    const active = activeFolder === value;
+    return (
+      <button onClick={() => { setActiveFolder(value); setFilt(''); }} style={{ display:'flex', alignItems:'center', gap:'8px', width:'100%', textAlign:'left', padding:'7px 12px', borderRadius:'6px', border:'none', background:active?'#e8edf5':'transparent', color:active?NAVY:'#495057', fontSize:'13px', fontWeight:active?'600':'400', cursor:'pointer', fontFamily:'Inter,sans-serif' }}>
+        {icon}
+        <span style={{ flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{label}</span>
+      </button>
+    );
+  };
+
   return (
     <Layout>
-      <div style={{ padding:'36px 40px', maxWidth:'1200px' }}>
+      <div style={{ display:'flex', height:'100%', minHeight:'100vh' }}>
+        {/* Folder Sidebar */}
+        <div style={{ width:'220px', flexShrink:0, borderRight:'1px solid #e9ecef', padding:'24px 12px', background:'#fafbfc', minHeight:'100vh' }}>
+          <div style={{ fontSize:'10px', fontWeight:'700', color:'#adb5bd', letterSpacing:'.08em', textTransform:'uppercase', marginBottom:'8px', paddingLeft:'12px' }}>Documents</div>
+          {sideItem('All Documents', null,
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          )}
+          {sideItem('By Matter', 'matter',
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+          )}
+
+          <div style={{ fontSize:'10px', fontWeight:'700', color:'#adb5bd', letterSpacing:'.08em', textTransform:'uppercase', margin:'16px 0 6px', paddingLeft:'12px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            Folders
+            <button onClick={() => setFolderForm(true)} style={{ background:'none', border:'none', cursor:'pointer', color:GOLD, padding:'0', fontSize:'16px', lineHeight:1 }} title="New folder">+</button>
+          </div>
+          {folderForm && (
+            <div style={{ padding:'6px 4px', marginBottom:'6px' }}>
+              <input value={folderName} onChange={e=>setFolderName(e.target.value)}
+                placeholder="Folder name…" autoFocus
+                onKeyDown={e=>{ if(e.key==='Enter') createFolder(); if(e.key==='Escape') { setFolderForm(false); setFolderName(''); } }}
+                style={{ width:'100%', padding:'6px 8px', border:'1.5px solid '+GOLD, borderRadius:'4px', fontSize:'12px', outline:'none', boxSizing:'border-box', fontFamily:'Inter,sans-serif' }} />
+              <div style={{ display:'flex', gap:'4px', marginTop:'4px' }}>
+                <button onClick={createFolder} style={{ flex:1, padding:'4px', background:GOLD, border:'none', borderRadius:'3px', color:'#fff', fontSize:'11px', cursor:'pointer' }}>Add</button>
+                <button onClick={() => { setFolderForm(false); setFolderName(''); }} style={{ flex:1, padding:'4px', background:'transparent', border:'1px solid #dee2e6', borderRadius:'3px', fontSize:'11px', cursor:'pointer' }}>Cancel</button>
+              </div>
+            </div>
+          )}
+          {folders.length === 0 && !folderForm && (
+            <div style={{ paddingLeft:'12px', fontSize:'12px', color:'#ced4da' }}>No folders yet</div>
+          )}
+          {folders.map(f => {
+            const active = activeFolder === f.id;
+            return (
+              <div key={f.id} style={{ display:'flex', alignItems:'center', gap:'2px' }}>
+                <button onClick={() => { setActiveFolder(f.id); setFilt(''); }} style={{ flex:1, display:'flex', alignItems:'center', gap:'8px', textAlign:'left', padding:'6px 12px', borderRadius:'6px', border:'none', background:active?'#e8edf5':'transparent', color:active?NAVY:'#495057', fontSize:'12px', fontWeight:active?'600':'400', cursor:'pointer', fontFamily:'Inter,sans-serif', overflow:'hidden' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                  <span style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{f.name}</span>
+                </button>
+                {user?.role === 'attorney' && (
+                  <button onClick={() => deleteFolder(f.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'#ced4da', padding:'4px', flexShrink:0, fontSize:'14px' }}
+                    onMouseEnter={e=>e.currentTarget.style.color='#c53030'} onMouseLeave={e=>e.currentTarget.style.color='#ced4da'} title="Delete folder">×</button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Main content */}
+        <div style={{ flex:1, padding:'36px 40px', minWidth:0 }}>
         {/* Header */}
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'24px' }}>
           <div>
@@ -121,8 +213,51 @@ export default function Documents() {
           {(filter||search) && <button onClick={()=>{setFilt('');setSearch('');fetch('','');}} style={{ background:'none', border:'none', color:'#6c757d', fontSize:'13px', cursor:'pointer', textDecoration:'underline' }}>Clear</button>}
         </div>
 
+        {/* By-matter grouped view */}
+        {activeFolder === 'matter' && (
+          <div style={{ display:'grid', gap:'16px' }}>
+            {matters.map(m => {
+              const mDocs = docs.filter(d => d.matter_id === m.id);
+              if (mDocs.length === 0) return null;
+              return (
+                <div key={m.id} style={{ background:'#fff', border:'1px solid #e9ecef', borderRadius:'8px', overflow:'hidden' }}>
+                  <div style={{ padding:'10px 16px', background:'#f8f9fa', borderBottom:'1px solid #e9ecef', display:'flex', alignItems:'center', gap:'8px' }}>
+                    <span style={{ fontFamily:'monospace', fontSize:'11px', background:'#e8edf5', padding:'2px 6px', borderRadius:'3px', color:NAVY, fontWeight:'600' }}>{m.matter_number}</span>
+                    <span style={{ fontSize:'13px', fontWeight:'600', color:NAVY }}>{m.matter_name}</span>
+                    <span style={{ fontSize:'11px', color:'#adb5bd', marginLeft:'auto' }}>{mDocs.length} doc{mDocs.length!==1?'s':''}</span>
+                  </div>
+                  <div style={{ display:'grid', gap:'4px', padding:'8px' }}>
+                    {mDocs.map(d => (
+                      <div key={d.id} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'8px 10px', borderRadius:'5px', background:'#fafbfc' }}>
+                        <FileIcon mime={d.mime_type} />
+                        <span style={{ flex:1, fontSize:'13px', fontWeight:'500', color:NAVY, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.document_name}</span>
+                        <span style={{ fontSize:'11px', color:'#adb5bd' }}>{fmtDate(d.created_at)}</span>
+                        <button onClick={() => handleDownload(d.id)} style={{ background:'none', border:'1px solid #dee2e6', borderRadius:'4px', padding:'3px 7px', cursor:'pointer', fontSize:'12px', color:'#6c757d' }}>↓</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            {docs.filter(d=>!d.matter_id).length > 0 && (
+              <div style={{ background:'#fff', border:'1px solid #e9ecef', borderRadius:'8px', overflow:'hidden' }}>
+                <div style={{ padding:'10px 16px', background:'#f8f9fa', borderBottom:'1px solid #e9ecef', fontSize:'13px', fontWeight:'600', color:'#6c757d' }}>No Matter Linked</div>
+                <div style={{ display:'grid', gap:'4px', padding:'8px' }}>
+                  {docs.filter(d=>!d.matter_id).map(d => (
+                    <div key={d.id} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'8px 10px', borderRadius:'5px', background:'#fafbfc' }}>
+                      <FileIcon mime={d.mime_type} />
+                      <span style={{ flex:1, fontSize:'13px', fontWeight:'500', color:NAVY, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.document_name}</span>
+                      <button onClick={() => handleDownload(d.id)} style={{ background:'none', border:'1px solid #dee2e6', borderRadius:'4px', padding:'3px 7px', cursor:'pointer', fontSize:'12px', color:'#6c757d' }}>↓</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Table */}
-        <div style={{ background:'#fff', borderRadius:'10px', border:'1px solid #e9ecef', boxShadow:'0 1px 4px rgba(0,0,0,.04)', overflow:'hidden' }}>
+        {activeFolder !== 'matter' && <div style={{ background:'#fff', borderRadius:'10px', border:'1px solid #e9ecef', boxShadow:'0 1px 4px rgba(0,0,0,.04)', overflow:'hidden' }}>
           {loading ? (
             <div style={{ padding:'80px', textAlign:'center', color:'#adb5bd', fontSize:'14px' }}>Loading documents…</div>
           ) : docs.length === 0 ? (
@@ -190,8 +325,9 @@ export default function Documents() {
               </tbody>
             </table>
           )}
-        </div>
-      </div>
+        </div>}
+        </div> {/* end main content */}
+      </div> {/* end flex wrapper */}
 
       {/* Upload slide-over */}
       {formOpen && (

@@ -2,6 +2,7 @@ const router      = require('express').Router();
 const pool        = require('../config/db');
 const requireAuth = require('../middleware/auth');
 const crypto      = require('crypto');
+const activity    = require('../utils/activity');
 const https       = require('https');
 const path        = require('path');
 const fs          = require('fs');
@@ -98,6 +99,7 @@ router.post('/send', requireAttorney, async (req, res) => {
         </div>`,
     });
 
+    await activity.log({ event_type:'esignature_sent', description:`Signature request sent for: ${document_name}`, matter_id: matter_id||null, user_id: req.user.id, meta:{ sig_id: rows[0].id, recipient: recipient_email } });
     res.status(201).json(rows[0]);
   } catch (err) {
     console.error(err);
@@ -172,6 +174,8 @@ router.post('/sign/:token', async (req, res) => {
       html: `<p><strong>${rows[0].recipient_name || rows[0].recipient_email}</strong> signed <strong>${rows[0].document_name}</strong>.</p>
              <p>Timestamp: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} CT<br>IP: ${ip}</p>`,
     });
+
+    await activity.log({ event_type:'document_signed', description:`${rows[0].document_name} signed by ${rows[0].recipient_name || rows[0].recipient_email}`, matter_id: rows[0].matter_id||null, user_id: null, meta:{ sig_id: rows[0].id } });
 
     res.json({ success: true, status: 'signed' });
   } catch (err) {

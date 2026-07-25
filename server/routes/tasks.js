@@ -1,16 +1,19 @@
 const router  = require('express').Router();
 const pool    = require('../config/db');
 const require_auth = require('../middleware/auth');
+const activity = require('../utils/activity');
 
 router.use(require_auth);
 
 const BASE = `
   SELECT t.*,
     m.matter_name, m.matter_number,
-    u.name AS assigned_name
+    u.name  AS assigned_name,
+    cu.name AS created_by_name
   FROM tasks t
-  LEFT JOIN matters m ON t.matter_id  = m.id
-  LEFT JOIN users   u ON t.assigned_to = u.id
+  LEFT JOIN matters m  ON t.matter_id  = m.id
+  LEFT JOIN users   u  ON t.assigned_to = u.id
+  LEFT JOIN users   cu ON t.created_by  = cu.id
 `;
 
 router.get('/', async (req, res) => {
@@ -23,6 +26,12 @@ router.get('/', async (req, res) => {
     let i = 1;
 
     if (filter !== 'completed') where.push(`t.status != 'completed'`);
+
+    // Visibility filter: attorneys see all; staff see public + own + assigned
+    if (req.user.role !== 'attorney') {
+      where.push(`(t.visibility = 'all' OR t.assigned_to = $${i} OR t.created_by = $${i})`);
+      params.push(uid); i++;
+    }
 
     switch (filter) {
       case 'my_tasks':
@@ -69,16 +78,39 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { task_name, matter_id, assigned_to, due_date, priority, status, recurring, notes } = req.body;
+    const { task_name, matter_id, assigned_to, due_date, priority, status, recurring, notes, visibility } = req.body;
     if (!task_name?.trim()) return res.status(400).json({ error: 'Task name is required' });
     const { rows } = await pool.query(
-      `INSERT INTO tasks (task_name, matter_id, assigned_to, due_date, priority, status, recurring, notes, created_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+      `INSERT INTO tasks (task_name, matter_id, assigned_to, due_date, priority, status, recurring, notes, created_by, visibility)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
       [task_name.trim(), matter_id||null, assigned_to||null, due_date||null,
-       priority||'medium', status||'not_started', recurring||'none', notes||null, req.user.id]
+       priority||'medium', status||'not_started', recurring||'none', notes||null, req.user.id,
+       visibility||'all']
     );
+    await activity.log({ event_type:'task_created', description:`Task created: ${task_name.trim()}`, matter_id: matter_id||null, user_id: req.user.id, meta:{ task_id: rows[0].id } });
     res.status(201).json(rows[0]);
   } catch (err) { console.error(err); res.status(500).json({ error: 'Server error' }); }
+});
+
+router.post('/bulk', async (req, res) => {
+  const { tasks } = req.body;
+  if (!Array.isArray(tasks) || tasks.length === 0)
+    return res.status(400).json({ error: 'tasks array required' });
+  const results = []; const errors = [];
+  for (const t of tasks) {
+    if (!t.task_name?.trim()) continue; // skip blank rows silently
+    try {
+      const { rows } = await pool.query(
+        `INSERT INTO tasks (task_name, matter_id, assigned_to, due_date, priority, status, recurring, notes, created_by, visibility)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+        [t.task_name.trim(), t.matter_id||null, t.assigned_to||null, t.due_date||null,
+         t.priority||'medium', 'not_started', 'none', t.notes||null, req.user.id,
+         t.visibility||'all']
+      );
+      results.push(rows[0]);
+    } catch (err) { errors.push({ task: t.task_name, error: err.message }); }
+  }
+  res.status(201).json({ created: results.length, errors, tasks: results });
 });
 
 router.put('/:id', async (req, res) => {
@@ -108,6 +140,7 @@ router.patch('/:id/complete', async (req, res) => {
       [req.params.id]
     );
     if (!rows[0]) return res.status(404).json({ error: 'Task not found' });
+    await activity.log({ event_type:'task_completed', description:`Task completed: ${rows[0].task_name}`, matter_id: rows[0].matter_id||null, user_id: req.user.id, meta:{ task_id: rows[0].id } });
     res.json(rows[0]);
   } catch (err) { res.status(500).json({ error: 'Server error' }); }
 });

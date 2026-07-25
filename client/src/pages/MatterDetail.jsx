@@ -4,6 +4,9 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import TaskForm from '../components/TaskForm';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const NAVY = '#1B2A4A';
 const GOLD  = '#C9A84C';
@@ -59,6 +62,20 @@ function SolBadge({ date }) {
   );
 }
 
+function WfGripIcon() {
+  const dots = [[3,3],[9,3],[3,8],[9,8],[3,13],[9,13]];
+  return <svg width="14" height="16" viewBox="0 0 14 16" fill="none">{dots.map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="1.5" fill="#ced4da"/>)}</svg>;
+}
+
+function SortableWfTask({ id, children }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  return (
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}>
+      {children(listeners, attributes)}
+    </div>
+  );
+}
+
 export default function MatterDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -72,6 +89,10 @@ export default function MatterDetail() {
   const [workflows,    setWorkflows]   = useState([]);
   const [timeEntries,  setTimeEntries] = useState([]);
   const [allUsers,     setAllUsers]    = useState([]);
+  const [activityFeed, setActivityFeed] = useState([]);
+  const [notes,        setNotes]       = useState([]);
+  const [noteText,     setNoteText]    = useState('');
+  const [noteSaving,   setNoteSaving]  = useState(false);
   const [loading,      setLoading]     = useState(true);
   const [activeTab,    setActiveTab]   = useState('tasks');
   const [taskForm,     setTaskForm]    = useState(false);
@@ -92,6 +113,17 @@ export default function MatterDetail() {
   const [teFocused,    setTeFocused]   = useState(null);
 
   const showToast = (message, type='success') => { setToast({message,type}); setTimeout(()=>setToast(null),3500); };
+
+  const fetchActivity = useCallback(async () => {
+    try {
+      const [aRes, nRes] = await Promise.all([
+        axios.get('/api/activity', { params: { matter_id: id } }),
+        axios.get('/api/notes', { params: { matter_id: id } }),
+      ]);
+      setActivityFeed(aRes.data);
+      setNotes(nRes.data);
+    } catch {}
+  }, [id]);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -116,11 +148,12 @@ export default function MatterDetail() {
       setTimeEntries(teRes.data);
       setAllUsers(usersRes.data);
       setWfTemplates(wfTmpRes.data);
+      fetchActivity();
     } catch (err) {
       if (err.response?.status === 404) navigate('/matters');
       else showToast('Failed to load matter.', 'error');
     } finally { setLoading(false); }
-  }, [id, navigate]);
+  }, [id, navigate, fetchActivity]);
 
   const addStaff = async () => {
     if (!addStaffId) return;
@@ -166,21 +199,39 @@ export default function MatterDetail() {
     } catch { showToast('Failed to remove workflow.', 'error'); }
   };
 
+  const wfSensors = useSensors(useSensor(PointerSensor));
+
+  const handleWfTasksDragEnd = async (wfId, phaseId, tasks, { active, over }) => {
+    if (!over || active.id === over.id) return;
+    const from = tasks.findIndex(t => t.id === active.id);
+    const to   = tasks.findIndex(t => t.id === over.id);
+    if (from === -1 || to === -1) return;
+    const newTasks = arrayMove(tasks, from, to);
+    setWorkflows(wfs => wfs.map(wf => {
+      if (wf.id !== wfId) return wf;
+      return { ...wf, phases: wf.phases.map(p => p.id === phaseId ? { ...p, tasks: newTasks } : p) };
+    }));
+    try {
+      await axios.put('/api/workflows/matter-workflow-tasks/reorder', { task_ids: newTasks.map(t => t.id) });
+    } catch { showToast('Reorder failed.', 'error'); }
+  };
+
   const logTime = async () => {
     if (!teForm.hours || !teForm.description.trim()) return showToast('Hours and description required.', 'error');
     setTeSaving(true);
     try {
       await axios.post('/api/time-entries', {
         matter_id: id, ...teForm,
+        hours: parseFloat(teForm.hours),
+        rate: teForm.rate ? parseFloat(teForm.rate) : null,
         entry_date: teForm.entry_date || new Date().toISOString().slice(0,10),
-        rate: teForm.rate || null,
       });
       const { data } = await axios.get('/api/time-entries', { params: { matter_id: id } });
       setTimeEntries(data);
       setTeForm({ entry_date:'', hours:'', rate:'', description:'', billable:true });
       setTePanel(false);
       showToast('Time logged.');
-    } catch { showToast('Failed to log time.', 'error'); }
+    } catch (err) { showToast(err.response?.data?.error || 'Failed to log time.', 'error'); }
     setTeSaving(false);
   };
 
@@ -353,7 +404,7 @@ export default function MatterDetail() {
 
         {/* Tabs */}
         <div style={{ display:'flex', borderBottom:'1px solid #e9ecef', marginBottom:'20px', flexWrap:'wrap' }}>
-          {[['tasks','Tasks'], ['documents','Documents'], ['esignatures','E-Signatures'], ['workflow','Workflow'], ['time','Time Entries']].map(([t,l]) => (
+          {[['tasks','Tasks'], ['documents','Documents'], ['notes','Notes'], ['esignatures','E-Signatures'], ['workflow','Workflow'], ['time','Time Entries'], ['activity','Activity']].map(([t,l]) => (
             <button key={t} onClick={() => setActiveTab(t)} style={{
               padding:'10px 20px', border:'none', background:'none', cursor:'pointer',
               fontSize:'13px', fontWeight: activeTab===t ? '700' : '400',
@@ -636,16 +687,25 @@ export default function MatterDetail() {
                     {wf.phases.map((phase,pi) => (
                       <div key={pi} style={{ padding:'12px 16px', borderTop: pi>0?'1px solid #f1f3f5':'none' }}>
                         <div style={{ fontSize:'11px', fontWeight:'700', color:'#6c757d', textTransform:'uppercase', letterSpacing:'.06em', marginBottom:'8px' }}>{phase.name}</div>
-                        {phase.tasks.map(task => (
-                          <div key={task.id} style={{ display:'flex', alignItems:'center', gap:'8px', padding:'5px 0', borderBottom:'1px solid #f8f9fa' }}>
-                            <button onClick={()=>toggleWfTask(task.id)}
-                              style={{ width:'18px', height:'18px', borderRadius:'50%', border:`2px solid ${task.completed_at?'#166534':GOLD}`, background:task.completed_at?'#166534':'transparent', cursor:'pointer', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                              {task.completed_at && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
-                            </button>
-                            <span style={{ fontSize:'13px', color: task.completed_at?'#adb5bd':NAVY, textDecoration:task.completed_at?'line-through':'none' }}>{task.name}</span>
-                            {task.due_date && <span style={{ marginLeft:'auto', fontSize:'11px', color:'#adb5bd' }}>{fmtDate2(task.due_date)}</span>}
-                          </div>
-                        ))}
+                        <DndContext sensors={wfSensors} collisionDetection={closestCenter} onDragEnd={(e) => handleWfTasksDragEnd(wf.id, phase.id, phase.tasks, e)}>
+                          <SortableContext items={phase.tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
+                            {phase.tasks.map(task => (
+                              <SortableWfTask key={task.id} id={task.id}>
+                                {(gripListeners, gripAttrs) => (
+                                  <div style={{ display:'flex', alignItems:'center', gap:'8px', padding:'5px 0', borderBottom:'1px solid #f8f9fa' }}>
+                                    <div {...gripListeners} {...gripAttrs} style={{ cursor:'grab', padding:'2px', touchAction:'none', flexShrink:0 }}><WfGripIcon /></div>
+                                    <button onClick={()=>toggleWfTask(task.id)}
+                                      style={{ width:'18px', height:'18px', borderRadius:'50%', border:`2px solid ${task.completed_at?'#166534':GOLD}`, background:task.completed_at?'#166534':'transparent', cursor:'pointer', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                                      {task.completed_at && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                                    </button>
+                                    <span style={{ fontSize:'13px', color: task.completed_at?'#adb5bd':NAVY, textDecoration:task.completed_at?'line-through':'none' }}>{task.name}</span>
+                                    {task.due_date && <span style={{ marginLeft:'auto', fontSize:'11px', color:'#adb5bd' }}>{fmtDate2(task.due_date)}</span>}
+                                  </div>
+                                )}
+                              </SortableWfTask>
+                            ))}
+                          </SortableContext>
+                        </DndContext>
                       </div>
                     ))}
                   </div>
@@ -711,6 +771,86 @@ export default function MatterDetail() {
                 </tbody>
               </table>
             </>
+          )}
+        </div>
+      )}
+
+      {/* Notes tab */}
+      {activeTab === 'notes' && (
+        <div style={{ background:'#fff', border:'1px solid #e9ecef', borderRadius:'10px', padding:'22px 24px', boxShadow:'0 1px 4px rgba(0,0,0,.04)' }}>
+          {sectionHead('Notes', null)}
+          <div style={{ marginBottom:'16px' }}>
+            <textarea
+              value={noteText}
+              onChange={e => setNoteText(e.target.value)}
+              placeholder="Add a note…"
+              style={{ width:'100%', padding:'10px 12px', fontSize:'13px', border:'1.5px solid #dee2e6', borderRadius:'6px', outline:'none', resize:'vertical', minHeight:'80px', boxSizing:'border-box', fontFamily:'Inter,sans-serif' }}
+              onFocus={e=>e.target.style.borderColor=GOLD} onBlur={e=>e.target.style.borderColor='#dee2e6'}
+            />
+            <div style={{ display:'flex', justifyContent:'flex-end', marginTop:'8px' }}>
+              <button
+                disabled={!noteText.trim() || noteSaving}
+                onClick={async () => {
+                  setNoteSaving(true);
+                  try {
+                    await axios.post('/api/notes', { content: noteText, matter_id: id });
+                    setNoteText('');
+                    fetchActivity();
+                  } catch { showToast('Failed to save note.','error'); }
+                  finally { setNoteSaving(false); }
+                }}
+                style={{ padding:'7px 18px', background:noteSaving?'#d4b878':GOLD, border:'none', borderRadius:'5px', color:'#fff', fontSize:'13px', fontWeight:'600', cursor:noteSaving||!noteText.trim()?'not-allowed':'pointer', opacity:!noteText.trim()?'.5':'1' }}>
+                {noteSaving ? 'Saving…' : 'Add Note'}
+              </button>
+            </div>
+          </div>
+          {notes.length === 0 ? (
+            <div style={{ textAlign:'center', padding:'24px 0', color:'#ced4da', fontSize:'13px' }}>No notes yet.</div>
+          ) : (
+            <div style={{ display:'grid', gap:'10px' }}>
+              {notes.map(n => (
+                <div key={n.id} style={{ padding:'12px 14px', border:'1px solid #f1f3f5', borderRadius:'6px', background:'#fafbfc' }}>
+                  <div style={{ fontSize:'13px', color:NAVY, lineHeight:'1.6', whiteSpace:'pre-wrap' }}>{n.content}</div>
+                  <div style={{ fontSize:'11px', color:'#adb5bd', marginTop:'6px' }}>
+                    {n.author_name || '—'} · {new Date(n.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Activity tab */}
+      {activeTab === 'activity' && (
+        <div style={{ background:'#fff', border:'1px solid #e9ecef', borderRadius:'10px', padding:'22px 24px', boxShadow:'0 1px 4px rgba(0,0,0,.04)' }}>
+          {sectionHead('Activity Feed', null)}
+          {activityFeed.length === 0 ? (
+            <div style={{ textAlign:'center', padding:'32px 0', color:'#ced4da', fontSize:'13px' }}>No activity recorded yet.</div>
+          ) : (
+            <div style={{ display:'grid', gap:'0' }}>
+              {activityFeed.map((ev, i) => {
+                const icon = {
+                  task_created:'✓', task_completed:'✓', document_uploaded:'📄', document_signed:'✍',
+                  time_entry_added:'⏱', esignature_sent:'✉', note_added:'📝',
+                }[ev.event_type] || '•';
+                const color = {
+                  task_completed:'#166534', document_signed:'#1B4F9B', esignature_sent:NAVY,
+                }[ev.event_type] || '#6c757d';
+                return (
+                  <div key={ev.id} style={{ display:'flex', gap:'12px', paddingBottom:'14px', marginBottom:'14px', borderBottom: i < activityFeed.length-1 ? '1px solid #f1f3f5' : 'none' }}>
+                    <div style={{ width:'28px', height:'28px', borderRadius:'50%', background:`${color}18`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'13px', flexShrink:0 }}>{icon}</div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:'13px', color:NAVY, fontWeight:'500' }}>{ev.description || ev.event_type.replace(/_/g,' ')}</div>
+                      <div style={{ fontSize:'11px', color:'#adb5bd', marginTop:'2px' }}>
+                        {ev.actor_name && <span>{ev.actor_name} · </span>}
+                        {new Date(ev.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       )}

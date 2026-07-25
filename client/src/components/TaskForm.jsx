@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import SearchableSelect from './SearchableSelect';
 
 const NAVY = '#1B2A4A';
 const GOLD = '#C9A84C';
@@ -79,17 +80,21 @@ export default function TaskForm({ isOpen, task, onClose, onSaved, defaultMatter
           <div style={row}>
             <div>
               <label style={lbl}>Linked Matter</label>
-              <select value={form.matter_id} onChange={set('matter_id')} onFocus={()=>setFoc('m')} onBlur={()=>setFoc(null)} style={sel(focused==='m')}>
-                <option value="">— None —</option>
-                {matters.map((m) => <option key={m.id} value={m.id}>{m.matter_number}: {m.matter_name}</option>)}
-              </select>
+              <SearchableSelect
+                value={form.matter_id}
+                onChange={(v) => setForm(p=>({...p, matter_id:v}))}
+                options={matters.map(m=>({ value:m.id, label:m.matter_name, sublabel:m.matter_number }))}
+                placeholder="— None —"
+              />
             </div>
             <div>
               <label style={lbl}>Assigned To</label>
-              <select value={form.assigned_to} onChange={set('assigned_to')} onFocus={()=>setFoc('a')} onBlur={()=>setFoc(null)} style={sel(focused==='a')}>
-                <option value="">— Unassigned —</option>
-                {users.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
-              </select>
+              <SearchableSelect
+                value={form.assigned_to}
+                onChange={(v) => setForm(p=>({...p, assigned_to:v}))}
+                options={users.map(u=>({ value:u.id, label:u.name }))}
+                placeholder="— Unassigned —"
+              />
             </div>
           </div>
 

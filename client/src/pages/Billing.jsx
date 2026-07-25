@@ -83,6 +83,7 @@ export default function Billing() {
   useEffect(() => { loadMatters(); if (isAttorney) loadUnpaid(); }, []);
   useEffect(() => { if (matterId) { loadEntries(); if (isAttorney) { loadInvoices(); loadTrust(); } } }, [matterId]);
   useEffect(() => { setSearchParams(tab === 'time' ? {} : { tab }); }, [tab]);
+  useEffect(() => { if (searchParams.get('new') === 'invoice' && isAttorney) { setTab('invoices'); setTimeout(() => openPanel('invoice'), 150); } }, []);
 
   const loadMatters   = async () => { try { const r = await axios.get('/api/billing/matters'); setMatters(r.data); } catch {} };
   const loadEntries   = async () => { try { const r = await axios.get('/api/billing/time-entries', { params: { matter_id: matterId } }); setEntries(r.data); } catch {} };

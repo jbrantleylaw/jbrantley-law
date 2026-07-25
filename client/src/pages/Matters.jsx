@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../components/Layout';
 import MatterForm from '../components/MatterForm';
@@ -101,6 +101,7 @@ const PRACTICE_AREAS = [
 
 export default function Matters() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [matters, setMatters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -108,6 +109,10 @@ export default function Matters() {
   const [areaFilter, setAreaFilter] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+
+  useEffect(() => {
+    if (searchParams.get('new') === 'true') { setEditing(null); setFormOpen(true); }
+  }, []);
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState(null);

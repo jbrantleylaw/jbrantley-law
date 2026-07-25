@@ -41,6 +41,28 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/search', async (req, res) => {
+  try {
+    const { q = '' } = req.query;
+    const { rows } = await pool.query(
+      `SELECT id, first_name, last_name, company, email
+       FROM contacts
+       WHERE (first_name ILIKE $1 OR last_name ILIKE $1 OR company ILIKE $1 OR email ILIKE $1)
+         AND COALESCE(status,'active') != 'archived'
+       ORDER BY last_name ASC, first_name ASC
+       LIMIT 10`,
+      [`%${q}%`]
+    );
+    res.json(rows.map(r => ({
+      value: r.id,
+      label: [r.first_name, r.last_name].filter(Boolean).join(' ') || r.company || '',
+      sublabel: r.company || r.email || '',
+    })));
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM contacts WHERE id = $1', [req.params.id]);

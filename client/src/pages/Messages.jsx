@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
@@ -58,6 +59,7 @@ const fmtTime = (d) => d ? new Date(d).toLocaleTimeString('en-US', { hour: 'nume
 export default function Messages() {
   const { user } = useAuth();
   const isAttorney = user?.role === 'attorney';
+  const [searchParams] = useSearchParams();
 
   const [threads,       setThreads]      = useState([]);
   const [activeThread,  setActive]        = useState(null);
@@ -70,6 +72,10 @@ export default function Messages() {
   const [newForm,       setNewForm]       = useState({ subject: '', thread_type: 'internal', matter_id: '', client_email: '', client_name: '' });
   const [creating,      setCreating]      = useState(false);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (searchParams.get('new') === 'true') setNewModal(true);
+  }, []);
 
   const loadThreads = () => {
     const params = filter !== 'all' ? { thread_type: filter } : {};

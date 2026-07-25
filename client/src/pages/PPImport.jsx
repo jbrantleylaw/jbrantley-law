@@ -4,80 +4,7 @@ import axios from 'axios';
 const NAVY = '#1B2A4A';
 const GOLD = '#C9A84C';
 
-// ── CSV parser ────────────────────────────────────────────────────────────────
-
-function parseLine(line) {
-  const fields = [];
-  let cur = '', inQuote = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (inQuote) {
-      if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
-      else if (c === '"') inQuote = false;
-      else cur += c;
-    } else {
-      if (c === '"') inQuote = true;
-      else if (c === ',') { fields.push(cur); cur = ''; }
-      else cur += c;
-    }
-  }
-  fields.push(cur);
-  return fields;
-}
-
-function parseCSV(text) {
-  const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if (lines.length < 2) return [];
-  const headers = parseLine(lines[0]).map(h => h.trim().replace(/^"|"$/g, ''));
-  return lines.slice(1).filter(l => l.trim()).map(line => {
-    const values = parseLine(line);
-    const row = {};
-    headers.forEach((h, i) => { row[h] = (values[i] || '').trim().replace(/^"|"$/g, ''); });
-    return row;
-  });
-}
-
-// ── Contact mapping ───────────────────────────────────────────────────────────
-
-function mapContact(row) {
-  const addressParts = [row['Address']];
-  const city = row['City'] || '';
-  const state = row['State'] || '';
-  const zip = row['Zip'] || '';
-  const cityStateZip = [city, state].filter(Boolean).join(', ') + (zip ? ` ${zip}` : '');
-  if (cityStateZip.trim()) addressParts.push(cityStateZip.trim());
-
-  return {
-    first_name:   row['First Name'] || '',
-    last_name:    row['Last Name']  || '',
-    company:      row['Company']    || '',
-    email:        row['Email']      || '',
-    phone:        row['Phone']      || '',
-    address:      addressParts.filter(Boolean).join(', ') || '',
-    contact_type: (row['Type'] || 'client').toLowerCase(),
-    notes:        row['Notes'] || '',
-    _valid: !!(row['First Name'] || row['Last Name']),
-    _errors: [],
-  };
-}
-
-function mapMatter(row) {
-  const mapped = {
-    matter_name:  row['Matter Name'] || '',
-    client:       row['Client']      || '',
-    practice_area: row['Practice Area'] || '',
-    status:       row['Status']      || 'Active',
-    open_date:    row['Open Date']   || '',
-    close_date:   row['Close Date']  || '',
-    description:  row['Description'] || '',
-    assigned_to:  row['Assigned To'] || '',
-    notes:        row['Notes']       || '',
-    _valid: !!row['Matter Name'],
-    _errors: [],
-  };
-  if (!mapped.matter_name) mapped._errors.push('Missing matter name');
-  return mapped;
-}
+// Matters parsed server-side via /api/ppimport/matters/parse
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
@@ -195,7 +122,6 @@ function ContactPreview({ rows, selected, onToggle, onToggleAll }) {
 
 function MatterPreview({ rows, selected, onToggle, onToggleAll }) {
   const allSelected = selected.size === rows.length;
-  const COLS = ['matter_name','client','practice_area','status','open_date'];
 
   return (
     <div style={{ overflowX: 'auto', maxHeight: 400, overflowY: 'auto' }}>
@@ -203,21 +129,47 @@ function MatterPreview({ rows, selected, onToggle, onToggleAll }) {
         <thead>
           <tr>
             <th style={s.th}><input type="checkbox" checked={allSelected} onChange={() => onToggleAll()} /></th>
-            {COLS.map(c => <th key={c} style={s.th}>{c.replace(/_/g,' ')}</th>)}
+            <th style={s.th}>matter name</th>
+            <th style={s.th}>contact</th>
             <th style={s.th}>status</th>
+            <th style={s.th}>open date</th>
+            <th style={s.th}>sol date</th>
+            <th style={s.th}>notes</th>
+            <th style={s.th}>validity</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((r, i) => {
-            const hasErr = !r._valid || r._errors.length > 0;
+            const hasErr  = !r._valid || r._errors.length > 0;
+            const unmatched = !!r._contact_unmatched;
+            const rowBg  = unmatched ? '#fffbeb' : hasErr ? '#fff5f5' : 'transparent';
+            const tdS    = (highlight) => ({ ...s.td(highlight), background: rowBg });
             return (
               <tr key={i}>
-                <td style={s.td(hasErr)}><input type="checkbox" checked={selected.has(i)} onChange={() => onToggle(i)} /></td>
-                {COLS.map(c => <td key={c} style={s.td(hasErr && !r[c])}>{r[c] || <span style={{ color: '#ccc' }}>—</span>}</td>)}
-                <td style={s.td(hasErr)}>
+                <td style={tdS(false)}><input type="checkbox" checked={selected.has(i)} onChange={() => onToggle(i)} /></td>
+                <td style={tdS(!r.matter_name)}>{r.matter_name || <span style={{ color: '#ccc' }}>—</span>}</td>
+                <td style={tdS(false)}>
+                  {r.contact_name
+                    ? <>
+                        <span>{r.contact_name}</span>{' '}
+                        {r._contact_matched
+                          ? <span style={{ background:'#dcfce7', color:'#166534', padding:'1px 6px', borderRadius:10, fontSize:10, fontWeight:700 }}>matched</span>
+                          : <span style={{ background:'#fef3c7', color:'#7c4a00', padding:'1px 6px', borderRadius:10, fontSize:10, fontWeight:700 }}>not matched</span>}
+                      </>
+                    : <span style={{ color: '#ccc' }}>—</span>}
+                </td>
+                <td style={tdS(false)}>{r.status || '—'}</td>
+                <td style={tdS(false)}>{r.open_date || <span style={{ color: '#ccc' }}>—</span>}</td>
+                <td style={tdS(false)}>{r.sol_date  || <span style={{ color: '#ccc' }}>—</span>}</td>
+                <td style={tdS(false)} title={r.notes || ''}>
+                  {r.notes ? r.notes.slice(0, 50) + (r.notes.length > 50 ? '…' : '') : <span style={{ color: '#ccc' }}>—</span>}
+                </td>
+                <td style={tdS(hasErr)}>
                   {hasErr
                     ? <span style={s.badge(false)}>⚠ {r._errors.join(', ')}</span>
-                    : <span style={s.badge(true)}>Ready</span>}
+                    : unmatched
+                      ? <span style={{ background:'#fef3c7', color:'#7c4a00', padding:'2px 8px', borderRadius:10, fontSize:11, fontWeight:700 }}>Contact not matched</span>
+                      : <span style={s.badge(true)}>Ready</span>}
                 </td>
               </tr>
             );
@@ -234,6 +186,11 @@ function ImportResults({ results, label, onReset }) {
   return (
     <div>
       <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 16 }}>Import Complete — {label}</div>
+      {label === 'Matters' && (
+        <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 6, padding: '12px 16px', fontSize: 13, color: '#7c4a00', marginBottom: 20 }}>
+          <strong>Next step:</strong> Matters imported. Please review each matter to assign a practice area — this could not be determined from the PracticePanther export.
+        </div>
+      )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 20 }}>
         {[
           { label: 'Imported', val: results.imported, color: '#166534', bg: '#dcfce7' },
@@ -274,17 +231,40 @@ function ImportTab({ type }) {
   const [rows, setRows] = useState([]);
   const [selected, setSelected] = useState(new Set());
   const [importing, setImporting] = useState(false);
+  const [parsing, setParsing] = useState(false);
   const [results, setResults] = useState(null);
 
   const isContacts = type === 'contacts';
 
-  const handleFile = (text, name) => {
-    const raw = parseCSV(text);
-    const mapped = raw.map(r => isContacts ? mapContact(r) : mapMatter(r));
-    setRows(mapped);
+  const handleFile = async (text, name) => {
     setFileName(name);
-    setSelected(new Set(mapped.map((_, i) => i)));
-    setStage('preview');
+    if (isContacts) {
+      setParsing(true);
+      try {
+        const { data } = await axios.post('/api/ppimport/contacts/parse', { csv: text });
+        const mapped = data.records;
+        setRows(mapped);
+        setSelected(new Set(mapped.map((_, i) => i)));
+        setStage('preview');
+      } catch (err) {
+        alert(err.response?.data?.error || 'Failed to parse CSV.');
+      } finally {
+        setParsing(false);
+      }
+    } else {
+      setParsing(true);
+      try {
+        const { data } = await axios.post('/api/ppimport/matters/parse', { csv: text });
+        const mapped = data.records;
+        setRows(mapped);
+        setSelected(new Set(mapped.map((_, i) => i)));
+        setStage('preview');
+      } catch (err) {
+        alert(err.response?.data?.error || 'Failed to parse CSV.');
+      } finally {
+        setParsing(false);
+      }
+    }
   };
 
   const toggleRow = (i) => {
@@ -329,14 +309,20 @@ function ImportTab({ type }) {
         <>
           <div style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>
             {isContacts
-              ? 'Upload a contacts CSV exported from PracticePanther. Required columns: First Name or Last Name, Email.'
-              : 'Upload a matters CSV exported from PracticePanther. Contacts must be imported first for client linking. Required column: Matter Name.'}
+              ? 'Upload a contacts CSV exported from PracticePanther. CSV is parsed on the server. Required columns: First Name or Last Name, Email.'
+              : 'Upload a matters CSV exported from PracticePanther. Contacts must be imported first for client linking. Required column: Matter (matter name). CSV is parsed on the server.'}
           </div>
-          <UploadZone onFile={handleFile} />
+          {parsing ? (
+            <div style={{ textAlign: 'center', padding: '48px 24px', color: '#6c757d', fontSize: 14 }}>
+              Parsing CSV on server…
+            </div>
+          ) : (
+            <UploadZone onFile={handleFile} />
+          )}
           <div style={{ marginTop: 12, fontSize: 12, color: '#aaa' }}>
             Expected columns: {isContacts
-              ? 'First Name, Last Name, Company, Email, Phone, Address, City, State, Zip, Type, Notes'
-              : 'Matter Name, Client, Practice Area, Status, Open Date, Close Date, Description, Assigned To, Notes'}
+              ? 'Contact: FirstName, Contact: LastName, Contact: CompanyName, Contact: Email, Contact: MobileNumber, Contact: OfficeNumber, Contact: HomeNumber, Contact: Street1, Contact: Street2, Contact: City, Contact: ProvinceState, Contact: ZipPostalCode, Contact: ContactNotes, Contact: Tags, URL'
+              : 'Matter, Contact, Status, Open Date, Close Date, Statute of Limitations, Matter Rate, Assigned To, Notes, Number, Billable, Trust, Operating, Invoices Due, Tags'}
           </div>
         </>
       )}

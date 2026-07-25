@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../components/Layout';
 
@@ -15,6 +16,7 @@ const labelSt = { display:'block', fontSize:'11px', fontWeight:'600', color:'#55
 const EMPTY_FORM = { matter_id:'', entry_date:'', hours:'', rate:'', description:'', billable:true };
 
 export default function TimeEntries() {
+  const [searchParams] = useSearchParams();
   const [entries, setEntries]   = useState([]);
   const [matters, setMatters]   = useState([]);
   const [loading, setLoading]   = useState(true);
@@ -26,6 +28,10 @@ export default function TimeEntries() {
   const [saving,  setSaving]    = useState(false);
   const [toast,   setToast]     = useState(null);
   const [focused, setFocused]   = useState(null);
+
+  useEffect(() => {
+    if (searchParams.get('new') === 'true') openNew();
+  }, []);
 
   const showToast = (msg, type='success') => { setToast({msg,type}); setTimeout(()=>setToast(null),3000); };
 
@@ -70,10 +76,19 @@ export default function TimeEntries() {
   };
 
   const save = async () => {
-    if (!form.hours || !form.description.trim()) return showToast('Hours and description required.','error');
+    const hours = parseFloat(form.hours);
+    if (!form.hours || isNaN(hours) || hours <= 0) return showToast('Enter a valid number of hours.','error');
+    if (!form.description.trim()) return showToast('Description is required.','error');
     setSaving(true);
     try {
-      const payload = { ...form, matter_id: form.matter_id || null, rate: form.rate || null };
+      const payload = {
+        matter_id:   form.matter_id ? parseInt(form.matter_id, 10) : null,
+        entry_date:  form.entry_date,
+        hours,
+        rate:        form.rate ? parseFloat(form.rate) : null,
+        description: form.description.trim(),
+        billable:    form.billable,
+      };
       if (editId) { await axios.put(`/api/time-entries/${editId}`, payload); showToast('Entry updated.'); }
       else        { await axios.post('/api/time-entries', payload); showToast('Entry added.'); }
       setPanel(false);

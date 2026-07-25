@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const pool = require('../config/db');
 const requireAuth = require('../middleware/auth');
+const activity = require('../utils/activity');
 
 router.use(requireAuth);
 
@@ -36,7 +37,7 @@ router.get('/next-number', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { search, status, practice_area } = req.query;
+    const { search, status, practice_area, contact_id } = req.query;
     const params = [];
     const where = [];
     let i = 1;
@@ -54,6 +55,11 @@ router.get('/', async (req, res) => {
     if (practice_area) {
       where.push(`m.practice_area = $${i}`);
       params.push(practice_area);
+      i++;
+    }
+    if (contact_id) {
+      where.push(`m.client_id = $${i}`);
+      params.push(contact_id);
       i++;
     }
 
@@ -105,6 +111,7 @@ router.post('/', async (req, res) => {
         description || null, notes || null,
       ]
     );
+    await activity.log({ event_type:'matter_created', description:`Matter opened: ${matter_name.trim()}`, matter_id: rows[0].id, contact_id: client_id||null, user_id: req.user.id, meta:{ matter_number: rows[0].matter_number } });
     res.status(201).json(rows[0]);
   } catch (err) {
     console.error(err);

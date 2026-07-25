@@ -23,6 +23,7 @@ import SignDocument     from './pages/SignDocument';
 import MessagePortal    from './pages/MessagePortal';
 import Workflows        from './pages/Workflows';
 import TimeEntries      from './pages/TimeEntries';
+import Notes            from './pages/Notes';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -76,6 +77,7 @@ function AppRoutes() {
       <Route path="/messages"      element={<ProtectedRoute><Messages /></ProtectedRoute>} />
       <Route path="/workflows"     element={<ProtectedRoute><Workflows /></ProtectedRoute>} />
       <Route path="/time-entries"  element={<ProtectedRoute><TimeEntries /></ProtectedRoute>} />
+      <Route path="/notes"         element={<ProtectedRoute><Notes /></ProtectedRoute>} />
 
       {/* Public routes — no auth */}
       <Route path="/sign/:token"              element={<SignDocument />} />

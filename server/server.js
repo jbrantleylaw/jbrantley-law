@@ -31,6 +31,9 @@ app.use('/api/adobe-sign-webhook', require('./routes/adobe-sign-webhook'));
 app.use('/api/messages',         require('./routes/messages'));
 app.use('/api/workflows',        require('./routes/workflows'));
 app.use('/api/time-entries',     require('./routes/timeentries'));
+app.use('/api/notifications',    require('./routes/notifications'));
+app.use('/api/notes',            require('./routes/notes'));
+app.use('/api/activity',         require('./routes/activity'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date() }));
 

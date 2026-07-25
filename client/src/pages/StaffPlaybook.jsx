@@ -7,7 +7,7 @@ const RED = '#c53030';
 
 function Section({ id, title, isOpen, toggle, children }) {
   return (
-    <div style={{ marginBottom: '10px', border: '1px solid #e9ecef', borderRadius: '8px', overflow: 'hidden' }}>
+    <div id={id} style={{ marginBottom: '10px', border: '1px solid #e9ecef', borderRadius: '8px', overflow: 'hidden' }}>
       <button
         onClick={() => toggle(id)}
         style={{
@@ -26,6 +26,15 @@ function Section({ id, title, isOpen, toggle, children }) {
       {isOpen && (
         <div style={{ padding: '20px 24px', background: '#fff', fontFamily: 'Inter,sans-serif', fontSize: '13px', color: '#374151', lineHeight: '1.7' }}>
           {children}
+          <div style={{ textAlign: 'right', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #f1f3f5' }}>
+            <button
+              onClick={() => document.getElementById('playbook-toc').scrollIntoView({ behavior: 'smooth' })}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: NAVY, fontSize: '12px', padding: '2px 4px' }}
+              onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
+              onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}>
+              ↑ Return to top
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -156,8 +165,57 @@ export default function StaffPlaybook() {
           <div style={{ fontSize: '12px', color: '#6c757d' }}>J Brantley Law, PLLC · Legal Intern Program and Operations · Version 1.0 | June 2026 · Internal Use Only · Attorney Work Product</div>
         </div>
 
+        {/* Table of Contents */}
+        {(() => {
+          const jump = (id, sectionId) => {
+            if (sectionId && !open.has(sectionId)) toggle(sectionId);
+            setTimeout(() => {
+              const el = document.getElementById(id);
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+          };
+          const tocItems = [
+            { label: 'Firm Overview',               id: 'part1',          sectionId: 'part1' },
+            { label: 'Non-Negotiable Rule',          id: 'non-negotiable', sectionId: null },
+            { label: 'Three Question Test',          id: 'part3',          sectionId: 'part3' },
+            { label: 'Phone Intake Script',          id: 'links2',         sectionId: 'links2' },
+            { label: 'After Call Procedures',        id: 'part4',          sectionId: 'part4' },
+            { label: 'SOL Quick Reference',          id: 'links2',         sectionId: 'links2' },
+            { label: 'Permitted and Prohibited Tasks', id: 'part3',        sectionId: 'part3' },
+            { label: 'Engagement Letter Assembly',   id: 'part5',          sectionId: 'part5' },
+            { label: 'Task Catalog by Practice Area', id: 'part4',         sectionId: 'part4' },
+            { label: 'Technology and System Access', id: 'part6',          sectionId: 'part6' },
+            { label: 'Weekly Rhythm',                id: 'part7',          sectionId: 'part7' },
+            { label: 'Key Links',                    id: 'links1',         sectionId: 'links1' },
+            { label: 'Ethics Reminders',             id: 'part2',          sectionId: 'part2' },
+            { label: 'Onboarding Checklist',         id: 'part10',         sectionId: 'part10' },
+            { label: 'Hard Escalation Contacts',     id: 'hard-escalation', sectionId: null },
+          ];
+          const half = Math.ceil(tocItems.length / 2);
+          return (
+            <div id="playbook-toc" style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', border: `1.5px solid ${NAVY}`, borderRadius: '8px', padding: '14px 18px', marginBottom: '18px', boxShadow: '0 2px 8px rgba(0,0,0,.08)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill={GOLD} stroke={GOLD} strokeWidth="0">
+                  <path d="M19 3H5a2 2 0 00-2 2v16l7-3 7 3V5a2 2 0 00-2-2z"/>
+                </svg>
+                <span style={{ fontSize: '10px', fontWeight: '700', color: '#6c757d', letterSpacing: '.08em', textTransform: 'uppercase' }}>Table of Contents</span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2px 24px' }}>
+                {tocItems.map((item, i) => (
+                  <button key={i} onClick={() => jump(item.id, item.sectionId)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: '12px', color: NAVY, padding: '3px 0', fontFamily: 'Inter,sans-serif', lineHeight: '1.4' }}
+                    onMouseEnter={e => { e.currentTarget.style.color = GOLD; e.currentTarget.style.textDecoration = 'underline'; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = NAVY; e.currentTarget.style.textDecoration = 'none'; }}>
+                    {i + 1}. {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Hard Escalation Card */}
-        <div style={{ border: `2px solid ${RED}`, borderRadius: '8px', padding: '18px 22px', marginBottom: '14px', background: '#fff5f5' }}>
+        <div id="hard-escalation" style={{ border: `2px solid ${RED}`, borderRadius: '8px', padding: '18px 22px', marginBottom: '14px', background: '#fff5f5' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5">
               <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -181,7 +239,7 @@ export default function StaffPlaybook() {
         </div>
 
         {/* Non-Negotiable Rule Card */}
-        <div style={{ background: NAVY, borderRadius: '8px', padding: '18px 22px', marginBottom: '28px' }}>
+        <div id="non-negotiable" style={{ background: NAVY, borderRadius: '8px', padding: '18px 22px', marginBottom: '28px' }}>
           <div style={{ fontSize: '10px', fontWeight: '700', color: GOLD, textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '8px' }}>Non-Negotiable Rule</div>
           <p style={{ fontSize: '13px', color: '#fff', lineHeight: '1.8', margin: 0 }}>
             The intern/paralegal never tells a client, opposing party, court, agency, or anyone else what the law is, what a document means, what a client should do, or what the Attorney thinks. If asked, the only permitted response is: <em style={{ color: GOLD }}>"That is a question for Attorney Brantley. I will make sure she gets it and follows up with you."</em> This rule has no exceptions, including for family and friends.

@@ -144,9 +144,12 @@ function SolRow({ matter }) {
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [data, setData]     = useState(null);
+  const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]   = useState(false);
+  const [error, setError]     = useState(false);
+  const [noteModal, setNoteModal] = useState(false);
+  const [noteText, setNoteText]   = useState('');
+  const [noteToast, setNoteToast] = useState(false);
 
   useEffect(() => {
     axios.get('/api/dashboard')
@@ -178,7 +181,7 @@ export default function Dashboard() {
       <div style={{ padding: '36px 40px', maxWidth: '1300px' }}>
 
         {/* Header */}
-        <div style={{ marginBottom: '28px' }}>
+        <div style={{ marginBottom: '20px' }}>
           <h1 style={{
             fontSize: '26px', fontWeight: '600', color: NAVY,
             fontFamily: 'Playfair Display, Georgia, serif', margin: '0 0 4px',
@@ -187,6 +190,37 @@ export default function Dashboard() {
           </h1>
           <p style={{ color: '#6c757d', fontSize: '14px', margin: 0 }}>{today}</p>
         </div>
+
+        {/* Quick Actions */}
+        {(() => {
+          const actions = [
+            { label: 'New Matter',        path: '/matters?new=true',       icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+            { label: 'New Contact',       path: '/contacts?new=true',      icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75M12 7a4 4 0 110 8 4 4 0 010-8z' },
+            { label: 'New Invoice',       path: '/billing?new=invoice',    icon: 'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6' },
+            { label: 'Track Time',        path: '/time-entries?new=true',  icon: 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 6v6l4 2' },
+            { label: 'New Intake',        path: '/intake',                 icon: 'M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M9 2h6a1 1 0 011 1v2a1 1 0 01-1 1H9a1 1 0 01-1-1V3a1 1 0 011-1z' },
+            { label: 'Calendar Event',    path: '/calendar?new=true',      icon: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z' },
+            { label: 'New Message',       path: '/messages?new=true',      icon: 'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z' },
+            { label: 'Upload Document',   path: '/documents?upload=true',  icon: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12' },
+            { label: 'New Note',          note: true,                      icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z' },
+          ];
+          return (
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '28px' }}>
+              {actions.map(a => (
+                <button key={a.label}
+                  onClick={() => a.note ? setNoteModal(true) : navigate(a.path)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', background: GOLD, border: 'none', borderRadius: '20px', fontSize: '12px', fontWeight: '600', color: NAVY, cursor: 'pointer', fontFamily: 'Inter,sans-serif', boxShadow: '0 1px 4px rgba(201,168,76,.3)', transition: 'all .15s' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#b8932e'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(201,168,76,.45)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = GOLD; e.currentTarget.style.boxShadow = '0 1px 4px rgba(201,168,76,.3)'; }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d={a.icon}/>
+                  </svg>
+                  {a.label}
+                </button>
+              ))}
+            </div>
+          );
+        })()}
 
         {loading ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '28px' }}>
@@ -457,6 +491,45 @@ export default function Dashboard() {
           </>
         )}
       </div>
+
+      {/* New Note Modal */}
+      {noteModal && (
+        <>
+          <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.35)', zIndex:400 }} onClick={()=>setNoteModal(false)} />
+          <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:420, background:'#fff', borderRadius:'10px', boxShadow:'0 8px 40px rgba(0,0,0,.18)', zIndex:500, padding:24 }}>
+            <div style={{ fontSize:'15px', fontWeight:'700', color:NAVY, marginBottom:14 }}>New Note</div>
+            <textarea
+              autoFocus
+              value={noteText}
+              onChange={e=>setNoteText(e.target.value)}
+              placeholder="Type your note…"
+              style={{ width:'100%', minHeight:'120px', border:'1.5px solid #dee2e6', borderRadius:6, padding:'10px 12px', fontSize:13, fontFamily:'Inter,sans-serif', resize:'vertical', boxSizing:'border-box', outline:'none' }}
+              onFocus={e=>e.target.style.borderColor=GOLD}
+              onBlur={e=>e.target.style.borderColor='#dee2e6'}
+            />
+            <div style={{ display:'flex', gap:10, justifyContent:'flex-end', marginTop:14 }}>
+              <button onClick={()=>setNoteModal(false)} style={{ padding:'8px 16px', background:'transparent', border:'1px solid #dee2e6', borderRadius:6, fontSize:13, cursor:'pointer' }}>Cancel</button>
+              <button onClick={()=>{
+                if (!noteText.trim()) return;
+                const blob = new Blob([noteText], {type:'text/plain'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `note-${new Date().toISOString().slice(0,10)}.txt`; a.click();
+                URL.revokeObjectURL(url);
+                setNoteText(''); setNoteModal(false); setNoteToast(true); setTimeout(()=>setNoteToast(false),2500);
+              }} style={{ padding:'8px 18px', background:NAVY, border:'none', borderRadius:6, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer' }}>
+                Save Note
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {noteToast && (
+        <div style={{ position:'fixed', bottom:'28px', right:'28px', background:'#276749', color:'#fff', padding:'12px 20px', borderRadius:'7px', fontSize:'14px', fontWeight:'500', zIndex:400 }}>
+          Note saved.
+        </div>
+      )}
 
       <style>{`
         @keyframes pulse {

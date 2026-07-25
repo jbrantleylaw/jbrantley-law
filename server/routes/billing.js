@@ -1,6 +1,7 @@
 const router      = require('express').Router();
 const pool        = require('../config/db');
 const requireAuth = require('../middleware/auth');
+const activity    = require('../utils/activity');
 const { generateInvoicePdf } = require('../services/billingPdfService');
 
 router.use(requireAuth);
@@ -192,11 +193,12 @@ router.post('/invoices', requireAttorney, async (req, res) => {
     if (entries.length > 0) {
       const ids = entries.map(e => e.id);
       await client.query(
-        `UPDATE time_entries SET status='billed' WHERE id = ANY($1)`,
-        [ids]
+        `UPDATE time_entries SET status='billed', invoiced=TRUE, invoice_id=$1 WHERE id = ANY($2)`,
+        [invoice.id, ids]
       );
     }
 
+    await activity.log({ event_type:'invoice_created', description:`Invoice created for $${total.toFixed(2)}`, matter_id: parseInt(matter_id,10), contact_id: matter.contact_id||null, user_id: req.user.id, meta:{ invoice_id: invoice.id, total, time_entries_count: entries.length } });
     await client.query('COMMIT');
     res.status(201).json(invoice);
   } catch (err) {

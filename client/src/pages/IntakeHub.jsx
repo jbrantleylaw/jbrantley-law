@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
+import { useAuth } from '../context/AuthContext';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const NAVY = '#1B2A4A';
 const GOLD  = '#C9A84C';
@@ -64,8 +68,224 @@ function StatusBadge({ status }) {
   );
 }
 
+// ── Edit Mode Components ──────────────────────────────────────────────────────
+
+function SortableIntakeItem({ id, children }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  return (
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.45 : 1 }}>
+      {children(listeners, attributes)}
+    </div>
+  );
+}
+
+const SCRIPT_TYPE_COLORS = {
+  intro:         { bg: '#dbeafe', color: '#1d4ed8' },
+  section_title: { bg: '#f0fdf4', color: '#166534' },
+  question:      { bg: '#f8f9fa', color: '#495057' },
+  closing:       { bg: '#fef3c7', color: '#7c4a00' },
+  sol_note:      { bg: '#fee2e2', color: '#9b2c2c' },
+};
+
+const GRIP_SVG = () => (
+  <svg width="12" height="14" viewBox="0 0 12 14" fill="none">
+    {[[3,3],[9,3],[3,7],[9,7],[3,11],[9,11]].map(([cx,cy],i) => <circle key={i} cx={cx} cy={cy} r="1.5" fill="#adb5bd" />)}
+  </svg>
+);
+
+function EditPanel({ templates, onClose, initialPracticeArea }) {
+  const initialTemplate = initialPracticeArea
+    ? (templates.find(t => t.practice_area === initialPracticeArea) || templates[0])
+    : templates[0];
+  const [selId,   setSelId]   = useState(initialTemplate?.id || null);
+  const [scripts, setScripts] = useState([]);
+  const [fields,  setFields]  = useState([]);
+  const [tab,     setTab]     = useState('scripts');
+  const [loading, setLoading] = useState(false);
+  const [epToast, setEpToast] = useState(null);
+
+  const sensors = useSensors(useSensor(PointerSensor));
+  const epShowToast = (msg, type='success') => { setEpToast({msg,type}); setTimeout(()=>setEpToast(null),2200); };
+
+  const loadTemplate = async (id) => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/api/intake/templates/${id}`);
+      setScripts(data.scripts || []);
+      setFields(data.fields   || []);
+    } catch { epShowToast('Failed to load.','error'); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { loadTemplate(selId); }, [selId]);
+
+  const updateScriptText = (idx, val) => setScripts(ss => ss.map((s,i) => i===idx ? {...s,script_text:val} : s));
+  const saveScript = async (s) => {
+    try { await axios.put(`/api/intake/scripts/${s.id}`, { script_text: s.script_text }); epShowToast('Saved.'); }
+    catch { epShowToast('Save failed.','error'); }
+  };
+  const addScript = async () => {
+    try { const {data} = await axios.post(`/api/intake/templates/${selId}/scripts`, {script_type:'question',script_text:'',script_order:scripts.length}); setScripts(ss=>[...ss,data]); }
+    catch { epShowToast('Failed.','error'); }
+  };
+  const deleteScript = async (id) => {
+    try { await axios.delete(`/api/intake/scripts/${id}`); setScripts(ss=>ss.filter(s=>s.id!==id)); }
+    catch { epShowToast('Failed.','error'); }
+  };
+  const handleScriptDragEnd = async ({active,over}) => {
+    if (!over||active.id===over.id) return;
+    const from=scripts.findIndex(s=>s.id===active.id); const to=scripts.findIndex(s=>s.id===over.id);
+    if (from===-1||to===-1) return;
+    const newS=arrayMove(scripts,from,to); setScripts(newS);
+    try { await axios.put(`/api/intake/templates/${selId}/scripts/reorder`,{script_ids:newS.map(s=>s.id)}); }
+    catch { epShowToast('Reorder failed.','error'); }
+  };
+
+  const updateField = (idx, key, val) => setFields(fs => fs.map((f,i) => i===idx ? {...f,[key]:val} : f));
+  const saveField = async (f) => {
+    try { await axios.put(`/api/intake/fields/${f.id}`,{field_label:f.field_label,field_type:f.field_type,is_required:f.is_required}); epShowToast('Saved.'); }
+    catch { epShowToast('Save failed.','error'); }
+  };
+  const addField = async () => {
+    try { const {data}=await axios.post(`/api/intake/templates/${selId}/fields`,{field_label:'New Field',field_type:'text',field_order:fields.length}); setFields(fs=>[...fs,data]); }
+    catch { epShowToast('Failed.','error'); }
+  };
+  const deleteField = async (id) => {
+    try { await axios.delete(`/api/intake/fields/${id}`); setFields(fs=>fs.filter(f=>f.id!==id)); }
+    catch { epShowToast('Failed.','error'); }
+  };
+  const handleFieldDragEnd = async ({active,over}) => {
+    if (!over||active.id===over.id) return;
+    const from=fields.findIndex(f=>f.id===active.id); const to=fields.findIndex(f=>f.id===over.id);
+    if (from===-1||to===-1) return;
+    const newF=arrayMove(fields,from,to); setFields(newF);
+    try { await axios.put(`/api/intake/templates/${selId}/fields/reorder`,{field_ids:newF.map(f=>f.id)}); }
+    catch { epShowToast('Reorder failed.','error'); }
+  };
+
+  const selectedTemplate = templates.find(t=>t.id===selId);
+
+  return (
+    <>
+      <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',zIndex:500}} onClick={onClose} />
+      <div style={{position:'fixed',top:0,right:0,bottom:0,width:'920px',background:'#fff',zIndex:501,display:'flex',flexDirection:'column',boxShadow:'-8px 0 40px rgba(0,0,0,.18)'}}>
+        <div style={{padding:'14px 24px',borderBottom:'1px solid #e9ecef',display:'flex',alignItems:'center',justifyContent:'space-between',background:NAVY,color:'#fff',flexShrink:0}}>
+          <span style={{fontSize:'16px',fontWeight:700,fontFamily:'Playfair Display,Georgia,serif'}}>Edit Intake Templates</span>
+          <button onClick={onClose} style={{background:'none',border:'none',color:'#fff',fontSize:'22px',cursor:'pointer',opacity:.7,lineHeight:1}}>×</button>
+        </div>
+        <div style={{display:'flex',flex:1,overflow:'hidden'}}>
+          <div style={{width:'210px',borderRight:'1px solid #e9ecef',overflowY:'auto',flexShrink:0,background:'#f8f9fa'}}>
+            {templates.map(t=>(
+              <button key={t.id} onClick={()=>setSelId(t.id)}
+                style={{width:'100%',textAlign:'left',padding:'11px 14px',background:t.id===selId?'#fff':'transparent',border:'none',borderLeft:t.id===selId?`3px solid ${GOLD}`:'3px solid transparent',cursor:'pointer',fontSize:'11px',fontWeight:t.id===selId?700:500,color:t.id===selId?NAVY:'#6c757d',lineHeight:'1.4'}}>
+                {t.display_name||t.practice_area}
+              </button>
+            ))}
+          </div>
+          <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+            <div style={{display:'flex',borderBottom:'2px solid #e9ecef',padding:'0 20px',flexShrink:0}}>
+              {['scripts','fields','preview'].map(t=>(
+                <button key={t} onClick={()=>setTab(t)}
+                  style={{padding:'10px 18px',fontSize:'13px',fontWeight:tab===t?700:500,color:tab===t?NAVY:'#6c757d',background:'none',border:'none',borderBottom:tab===t?`2px solid ${GOLD}`:'2px solid transparent',marginBottom:'-2px',cursor:'pointer',textTransform:'capitalize'}}>
+                  {t}
+                </button>
+              ))}
+            </div>
+            <div style={{flex:1,overflowY:'auto',padding:'16px 20px'}}>
+              {loading ? (
+                <div style={{textAlign:'center',padding:'40px',color:'#adb5bd'}}>Loading…</div>
+              ) : tab==='scripts' ? (
+                <>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}>
+                    <span style={{fontSize:'12px',color:'#6c757d'}}>{scripts.length} script blocks · drag to reorder · edits auto-save on blur</span>
+                    <button onClick={addScript} style={{padding:'5px 12px',background:GOLD,border:'none',borderRadius:'4px',color:'#fff',fontSize:'12px',fontWeight:600,cursor:'pointer'}}>+ Add Block</button>
+                  </div>
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleScriptDragEnd}>
+                    <SortableContext items={scripts.map(s=>s.id)} strategy={verticalListSortingStrategy}>
+                      {scripts.map((s,si)=>{
+                        const tc=SCRIPT_TYPE_COLORS[s.script_type]||SCRIPT_TYPE_COLORS.question;
+                        return (
+                          <SortableIntakeItem key={s.id} id={s.id}>
+                            {(listeners,attrs)=>(
+                              <div style={{background:'#f8f9fa',border:'1px solid #e9ecef',borderRadius:'6px',padding:'10px 12px',marginBottom:'8px',display:'grid',gridTemplateColumns:'auto 1fr auto',gap:'8px',alignItems:'flex-start'}}>
+                                <div {...listeners} {...attrs} style={{cursor:'grab',padding:'6px 2px',touchAction:'none',marginTop:'4px'}}><GRIP_SVG /></div>
+                                <div>
+                                  <span style={{display:'inline-block',fontSize:'10px',fontWeight:700,padding:'1px 6px',borderRadius:10,background:tc.bg,color:tc.color,textTransform:'uppercase',letterSpacing:'.06em',marginBottom:'6px'}}>{(s.script_type||'').replace('_',' ')}</span>
+                                  <textarea value={s.script_text} onChange={e=>updateScriptText(si,e.target.value)} onBlur={()=>saveScript(scripts[si])}
+                                    rows={s.script_type==='question'?2:s.script_type==='section_title'?1:4}
+                                    style={{display:'block',width:'100%',padding:'7px 9px',fontSize:'12px',border:'1px solid #dee2e6',borderRadius:'4px',fontFamily:'Inter,sans-serif',resize:'vertical',boxSizing:'border-box'}} />
+                                </div>
+                                <button onClick={()=>deleteScript(s.id)} style={{background:'none',border:'none',color:'#ced4da',cursor:'pointer',fontSize:'18px',padding:'2px',marginTop:'22px'}} title="Delete">×</button>
+                              </div>
+                            )}
+                          </SortableIntakeItem>
+                        );
+                      })}
+                    </SortableContext>
+                  </DndContext>
+                </>
+              ) : tab==='fields' ? (
+                <>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}>
+                    <span style={{fontSize:'12px',color:'#6c757d'}}>{fields.length} fields · drag to reorder · edits auto-save on blur</span>
+                    <button onClick={addField} style={{padding:'5px 12px',background:GOLD,border:'none',borderRadius:'4px',color:'#fff',fontSize:'12px',fontWeight:600,cursor:'pointer'}}>+ Add Field</button>
+                  </div>
+                  <div style={{display:'grid',gridTemplateColumns:'auto 1fr auto auto auto auto',gap:'6px',alignItems:'center',padding:'6px 10px',fontSize:'10px',fontWeight:700,color:'#6c757d',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:'4px'}}>
+                    <div/><div>Label</div><div>Type</div><div>Req</div><div>Section</div><div/>
+                  </div>
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleFieldDragEnd}>
+                    <SortableContext items={fields.map(f=>f.id)} strategy={verticalListSortingStrategy}>
+                      {fields.map((f,fi)=>(
+                        <SortableIntakeItem key={f.id} id={f.id}>
+                          {(listeners,attrs)=>(
+                            <div style={{display:'grid',gridTemplateColumns:'auto 1fr auto auto auto auto',gap:'6px',alignItems:'center',padding:'7px 10px',background:'#f8f9fa',border:'1px solid #e9ecef',borderRadius:'5px',marginBottom:'5px'}}>
+                              <div {...listeners} {...attrs} style={{cursor:'grab',touchAction:'none',padding:'2px'}}><GRIP_SVG /></div>
+                              <input value={f.field_label} onChange={e=>updateField(fi,'field_label',e.target.value)} onBlur={()=>saveField(fields[fi])}
+                                style={{padding:'5px 8px',fontSize:'12px',border:'1px solid #dee2e6',borderRadius:'4px',fontFamily:'Inter,sans-serif',width:'100%',boxSizing:'border-box'}} />
+                              <select value={f.field_type} onChange={e=>updateField(fi,'field_type',e.target.value)} onBlur={()=>saveField(fields[fi])}
+                                style={{padding:'5px',fontSize:'12px',border:'1px solid #dee2e6',borderRadius:'4px'}}>
+                                {['text','textarea','date','select','tel','email','number'].map(t=><option key={t} value={t}>{t}</option>)}
+                              </select>
+                              <label style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',color:'#6c757d',cursor:'pointer',whiteSpace:'nowrap'}}>
+                                <input type="checkbox" checked={!!f.is_required} onChange={e=>{updateField(fi,'is_required',e.target.checked);saveField({...fields[fi],is_required:e.target.checked});}} />
+                              </label>
+                              <span style={{fontSize:'10px',color:'#adb5bd',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',maxWidth:'80px'}}>{f.field_section||'—'}</span>
+                              <button onClick={()=>deleteField(f.id)} style={{background:'none',border:'none',color:'#ced4da',cursor:'pointer',fontSize:'18px',padding:'1px'}}>×</button>
+                            </div>
+                          )}
+                        </SortableIntakeItem>
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                </>
+              ) : (
+                <div style={{fontSize:'13px',color:'#374151',lineHeight:'1.7'}}>
+                  <div style={{fontWeight:700,color:NAVY,marginBottom:'12px',fontSize:'15px'}}>{selectedTemplate?.display_name||selectedTemplate?.practice_area}</div>
+                  {scripts.map((s,i)=>{
+                    if (s.script_type==='section_title') return <div key={i} style={{fontWeight:700,color:NAVY,marginTop:'14px',marginBottom:'6px',borderBottom:`1px solid ${GOLD}`,paddingBottom:'4px'}}>{s.script_text}</div>;
+                    if (s.script_type==='question') {
+                      let q=s.script_text,purpose='';
+                      try{const p=JSON.parse(s.script_text);q=p.q||s.script_text;purpose=p.purpose||'';}catch{}
+                      return <div key={i} style={{marginBottom:'8px',paddingLeft:'12px',borderLeft:'2px solid #e9ecef'}}><div>{q}</div>{purpose&&<div style={{fontSize:'11px',color:'#adb5bd',marginTop:'2px'}}>{purpose}</div>}</div>;
+                    }
+                    if (s.script_type==='intro'||s.script_type==='closing') return <div key={i} style={{background:'#f8f9fa',borderRadius:'6px',padding:'10px 12px',marginBottom:'10px',whiteSpace:'pre-wrap',fontSize:'12px'}}>{s.script_text}</div>;
+                    return null;
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        {epToast && <div style={{position:'absolute',bottom:'20px',right:'20px',background:epToast.type==='error'?'#c53030':'#276749',color:'#fff',padding:'10px 16px',borderRadius:'6px',fontSize:'13px',zIndex:10}}>{epToast.msg}</div>}
+      </div>
+    </>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function IntakeHub() {
+  const { user } = useAuth();
   const [view,              setView]           = useState('grid'); // 'grid' | 'detail' | 'list'
   const [selectedArea,      setSelectedArea]   = useState(null);
   const [step,              setStep]           = useState('script'); // 'script' | 'form'
@@ -83,6 +303,13 @@ export default function IntakeHub() {
   const [exportGenerating,  setExportGenerating] = useState(null); // 'docx' | 'pdf' | null
   const [loading,           setLoading]        = useState(false);
   const [toast,             setToast]          = useState(null);
+  const [editMode,          setEditMode]       = useState(false);
+  const [editTemplates,     setEditTemplates]  = useState([]);
+  const [convertModal,      setConvertModal]   = useState(false);
+  const [convertOption,     setConvertOption]  = useState('existing_both'); // 'existing_both' | 'existing_contact_new_matter' | 'new_both'
+  const [convertData,       setConvertData]    = useState({ contact_id:'', matter_id:'', matter_name:'', practice_area:'', sol_date:'' });
+  const [allMatters,        setAllMatters]     = useState([]);
+  const [converting,        setConverting]     = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -94,10 +321,21 @@ export default function IntakeHub() {
     axios.get('/api/contacts', { params: { type: 'client' } })
       .then(r => setContacts(r.data))
       .catch(() => {});
-  }, []);
+    if (user?.role === 'attorney') {
+      axios.get('/api/intake/templates').then(r => setEditTemplates(r.data)).catch(() => {});
+    }
+  }, [user?.role]);
 
   const loadIntakes = () => {
     axios.get('/api/intake').then(r => setIntakes(r.data)).catch(() => {});
+  };
+
+  const reloadScript = async () => {
+    if (!selectedArea) return;
+    try {
+      const { data } = await axios.get(`/api/intake/scripts/${encodeURIComponent(selectedArea)}`);
+      setScript(data);
+    } catch {}
   };
 
   const selectArea = async (area) => {
@@ -199,6 +437,145 @@ export default function IntakeHub() {
     }
   };
 
+  const handleConvert = async () => {
+    setConverting(true);
+    try {
+      let contactId = convertData.contact_id || selectedContactId;
+
+      if (convertOption === 'new_both') {
+        // Create new contact from form data
+        const { data: newC } = await axios.post('/api/contacts', {
+          first_name: formData.clientFirstName || (formData.clientName?.split(' ')[0] || 'New'),
+          last_name:  formData.clientLastName  || (formData.clientName?.split(' ').slice(1).join(' ') || 'Contact'),
+          email:      formData.clientEmail || formData.email || null,
+          phone:      formData.clientPhone || formData.phone || null,
+          contact_type: 'client',
+        });
+        contactId = newC.id;
+      }
+
+      if (convertOption === 'existing_both' && convertData.matter_id) {
+        // Just log activity linking intake to existing matter
+        await axios.post('/api/activity', {
+          event_type: 'intake_linked',
+          description: `Intake #${activeIntakeId} linked to matter`,
+          matter_id: convertData.matter_id,
+          contact_id: contactId || null,
+        });
+        showToast('Intake linked to matter.');
+      } else {
+        // Create new matter
+        const { data: numRes } = await axios.get('/api/matters/next-number');
+        const { data: newM } = await axios.post('/api/matters', {
+          matter_name:   convertData.matter_name || `${selectedArea} Matter`,
+          matter_number: numRes.number,
+          practice_area: convertData.practice_area || selectedArea,
+          status:        'open',
+          sol_date:      convertData.sol_date || null,
+          client_id:     contactId || null,
+          open_date:     new Date().toISOString().slice(0, 10),
+        });
+        await axios.post('/api/activity', {
+          event_type: 'matter_created_from_intake',
+          description: `Matter created from Intake #${activeIntakeId}`,
+          matter_id: newM.id,
+          contact_id: contactId || null,
+        });
+        showToast(`Matter "${newM.matter_name}" created!`);
+      }
+
+      setConvertModal(false);
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Failed to create matter.', 'error');
+    } finally {
+      setConverting(false);
+    }
+  };
+
+  const ConvertModal = () => !convertModal ? null : (
+    <>
+      <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.4)', zIndex:500 }} onClick={() => setConvertModal(false)} />
+      <div style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:520, maxWidth:'95vw', background:'#fff', borderRadius:'10px', boxShadow:'0 8px 40px rgba(0,0,0,.2)', zIndex:501, overflow:'hidden' }}>
+        <div style={{ padding:'20px 24px', borderBottom:'1px solid #e9ecef', background:NAVY }}>
+          <h3 style={{ margin:0, fontSize:'16px', fontWeight:'600', color:'#fff' }}>Create Matter from Intake</h3>
+          <p style={{ margin:'4px 0 0', fontSize:'12px', color:'rgba(255,255,255,.65)' }}>Choose how to link this intake to a matter and contact</p>
+        </div>
+        <div style={{ padding:'20px 24px' }}>
+          {/* Option selector */}
+          {[
+            ['existing_both',                 'Link to existing contact + existing matter'],
+            ['existing_contact_new_matter',   'Link to existing contact + create new matter'],
+            ['new_both',                      'Create new contact & new matter from intake data'],
+          ].map(([val, label]) => (
+            <label key={val} style={{ display:'flex', alignItems:'flex-start', gap:'10px', marginBottom:'12px', cursor:'pointer' }}>
+              <input type="radio" value={val} checked={convertOption===val} onChange={() => setConvertOption(val)}
+                style={{ marginTop:'2px', accentColor:GOLD }} />
+              <span style={{ fontSize:'13px', color:NAVY, fontWeight:convertOption===val?'600':'400' }}>{label}</span>
+            </label>
+          ))}
+
+          <div style={{ borderTop:'1px solid #f1f3f5', marginTop:'4px', paddingTop:'16px', display:'grid', gap:'12px' }}>
+            {/* Contact selector (not shown for new_both since auto-created) */}
+            {convertOption !== 'new_both' && (
+              <div>
+                <label style={{ display:'block', fontSize:'12px', fontWeight:'600', color:'#555', marginBottom:'4px' }}>
+                  {convertOption === 'existing_both' ? 'Contact *' : 'Existing Contact'}
+                </label>
+                <select value={convertData.contact_id} onChange={e => setConvertData(p=>({...p,contact_id:e.target.value}))}
+                  style={{ width:'100%', padding:'9px 12px', border:'1.5px solid #dee2e6', borderRadius:'5px', fontSize:'13px', appearance:'none', outline:'none' }}>
+                  <option value="">— Select contact —</option>
+                  {contacts.map(c => <option key={c.id} value={c.id}>{c.first_name} {c.last_name}{c.company?` (${c.company})`:''}</option>)}
+                </select>
+              </div>
+            )}
+            {/* Existing matter selector (only for existing_both) */}
+            {convertOption === 'existing_both' && (
+              <div>
+                <label style={{ display:'block', fontSize:'12px', fontWeight:'600', color:'#555', marginBottom:'4px' }}>Existing Matter *</label>
+                <select value={convertData.matter_id} onChange={e => setConvertData(p=>({...p,matter_id:e.target.value}))}
+                  style={{ width:'100%', padding:'9px 12px', border:'1.5px solid #dee2e6', borderRadius:'5px', fontSize:'13px', appearance:'none', outline:'none' }}>
+                  <option value="">— Select matter —</option>
+                  {allMatters.map(m => <option key={m.id} value={m.id}>{m.matter_number} — {m.matter_name}</option>)}
+                </select>
+              </div>
+            )}
+            {/* New matter fields */}
+            {convertOption !== 'existing_both' && (
+              <>
+                <div>
+                  <label style={{ display:'block', fontSize:'12px', fontWeight:'600', color:'#555', marginBottom:'4px' }}>Matter Name *</label>
+                  <input value={convertData.matter_name} onChange={e => setConvertData(p=>({...p,matter_name:e.target.value}))}
+                    style={{ width:'100%', padding:'9px 12px', border:'1.5px solid #dee2e6', borderRadius:'5px', fontSize:'13px', outline:'none', boxSizing:'border-box' }}
+                    onFocus={e=>e.target.style.borderColor=GOLD} onBlur={e=>e.target.style.borderColor='#dee2e6'}
+                    placeholder="e.g. Smith v. Acme Corp" />
+                </div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
+                  <div>
+                    <label style={{ display:'block', fontSize:'12px', fontWeight:'600', color:'#555', marginBottom:'4px' }}>Practice Area</label>
+                    <input value={convertData.practice_area} onChange={e => setConvertData(p=>({...p,practice_area:e.target.value}))}
+                      style={{ width:'100%', padding:'9px 12px', border:'1.5px solid #dee2e6', borderRadius:'5px', fontSize:'13px', outline:'none', boxSizing:'border-box' }} />
+                  </div>
+                  <div>
+                    <label style={{ display:'block', fontSize:'12px', fontWeight:'600', color:'#555', marginBottom:'4px' }}>SOL Date</label>
+                    <input type="date" value={convertData.sol_date} onChange={e => setConvertData(p=>({...p,sol_date:e.target.value}))}
+                      style={{ width:'100%', padding:'9px 12px', border:'1.5px solid #dee2e6', borderRadius:'5px', fontSize:'13px', outline:'none', boxSizing:'border-box' }} />
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <div style={{ padding:'14px 24px', borderTop:'1px solid #e9ecef', display:'flex', gap:'10px', justifyContent:'flex-end' }}>
+          <button onClick={() => setConvertModal(false)} style={{ padding:'8px 18px', background:'transparent', border:'1px solid #dee2e6', borderRadius:'5px', fontSize:'13px', cursor:'pointer' }}>Cancel</button>
+          <button onClick={handleConvert} disabled={converting}
+            style={{ padding:'8px 22px', background:converting?'#d4b878':GOLD, border:'none', borderRadius:'5px', color:'#fff', fontSize:'13px', fontWeight:'600', cursor:converting?'not-allowed':'pointer' }}>
+            {converting ? 'Creating…' : 'Confirm'}
+          </button>
+        </div>
+      </div>
+    </>
+  );
+
   const Toast = () => toast ? (
     <div style={{ position: 'fixed', bottom: '28px', right: '28px', zIndex: 400,
       background: toast.type === 'error' ? '#c53030' : '#276749', color: '#fff',
@@ -233,21 +610,32 @@ export default function IntakeHub() {
                 {PA_ICONS[selectedArea]} Complete the intake script, then fill in the form
               </p>
             </div>
-            {/* Step tabs */}
-            <div style={{ display: 'flex', gap: '4px', background: '#f1f3f5', borderRadius: '8px', padding: '4px' }}>
-              {[
-                { id: 'script', label: '📋 Intake Script' },
-                { id: 'form',   label: '📝 Intake Form' },
-              ].map(t => (
-                <button key={t.id} onClick={() => setStep(t.id)} style={{
-                  padding: '7px 16px', borderRadius: '6px', border: 'none', fontSize: '13px',
-                  fontWeight: '500', cursor: 'pointer', fontFamily: 'Inter,sans-serif',
-                  transition: 'all .15s',
-                  background: step === t.id ? '#fff' : 'transparent',
-                  color:      step === t.id ? NAVY : '#6c757d',
-                  boxShadow:  step === t.id ? '0 1px 4px rgba(0,0,0,.1)' : 'none',
-                }}>{t.label}</button>
-              ))}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {/* Step tabs */}
+              <div style={{ display: 'flex', gap: '4px', background: '#f1f3f5', borderRadius: '8px', padding: '4px' }}>
+                {[
+                  { id: 'script', label: '📋 Intake Script' },
+                  { id: 'form',   label: '📝 Intake Form' },
+                ].map(t => (
+                  <button key={t.id} onClick={() => setStep(t.id)} style={{
+                    padding: '7px 16px', borderRadius: '6px', border: 'none', fontSize: '13px',
+                    fontWeight: '500', cursor: 'pointer', fontFamily: 'Inter,sans-serif',
+                    transition: 'all .15s',
+                    background: step === t.id ? '#fff' : 'transparent',
+                    color:      step === t.id ? NAVY : '#6c757d',
+                    boxShadow:  step === t.id ? '0 1px 4px rgba(0,0,0,.1)' : 'none',
+                  }}>{t.label}</button>
+                ))}
+              </div>
+              {user?.role === 'attorney' && editTemplates.length > 0 && (
+                <button onClick={() => setEditMode(true)}
+                  style={{ padding: '7px 14px', background: '#fff', border: `1px solid ${NAVY}`, borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', color: NAVY, fontFamily: 'Inter,sans-serif', display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f0f2f5'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit Script
+                </button>
+              )}
             </div>
           </div>
 
@@ -513,13 +901,39 @@ export default function IntakeHub() {
               </div>
 
               {activeIntakeId && (
-                <p style={{ fontSize: '12px', color: '#6c757d', marginTop: '10px' }}>
-                  ✓ Intake #{activeIntakeId} saved.
-                </p>
+                <div style={{ display:'flex', alignItems:'center', gap:'12px', marginTop:'10px', flexWrap:'wrap' }}>
+                  <p style={{ fontSize: '12px', color: '#6c757d', margin:0 }}>
+                    ✓ Intake #{activeIntakeId} saved.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setConvertOption('existing_contact_new_matter');
+                      setConvertData({
+                        contact_id: selectedContactId || '',
+                        matter_id: '',
+                        matter_name: formData.clientName ? `${formData.clientName} — ${selectedArea}` : selectedArea || '',
+                        practice_area: selectedArea || '',
+                        sol_date: formData.solDeadline || '',
+                      });
+                      axios.get('/api/matters').then(r => setAllMatters(r.data)).catch(()=>{});
+                      setConvertModal(true);
+                    }}
+                    style={{ padding:'6px 14px', background:GOLD, border:'none', borderRadius:'5px', color:'#fff', fontSize:'12px', fontWeight:'600', cursor:'pointer' }}>
+                    + Create Matter from Intake
+                  </button>
+                </div>
               )}
             </div>
           )}
         </div>
+        {editMode && editTemplates.length > 0 && (
+          <EditPanel
+            templates={editTemplates}
+            initialPracticeArea={selectedArea}
+            onClose={() => { setEditMode(false); reloadScript(); }}
+          />
+        )}
+        <ConvertModal />
         <Toast />
         <style>{`@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}`}</style>
       </Layout>
@@ -543,14 +957,25 @@ export default function IntakeHub() {
                 : 'Select a practice area to begin — script and intake form included'}
             </p>
           </div>
-          <button onClick={() => setView(view === 'list' ? 'grid' : 'list')}
-            style={{ padding: '9px 18px', background: '#f1f3f5', border: '1px solid #dee2e6',
-              borderRadius: '6px', fontSize: '13px', fontWeight: '500', cursor: 'pointer',
-              fontFamily: 'Inter,sans-serif', color: '#495057' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#e9ecef'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#f1f3f5'; }}>
-            {view === 'list' ? '← Practice Area Grid' : `View All Intakes (${intakes.length})`}
-          </button>
+          <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
+            {user?.role === 'attorney' && editTemplates.length > 0 && (
+              <button onClick={() => setEditMode(true)}
+                style={{ padding:'9px 16px', background:'#fff', border:`1px solid ${NAVY}`, borderRadius:'6px', fontSize:'13px', fontWeight:'600', cursor:'pointer', color:NAVY, fontFamily:'Inter,sans-serif', display:'flex', alignItems:'center', gap:'6px' }}
+                onMouseEnter={e=>e.currentTarget.style.background='#f0f2f5'}
+                onMouseLeave={e=>e.currentTarget.style.background='#fff'}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit Intake
+              </button>
+            )}
+            <button onClick={() => setView(view === 'list' ? 'grid' : 'list')}
+              style={{ padding: '9px 18px', background: '#f1f3f5', border: '1px solid #dee2e6',
+                borderRadius: '6px', fontSize: '13px', fontWeight: '500', cursor: 'pointer',
+                fontFamily: 'Inter,sans-serif', color: '#495057' }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#e9ecef'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#f1f3f5'; }}>
+              {view === 'list' ? '← Practice Area Grid' : `View All Intakes (${intakes.length})`}
+            </button>
+          </div>
         </div>
 
         {/* ── LIST VIEW ─────────────────────────────────────────── */}
@@ -640,6 +1065,9 @@ export default function IntakeHub() {
         )}
       </div>
 
+      {editMode && editTemplates.length > 0 && (
+        <EditPanel templates={editTemplates} onClose={() => setEditMode(false)} />
+      )}
       <Toast />
       <style>{`@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </Layout>

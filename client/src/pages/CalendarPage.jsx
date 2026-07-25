@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../components/Layout';
 import EventForm from '../components/EventForm';
@@ -215,6 +216,7 @@ function ListView({ events, onEventClick }) {
 
 // ── Main CalendarPage ────────────────────────────────────────────────────────
 export default function CalendarPage() {
+  const [searchParams] = useSearchParams();
   const [view,      setView]    = useState('month');
   const [cursor,    setCursor]  = useState(new Date());
   const [events,    setEvents]  = useState([]);
@@ -225,6 +227,10 @@ export default function CalendarPage() {
   const [toast,     setToast]   = useState(null);
   const [calendlyEvents, setCalendlyEvents] = useState([]);
   const [syncing,   setSyncing] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('new') === 'true') { setEdit(null); setDefDate(isoDate(new Date())); setForm(true); }
+  }, []);
 
   const showToast = (message, type='success') => { setToast({message,type}); setTimeout(()=>setToast(null),3500); };
 

@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../components/Layout';
 import ContactForm from '../components/ContactForm';
+import { useAuth } from '../context/AuthContext';
 
 const NAVY = '#1B2A4A';
 const GOLD = '#C9A84C';
@@ -48,7 +50,189 @@ const IconTrash = () => (
   </svg>
 );
 
+const fmtDate = (d) => d ? new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+
+function ContactDrawer({ contact, onClose, onEdit }) {
+  const panelRef = useRef(null);
+  const [visible, setVis] = useState(false);
+  const [tab, setTab] = useState('matters');
+  const [matters, setMatters] = useState([]);
+  const [docs, setDocs] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [activity, setActivity] = useState([]);
+  const [noteText, setNoteText] = useState('');
+  const [noteSaving, setNoteSaving] = useState(false);
+
+  useEffect(() => {
+    if (!contact) return;
+    setTab('matters'); setNoteText('');
+    setTimeout(() => setVis(true), 20);
+    loadAll();
+  }, [contact?.id]);
+
+  const loadAll = async () => {
+    if (!contact) return;
+    try {
+      const [mRes, dRes, nRes, aRes] = await Promise.all([
+        axios.get('/api/matters', { params: { contact_id: contact.id } }).catch(() => ({ data: [] })),
+        axios.get('/api/documents', { params: { contact_id: contact.id } }).catch(() => ({ data: [] })),
+        axios.get('/api/notes', { params: { contact_id: contact.id } }).catch(() => ({ data: [] })),
+        axios.get('/api/activity', { params: { contact_id: contact.id } }).catch(() => ({ data: [] })),
+      ]);
+      setMatters(mRes.data);
+      setDocs(dRes.data);
+      setNotes(nRes.data);
+      setActivity(aRes.data);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (!contact) return;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    const onClick = (e) => { if (panelRef.current && !panelRef.current.contains(e.target)) onClose(); };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('click', onClick);
+    return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('click', onClick); };
+  }, [contact, onClose]);
+
+  if (!contact) return null;
+
+  const addNote = async () => {
+    if (!noteText.trim()) return;
+    setNoteSaving(true);
+    try {
+      await axios.post('/api/notes', { content: noteText, contact_id: contact.id });
+      setNoteText('');
+      const { data } = await axios.get('/api/notes', { params: { contact_id: contact.id } });
+      setNotes(data);
+    } catch {}
+    finally { setNoteSaving(false); }
+  };
+
+  const TABS = [['matters','Matters'], ['documents','Documents'], ['notes','Notes'], ['activity','Activity']];
+
+  return (
+    <>
+      <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.25)', zIndex:200, opacity:visible?1:0, transition:'opacity .2s' }} />
+      <div ref={panelRef} style={{ position:'fixed', top:0, right:0, bottom:0, width:'480px', background:'#fff', zIndex:201, display:'flex', flexDirection:'column', boxShadow:'-8px 0 32px rgba(0,0,0,.15)', transform:visible?'translateX(0)':'translateX(100%)', transition:'transform .28s cubic-bezier(.4,0,.2,1)' }}>
+        {/* Header */}
+        <div style={{ padding:'20px 24px', borderBottom:'1px solid #e9ecef', flexShrink:0, background:NAVY }}>
+          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'4px' }}>
+            <div>
+              <h2 style={{ fontSize:'18px', fontWeight:'600', color:'#fff', margin:'0 0 2px', fontFamily:'Playfair Display,Georgia,serif' }}>
+                {contact.first_name} {contact.last_name}
+              </h2>
+              {contact.company && <div style={{ fontSize:'13px', color:'rgba(255,255,255,.7)' }}>{contact.company}</div>}
+            </div>
+            <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(255,255,255,.6)', padding:'4px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div style={{ display:'flex', gap:'16px', marginTop:'10px', fontSize:'12px', color:'rgba(255,255,255,.65)' }}>
+            {contact.email && <a href={`mailto:${contact.email}`} style={{ color:'rgba(255,255,255,.8)', textDecoration:'none' }}>{contact.email}</a>}
+            {contact.phone && <span>{contact.phone}</span>}
+          </div>
+          <div style={{ display:'flex', gap:'8px', marginTop:'12px' }}>
+            <button onClick={(e) => { e.stopPropagation(); onEdit(contact); }}
+              style={{ padding:'5px 14px', background:GOLD, border:'none', borderRadius:'5px', color:'#fff', fontSize:'12px', fontWeight:'600', cursor:'pointer' }}>
+              Edit
+            </button>
+          </div>
+        </div>
+        {/* Tabs */}
+        <div style={{ display:'flex', borderBottom:'1px solid #e9ecef', flexShrink:0 }}>
+          {TABS.map(([t,l]) => (
+            <button key={t} onClick={(e) => { e.stopPropagation(); setTab(t); }}
+              style={{ padding:'10px 16px', border:'none', background:'none', cursor:'pointer', fontSize:'12px', fontWeight:tab===t?'700':'400', color:tab===t?NAVY:'#6c757d', borderBottom:`2px solid ${tab===t?GOLD:'transparent'}`, marginBottom:'-1px', fontFamily:'Inter,sans-serif' }}>
+              {l}
+            </button>
+          ))}
+        </div>
+        {/* Body */}
+        <div style={{ flex:1, overflowY:'auto', padding:'18px 20px' }} onClick={e => e.stopPropagation()}>
+          {tab === 'matters' && (
+            matters.length === 0
+              ? <div style={{ textAlign:'center', padding:'32px', color:'#ced4da', fontSize:'13px' }}>No linked matters.</div>
+              : <div style={{ display:'grid', gap:'8px' }}>
+                  {matters.map(m => (
+                    <a key={m.id} href={`/matters/${m.id}`}
+                      style={{ display:'block', padding:'12px 14px', border:'1px solid #e9ecef', borderRadius:'7px', textDecoration:'none', background:'#fafbfc' }}
+                      onMouseEnter={e=>e.currentTarget.style.background='#f1f3f5'}
+                      onMouseLeave={e=>e.currentTarget.style.background='#fafbfc'}>
+                      <div style={{ fontSize:'13px', fontWeight:'600', color:NAVY }}>{m.matter_name}</div>
+                      <div style={{ fontSize:'11px', color:'#6c757d', marginTop:'2px' }}>{m.matter_number} · {m.practice_area?.replace(/_/g,' ')} · {m.status}</div>
+                    </a>
+                  ))}
+                </div>
+          )}
+          {tab === 'documents' && (
+            docs.length === 0
+              ? <div style={{ textAlign:'center', padding:'32px', color:'#ced4da', fontSize:'13px' }}>No documents linked to this contact.</div>
+              : <div style={{ display:'grid', gap:'8px' }}>
+                  {docs.map(d => (
+                    <div key={d.id} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px', border:'1px solid #e9ecef', borderRadius:'6px', background:'#fafbfc' }}>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div style={{ fontSize:'13px', fontWeight:'500', color:NAVY, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.document_name}</div>
+                        <div style={{ fontSize:'11px', color:'#6c757d' }}>{d.matter_name || 'No matter'} · {fmtDate(d.created_at)}</div>
+                      </div>
+                      <button onClick={() => window.open(`/api/documents/${d.id}/download`,'_blank')}
+                        style={{ background:'none', border:'1px solid #dee2e6', borderRadius:'4px', padding:'4px 8px', cursor:'pointer', color:'#6c757d', fontSize:'12px' }}>↓</button>
+                    </div>
+                  ))}
+                </div>
+          )}
+          {tab === 'notes' && (
+            <div>
+              <textarea value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Add a note…"
+                style={{ width:'100%', padding:'10px 12px', fontSize:'13px', border:'1.5px solid #dee2e6', borderRadius:'6px', outline:'none', resize:'vertical', minHeight:'72px', boxSizing:'border-box', fontFamily:'Inter,sans-serif', marginBottom:'8px' }}
+                onFocus={e=>e.target.style.borderColor=GOLD} onBlur={e=>e.target.style.borderColor='#dee2e6'} />
+              <div style={{ display:'flex', justifyContent:'flex-end', marginBottom:'14px' }}>
+                <button onClick={addNote} disabled={!noteText.trim()||noteSaving}
+                  style={{ padding:'6px 16px', background:GOLD, border:'none', borderRadius:'5px', color:'#fff', fontSize:'12px', fontWeight:'600', cursor:'pointer', opacity:!noteText.trim()?'.5':'1' }}>
+                  {noteSaving?'Saving…':'Add Note'}
+                </button>
+              </div>
+              {notes.length === 0
+                ? <div style={{ textAlign:'center', padding:'20px', color:'#ced4da', fontSize:'13px' }}>No notes yet.</div>
+                : <div style={{ display:'grid', gap:'8px' }}>
+                    {notes.map(n => (
+                      <div key={n.id} style={{ padding:'10px 12px', border:'1px solid #f1f3f5', borderRadius:'6px', background:'#fafbfc' }}>
+                        <div style={{ fontSize:'13px', color:NAVY, lineHeight:'1.6', whiteSpace:'pre-wrap' }}>{n.content}</div>
+                        <div style={{ fontSize:'11px', color:'#adb5bd', marginTop:'4px' }}>{n.author_name} · {fmtDate(n.created_at)}</div>
+                      </div>
+                    ))}
+                  </div>
+              }
+            </div>
+          )}
+          {tab === 'activity' && (
+            activity.length === 0
+              ? <div style={{ textAlign:'center', padding:'32px', color:'#ced4da', fontSize:'13px' }}>No activity recorded yet.</div>
+              : <div style={{ display:'grid', gap:'0' }}>
+                  {activity.map((ev, i) => (
+                    <div key={ev.id} style={{ display:'flex', gap:'10px', paddingBottom:'12px', marginBottom:'12px', borderBottom: i<activity.length-1?'1px solid #f1f3f5':'none' }}>
+                      <div style={{ width:'8px', height:'8px', borderRadius:'50%', background:GOLD, marginTop:'5px', flexShrink:0 }} />
+                      <div>
+                        <div style={{ fontSize:'13px', color:NAVY }}>{ev.description || ev.event_type.replace(/_/g,' ')}</div>
+                        <div style={{ fontSize:'11px', color:'#adb5bd', marginTop:'2px' }}>
+                          {ev.actor_name && `${ev.actor_name} · `}
+                          {new Date(ev.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function Contacts() {
+  const [searchParams] = useSearchParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -56,6 +240,11 @@ export default function Contacts() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [drawer, setDrawer] = useState(null);
+
+  useEffect(() => {
+    if (searchParams.get('new') === 'true') { setEditing(null); setFormOpen(true); }
+  }, []);
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState(null);
@@ -134,7 +323,8 @@ export default function Contacts() {
   };
 
   const openAdd = () => { setEditing(null); setFormOpen(true); };
-  const openEdit = (c) => { setEditing(c); setFormOpen(true); };
+  const openEdit = (c) => { setDrawer(null); setEditing(c); setFormOpen(true); };
+  const openDrawer = (c, e) => { e?.stopPropagation(); setDrawer(c); };
 
   const handleDelete = async (id) => {
     setDeleting(true);
@@ -309,14 +499,18 @@ export default function Contacts() {
                   return (
                     <tr
                       key={c.id}
+                      onClick={(e) => { if (!isConfirming) openDrawer(c, e); }}
                       style={{
                         borderBottom: i < contacts.length - 1 ? '1px solid #f1f3f5' : 'none',
-                        background: isConfirming ? '#fff5f5' : 'transparent',
+                        background: drawer?.id===c.id ? '#f0f4ff' : isConfirming ? '#fff5f5' : 'transparent',
                         opacity: muted ? 0.65 : 1,
                         transition: 'background 0.1s',
+                        cursor: isConfirming ? 'default' : 'pointer',
+                        outline: drawer?.id===c.id ? `2px solid ${GOLD}` : 'none',
+                        outlineOffset: '-2px',
                       }}
-                      onMouseEnter={(e) => { if (!isConfirming) e.currentTarget.style.background = '#fafbfc'; }}
-                      onMouseLeave={(e) => { if (!isConfirming) e.currentTarget.style.background = 'transparent'; }}
+                      onMouseEnter={(e) => { if (!isConfirming && drawer?.id!==c.id) e.currentTarget.style.background = '#fafbfc'; }}
+                      onMouseLeave={(e) => { if (!isConfirming && drawer?.id!==c.id) e.currentTarget.style.background = 'transparent'; }}
                     >
                       <td style={{ padding: '13px 16px', fontWeight: '500', color: muted ? '#6c757d' : NAVY, whiteSpace: 'nowrap' }}>
                         {c.last_name}, {c.first_name}
@@ -370,7 +564,7 @@ export default function Contacts() {
                             </button>
                           </div>
                         ) : (
-                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', opacity: 0 }} className="row-actions"
+                          <div onClick={e=>e.stopPropagation()} style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', opacity: 0 }} className="row-actions"
                             ref={(el) => {
                               if (el) {
                                 el.closest('tr').addEventListener('mouseenter', () => el.style.opacity = 1);
@@ -378,7 +572,7 @@ export default function Contacts() {
                               }
                             }}
                           >
-                            <button onClick={() => openEdit(c)} title="Edit" style={{
+                            <button onClick={(e) => { e.stopPropagation(); openEdit(c); }} title="Edit" style={{
                               background: 'none', border: '1px solid #dee2e6', borderRadius: '5px',
                               padding: '5px 8px', cursor: 'pointer', color: '#6c757d',
                               display: 'flex', alignItems: 'center', transition: 'all 0.15s',
@@ -388,7 +582,7 @@ export default function Contacts() {
                             >
                               <IconEdit />
                             </button>
-                            <button onClick={(e) => openMenu(e, c)} title="More options" style={{
+                            <button onClick={(e) => { e.stopPropagation(); openMenu(e, c); }} title="More options" style={{
                               background: 'none', border: '1px solid #dee2e6', borderRadius: '5px',
                               padding: '5px 8px', cursor: 'pointer', color: '#6c757d',
                               display: 'flex', alignItems: 'center', transition: 'all 0.15s',
@@ -399,7 +593,7 @@ export default function Contacts() {
                             >
                               ⋯
                             </button>
-                            <button onClick={() => setDeleteId(c.id)} title="Delete" style={{
+                            <button onClick={(e) => { e.stopPropagation(); setDeleteId(c.id); }} title="Delete" style={{
                               background: 'none', border: '1px solid #dee2e6', borderRadius: '5px',
                               padding: '5px 8px', cursor: 'pointer', color: '#6c757d',
                               display: 'flex', alignItems: 'center', transition: 'all 0.15s',
@@ -449,6 +643,13 @@ export default function Contacts() {
           )}
         </div>
       )}
+
+      {/* Contact Detail Drawer */}
+      <ContactDrawer
+        contact={drawer}
+        onClose={() => setDrawer(null)}
+        onEdit={openEdit}
+      />
 
       {/* Add/Edit form */}
       <ContactForm
