@@ -306,7 +306,7 @@ const COMMON_CLOSING = [
  *   One fee — a single link:
  *     paymentLink: 'https://app.practicepanther.com/Payment/OneLinkPayment/...'
  *
- *   Several fees — a labelled list. `label` is required (the client has to know
+ *   Several fees — a labeled list. `label` is required (the client has to know
  *   what each button charges for), `amount` and `note` are optional, and
  *   `whenAnswer` optionally ties an option to an intake answer so the right fee
  *   is pulled to the top and marked "Matches your answers":
@@ -526,7 +526,7 @@ export const PRACTICE_AREAS = [
     short: 'Contracts',
     blurb: 'Review, drafting, or negotiation of the contracts you provide — three tiers, from a single review to full negotiation.',
     icon: '§',
-    // The three OneLinks the firm sent were labelled "Contract Command (Tier 1)",
+    // The three OneLinks the firm sent were labeled "Contract Command (Tier 1)",
     // "Contract Review and Revise (Tier 2)", "Contract Draft and Deliver (Tier 3)" —
     // none of those names match a tier in the signed agreement, where "Contract
     // Command" is explicitly the $2,000 top tier, not $500. Resolved by trusting

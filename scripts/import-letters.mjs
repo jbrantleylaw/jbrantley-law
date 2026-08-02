@@ -146,7 +146,7 @@ const BOX = /^[☐☑▢□]\s*/;
 // Matches a checkbox that elects one of the two states the firm practices in,
 // however the sentence is phrased — "governing law ... is Georgia",
 // "petition will be filed in Texas", etc. Captures the state so a pair can be
-// recognised regardless of which section of the letter it appears in.
+// recognized regardless of which section of the letter it appears in.
 const STATE_ELECTION = /^(.*\b(?:is|in))\s+(Georgia|Texas)\s*$/i;
 
 function convert(paras, { areaSlug }) {

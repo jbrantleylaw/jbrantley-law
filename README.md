@@ -191,7 +191,7 @@ Name Change elects both the filing jurisdiction (Section 2) and the governing
 law (Section 11), in different wording. The importer collapses **each such
 pair independently**, keeping that section's own sentence and substituting
 only the state name, rather than merging every election in the document into
-one canned sentence. A pair is recognised by two adjacent checkboxes with the
+one canned sentence. A pair is recognized by two adjacent checkboxes with the
 same lead-in text and opposite states — regardless of exact phrasing — so a
 new agreement with this pattern needs no code change.
 
