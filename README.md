@@ -206,9 +206,19 @@ cannot creep into a legal document. The importer:
   signature and the audit record.
 
 Estate planning and trademark use a different agreement per package, chosen by
-the client's answer (`letterKeyField` on the area). Areas with no agreement on
-file yet — personal injury, family law, government contracting — fall back to
-the draft letters and still need yours.
+the client's answer (`letterKeyField` on the area).
+
+**Adult name change has no signed agreement on file yet** and is running on a
+draft. Drop the .docx into `letters/`, add it to `MAP` in
+`scripts/import-letters.mjs`, and run `npm run letters`.
+
+### Matters that are not on the portal
+
+Personal injury, family law other than an adult name change, and government
+contracting always start with a consultation, so they have no intake form. They
+are listed on the landing page as a route to a call — edit `CONSULT_ONLY` in
+[`public/data/practice-areas.mjs`](public/data/practice-areas.mjs) to change
+that list.
 
 ### Payment plan requests
 

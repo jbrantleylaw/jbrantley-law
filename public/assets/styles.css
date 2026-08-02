@@ -96,6 +96,12 @@ a { color: var(--gold); }
 .area-card p { color: var(--ink-soft); font-size: .93rem; margin: 0 0 16px; flex: 1; }
 .area-card .go { font-size: .85rem; font-weight: 600; color: var(--gold); letter-spacing: .02em; }
 
+.consult-note {
+  border-top: 1px solid var(--line); padding: 26px 0 4px;
+}
+.consult-note h3 { margin: 0 0 .4em; }
+.consult-note p { color: var(--ink-soft); font-size: .93rem; max-width: 72ch; margin: 0; }
+
 .steps-explainer {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px; padding: 28px 0 60px; border-top: 1px solid var(--line);

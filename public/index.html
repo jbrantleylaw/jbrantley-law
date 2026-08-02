@@ -29,6 +29,8 @@
 
     <nav class="area-grid" id="areaGrid" aria-label="Practice areas"></nav>
 
+    <section class="consult-note" id="consultNote"></section>
+
     <section class="steps-explainer">
       <div>
         <div class="n">1</div>
@@ -61,7 +63,7 @@
   </footer>
 
   <script type="module">
-    import { PRACTICE_AREAS, FIRM } from '/data/practice-areas.mjs';
+    import { PRACTICE_AREAS, FIRM, CONSULT_ONLY } from '/data/practice-areas.mjs';
 
     const grid = document.getElementById('areaGrid');
     grid.innerHTML = PRACTICE_AREAS.map((a) => `
@@ -71,6 +73,19 @@
         <p>${a.blurb}</p>
         <span class="go">Start intake &rarr;</span>
       </a>`).join('');
+
+    // Matters that never start with a form.
+    const consultTarget = FIRM.consultUrl
+      ? `<a href="${FIRM.consultUrl}" target="_blank" rel="noopener">schedule a consultation</a>`
+      : `<a href="mailto:${FIRM.email}">email the firm</a>`;
+    document.getElementById('consultNote').innerHTML = `
+      <h3>Looking for something else?</h3>
+      <p>
+        ${CONSULT_ONLY.map((c) => `<strong>${c}</strong>`).join(', ')} —
+        these matters start with a conversation rather than a form, because the firm needs to
+        understand the facts before it can tell you what it would cost or whether it is the right
+        fit. Please ${consultTarget} and Attorney Brantley will speak with you directly.
+      </p>`;
 
     const contact = [
       FIRM.name,

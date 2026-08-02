@@ -389,14 +389,14 @@ export const LETTERS = {
     },
     {
       "heading": "Section 10. Governing Law",
-      "body": []
+      "body": [
+        "This Agreement, and the underlying engagement, are governed by the laws of the State of Texas, without regard to conflict of law principles. Copyright registration itself is governed exclusively by federal law, including the Copyright Act, and by the rules and regulations of the United States Copyright Office. Because this is a federal matter, Client may reside in any state, and this engagement is not limited to residents of Texas or Georgia."
+      ]
     },
     {
       "heading": "Section 11. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
-        "[ ] Client's state of residence and governing law for this engagement is Georgia",
-        "[ ] Client's state of residence and governing law for this engagement is Texas"
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
       ]
     }
   ],

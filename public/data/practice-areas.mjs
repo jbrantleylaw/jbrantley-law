@@ -87,6 +87,17 @@ export function outOfStateMessage(area) {
 }
 
 /* ---------------------------------------------------------------------------
+ * Matters the firm takes, but never through self-service intake. These always
+ * start with a consultation, so they are listed on the landing page as a route
+ * to a call rather than as an intake form.
+ * ------------------------------------------------------------------------- */
+export const CONSULT_ONLY = [
+  'Personal injury',
+  'Family law (other than an adult name change)',
+  'Government contracting',
+];
+
+/* ---------------------------------------------------------------------------
  * Screen 1 — contact information. Shared by every practice area.
  * ------------------------------------------------------------------------- */
 export const CONTACT_FIELDS = [
@@ -673,157 +684,74 @@ export const PRACTICE_AREAS = [
 
   /* ======================================================================= */
   {
-    slug: 'government-contracting',
-    name: 'Government Contracting',
-    short: 'Government Contracting',
-    blurb: 'Registration, compliance, teaming, bid protests, and claims — from a former federal attorney.',
-    icon: '★',
-    paymentLink: '',
-    feeSummary:
-      'This matter is billed at the firm\'s hourly rate of $__________ per hour in one-tenth-hour increments, against an advance fee deposit of $__________ paid before work begins. The deposit is held in the firm\'s trust account and applied to fees and costs as they are earned or incurred. When the balance falls below $__________ you agree to replenish it to the original amount within ten (10) days of the firm\'s request. Any unearned balance is refunded when the matter closes.',
-    questions: [
+    slug: 'name-change',
+    name: 'Adult Name Change',
+    short: 'Name Change',
+    blurb: 'An uncontested adult name change, filed in your county of residence in Texas or Georgia.',
+    icon: '✎',
+    // TODO: confirm the flat fee, and add it to `amount` below.
+    paymentOptions: [
       {
-        id: 'gov_need',
-        label: 'What do you need help with?',
-        type: 'radio',
-        required: true,
-        options: [
-          'SAM.gov registration and representations',
-          'Small business or socioeconomic certification (8(a), WOSB, SDVOSB, HUBZone)',
-          'Reviewing a solicitation or RFP before bidding',
-          'Teaming agreement, joint venture, or subcontract',
-          'Bid protest',
-          'Contract claim, REA, or dispute',
-          'Compliance question (FAR / DFARS / CMMC / labor standards)',
-          'Termination or cure notice received',
-          'Other',
-        ],
+        label: 'Adult name change',
+        amount: '',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/8169a29d-ebab-4c80-ac73-c26e0dfd8f91',
       },
-      { id: 'gov_need_other', label: 'Describe what you need', type: 'text', required: true, showIf: { field: 'gov_need', equals: 'Other' } },
-      { id: 'agency', label: 'Which agency or prime contractor is involved?', type: 'text', required: true },
-      { id: 'solicitation_no', label: 'Solicitation or contract number, if you have one', type: 'text' },
-      { id: 'contract_value', label: 'Approximate contract or bid value', type: 'text', required: true },
-      {
-        id: 'protest_deadline',
-        label: 'Is there a protest, claim, or response deadline?',
-        type: 'radio',
-        required: true,
-        options: ['Yes — and it is within 10 days', 'Yes — more than 10 days out', 'No', 'I do not know'],
-        help: 'Bid protest deadlines can be as short as 5 or 10 days and cannot be extended. If yours is close, call the firm at once rather than waiting on this form.',
-      },
-      { id: 'business_size', label: 'Business size and any socioeconomic status', type: 'text', required: true, placeholder: 'Small business, WOSB, SDVOSB, 8(a), none…' },
-      { id: 'cage_uei', label: 'UEI and CAGE code, if registered', type: 'text' },
-      { id: 'gov_background', label: 'Tell us what happened', type: 'textarea', required: true, help: 'The sequence of events and any dates on official notices.' },
     ],
+    feeSummary:
+      'The flat fee for this matter is stated in the agreement below and is payable in full before work '
+      + 'begins. It does not include the court filing fee, the cost of fingerprinting or a criminal history '
+      + 'check where the court requires one, publication costs, or the cost of certified copies of the final '
+      + 'order, all of which are paid to the court or third parties and are your responsibility.',
+    questions: [
+      { id: 'current_name', label: 'Your current full legal name', type: 'text', required: true, help: 'Exactly as it appears on your birth certificate or current government ID.' },
+      { id: 'desired_name', label: 'The full name you want going forward', type: 'text', required: true },
+      { id: 'reason', label: 'Why are you changing your name?', type: 'textarea', required: true, help: 'A short explanation is enough. The court asks for the reason, and it is almost always granted.' },
+      { id: 'county', label: 'County you live in', type: 'text', required: true, help: 'The petition is filed where you reside.' },
+      { id: 'residency_length', label: 'How long have you lived in that county?', type: 'text', required: true },
+      { id: 'birth_details', label: 'Date and place of birth', type: 'text', required: true, placeholder: 'March 4, 1990 — Bexar County, Texas' },
+      {
+        id: 'criminal_history',
+        label: 'Have you ever been arrested, charged, or convicted of any offense?',
+        type: 'radio',
+        required: true,
+        options: ['No', 'Yes', 'I am not sure'],
+        help: 'Courts run a criminal history check on every adult name change. Telling the firm up front '
+          + 'is far better than the court finding it — most records do not prevent a name change, but a '
+          + 'surprise can.',
+      },
+      { id: 'criminal_detail', label: 'Please describe', type: 'textarea', required: true, showIf: { field: 'criminal_history', equals: 'Yes' } },
+      {
+        id: 'registered_offender',
+        label: 'Are you required to register as a sex offender?',
+        type: 'radio',
+        required: true,
+        options: ['No', 'Yes'],
+        help: 'This changes the procedure and the notice the court requires, so the firm has to ask.',
+      },
+      {
+        id: 'name_change_purpose',
+        label: 'Is anyone likely to object, or is this connected to a pending case?',
+        type: 'textarea',
+        help: 'For example a pending divorce, a creditor dispute, or a bankruptcy.',
+      },
+    ],
+    // TODO: no signed agreement on file for this service yet. Drop the Word
+    // agreement into ./letters, add it to MAP in scripts/import-letters.mjs,
+    // and run `npm run letters`. Until then this draft is used.
     letter: [
       {
         heading: '1. Scope of Representation',
         body: [
-          'You have asked the firm to represent you in connection with a government contracting matter involving {{answers.agency}}, specifically: {{answers.gov_need}}.',
-          'The representation includes reviewing the solicitation, contract, and correspondence you provide; advising you on the applicable FAR, DFARS, and agency-specific requirements; and preparing the filings, agreements, or responses the work requires.',
-          'The representation does not include preparing your technical or price proposal, acting as your registered agent, performing accounting or DCAA-compliant cost work, or representing you before any tribunal other than as expressly agreed in writing.',
+          'You have asked the firm to represent you in an uncontested adult name change, changing your name from {{answers.current_name}} to {{answers.desired_name}}, to be filed in {{answers.county}}.',
+          'The representation includes preparing and filing the petition, arranging the criminal history check the court requires, communicating with the court coordinator, preparing the order for the judge\'s signature, and appearing with you at the hearing if the court holds one.',
+          'It does not include updating your name with the Social Security Administration, the DMV, passport services, banks, or any other institution after the order is signed; contested proceedings; a name change for a minor; or any related family law matter.',
         ],
       },
       {
-        heading: '2. Deadlines Are Jurisdictional',
+        heading: '2. What the Court Decides',
         body: [
-          'Government contracting deadlines are unforgiving. A GAO bid protest generally must be filed within ten (10) days of when the basis of protest was known or should have been known, and a protest challenging a solicitation defect must be filed before the proposal due date. Claims under the Contract Disputes Act have their own limits, as do appeals to the Boards of Contract Appeals and the Court of Federal Claims. Missing one of these deadlines almost always ends the matter, regardless of the merits.',
-          'The firm can only meet a deadline it knows about and has the documents to address. You agree to give the firm every notice, letter, and email you receive on this matter immediately, and to tell the firm at once of any date-stamped communication from the agency or prime contractor.',
-        ],
-      },
-      {
-        heading: '3. Certifications and Accuracy',
-        body: [
-          'Representations and certifications made to the federal government — in SAM.gov, in a proposal, in a size or socioeconomic self-certification, or in a claim — carry criminal and civil exposure under the False Claims Act and related statutes if they are inaccurate. The firm relies entirely on the accuracy of the information you provide and cannot independently verify it. The firm will not submit, and will not assist in submitting, a certification it has reason to believe is false.',
-        ],
-      },
-    ],
-  },
-
-  /* ======================================================================= */
-  {
-    slug: 'personal-injury',
-    name: 'Personal Injury',
-    short: 'Personal Injury',
-    blurb: 'Injured through someone else\'s negligence? No fee unless the firm recovers for you.',
-    icon: '✚',
-    paymentLink: '',
-    feeSummary:
-      'This matter is handled on a contingency fee basis. You owe no attorney fee unless the firm obtains a recovery for you. If there is a recovery, the firm\'s fee is thirty-three and one-third percent (33 1/3%) of the gross recovery if the matter resolves before a lawsuit is filed, and forty percent (40%) of the gross recovery if it resolves after a lawsuit is filed. Case expenses advanced by the firm are reimbursed out of the recovery in addition to the fee. If there is no recovery, you owe no attorney fee and, at the firm\'s discretion, no reimbursement of advanced expenses. A separate contingency fee contract complying with the applicable state rules will be provided for your signature; where its terms differ from this letter, that contract controls.',
-    questions: [
-      {
-        id: 'injury_type',
-        label: 'What kind of incident?',
-        type: 'radio',
-        required: true,
-        options: ['Motor vehicle accident', 'Commercial truck accident', 'Slip, trip, or fall', 'Dog bite', 'Injury on someone\'s property', 'Other'],
-      },
-      { id: 'injury_type_other', label: 'Describe the incident type', type: 'text', required: true, showIf: { field: 'injury_type', equals: 'Other' } },
-      { id: 'incident_date', label: 'Date of the incident', type: 'date', required: true, help: 'The statute of limitations runs from this date — usually two years in Texas and Georgia. If yours is close, call the firm rather than waiting.' },
-      { id: 'incident_location', label: 'Where did it happen?', type: 'text', required: true, placeholder: 'City and state, and the intersection or address if you know it' },
-      { id: 'incident_description', label: 'Tell us what happened', type: 'textarea', required: true, help: 'In your own words. Include what you were doing, what the other party did, and the weather or conditions if they mattered.' },
-      {
-        id: 'fault',
-        label: 'Were you cited or told you were at fault?',
-        type: 'radio',
-        required: true,
-        options: ['No', 'Yes', 'Partially', 'I do not know'],
-      },
-      {
-        id: 'police_report',
-        label: 'Was there a police report or incident report?',
-        type: 'radio',
-        required: true,
-        options: ['Yes', 'No', 'I do not know'],
-      },
-      { id: 'injuries', label: 'What injuries did you suffer?', type: 'textarea', required: true },
-      {
-        id: 'treatment',
-        label: 'Have you received medical treatment?',
-        type: 'radio',
-        required: true,
-        options: ['Yes, and I am still treating', 'Yes, but I have finished treatment', 'I went to the ER only', 'Not yet'],
-      },
-      { id: 'providers', label: 'Which providers have you seen?', type: 'textarea', help: 'Hospital, urgent care, chiropractor, orthopedist — names are enough.' },
-      { id: 'insurance', label: 'Your auto or health insurance carrier', type: 'text' },
-      { id: 'other_insurance', label: 'The other party\'s insurance carrier, if you know it', type: 'text' },
-      {
-        id: 'adjuster_contact',
-        label: 'Has an insurance adjuster contacted you?',
-        type: 'radio',
-        required: true,
-        options: ['No', 'Yes, but I have not given a statement', 'Yes, and I gave a recorded statement', 'Yes, and they made an offer'],
-      },
-      { id: 'lost_wages', label: 'Have you missed work?', type: 'textarea', help: 'How much time, and your approximate rate of pay.' },
-    ],
-    letter: [
-      {
-        heading: '1. Scope of Representation',
-        body: [
-          'You have asked the firm to represent you in connection with injuries you sustained on {{answers.incident_date}} at {{answers.incident_location}} arising out of a {{answers.injury_type}}.',
-          'The representation includes investigating the incident, obtaining the police or incident report and your medical records and bills, notifying the responsible parties and their insurers of the firm\'s representation, evaluating your claim, and negotiating with the insurers toward a settlement.',
-          'The representation does not include filing a lawsuit or trying the case unless you and the firm agree in writing to proceed, and it does not include any appeal, any workers\' compensation claim, any property damage claim, any criminal matter arising from the incident, or any claim for a person other than you.',
-        ],
-      },
-      {
-        heading: '2. Deadlines, Liens, and Your Bills',
-        body: [
-          'Every personal injury claim has a statute of limitations — generally two (2) years from the date of injury in both Texas and Georgia, with important exceptions that can make it much shorter, including claims against a governmental entity, which may require formal notice within months. If the deadline passes without a lawsuit on file, the claim is gone permanently.',
-          'Health insurers, government programs such as Medicare and Medicaid, hospitals, and some providers may assert liens or subrogation rights against your recovery. These must be resolved before funds are disbursed to you, and they reduce what you receive. The firm will identify and work to reduce known liens, but you remain responsible for the underlying obligations.',
-          'You remain responsible for your medical bills as they come due. Treatment decisions are yours and your doctors\' — the firm does not direct your medical care and does not tell you where to treat.',
-        ],
-      },
-      {
-        heading: '3. Talking to Insurers and About the Case',
-        body: [
-          'Once this agreement is signed, refer all adjusters, investigators, and defense representatives to the firm and do not give a recorded statement, sign any authorization or release, or accept any settlement offer without speaking to the firm first.',
-          'Do not post about the incident, your injuries, your activities, or this case on social media. Insurers routinely search for and use those posts, and an innocent photograph can be used to argue you were not hurt.',
-        ],
-      },
-      {
-        heading: '4. Settlement Authority',
-        body: [
-          'No case will be settled without your approval. The firm will present every offer to you along with its recommendation, and the decision to accept or reject is yours alone. Before you accept, the firm will give you a written statement showing the gross recovery, the attorney fee, each expense, each lien or medical balance to be paid, and the net amount you will receive.',
+          'A name change is granted by a judge, not by the firm. Courts in Texas and Georgia grant uncontested adult name changes as a matter of course where the petition is in order and the criminal history check raises nothing, but the decision is the court\'s and the firm cannot guarantee it.',
+          'You must tell the firm about any arrest, charge, or conviction, and about any pending case. The court will find these regardless, and an accurate petition is the difference between a routine hearing and a denied one.',
         ],
       },
     ],
@@ -958,104 +886,6 @@ export const PRACTICE_AREAS = [
     ],
   },
 
-  /* ======================================================================= */
-  {
-    slug: 'family-law',
-    name: 'Family Law',
-    short: 'Family Law',
-    blurb: 'Low-conflict, forward-looking representation in select family matters.',
-    icon: '♡',
-    paymentOptions: [
-      // Only offered to clients who chose this matter type — a divorce client
-      // must never be shown the name-change fee.
-      {
-        label: 'Adult name change',
-        amount: '',   // TODO: confirm the flat fee
-        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/8169a29d-ebab-4c80-ac73-c26e0dfd8f91',
-        whenAnswer: { field: 'family_matter', equals: 'Adult name change' },
-      },
-    ],
-    feeSummary:
-      'This matter is billed at the firm\'s hourly rate of $__________ per hour in one-tenth-hour increments, against an advance fee deposit of $__________ paid before work begins. The deposit is held in the firm\'s trust account and applied to fees and costs as they are earned or incurred. When the balance falls below $__________ you agree to replenish it to the original amount within ten (10) days of the firm\'s request. Any unearned balance is refunded when the matter closes. The total cost of a family law matter depends heavily on how much the other side contests, which no attorney can predict or control.',
-    questions: [
-      {
-        id: 'family_matter',
-        label: 'What kind of matter is this?',
-        type: 'radio',
-        required: true,
-        options: [
-          'Uncontested divorce',
-          'Contested divorce',
-          'Child custody or visitation',
-          'Child support (establish or modify)',
-          'Modification of an existing order',
-          'Enforcement of an existing order',
-          'Prenuptial or postnuptial agreement',
-          'Adoption',
-          'Adult name change',
-          'Other',
-        ],
-      },
-      { id: 'family_matter_other', label: 'Describe the matter', type: 'text', required: true, showIf: { field: 'family_matter', equals: 'Other' } },
-      { id: 'other_party', label: 'Other party\'s full legal name', type: 'text', required: true },
-      {
-        id: 'case_filed',
-        label: 'Has anything been filed with a court?',
-        type: 'radio',
-        required: true,
-        options: ['No', 'Yes — I filed', 'Yes — the other party filed', 'I do not know'],
-      },
-      { id: 'cause_number', label: 'Cause number and county, if a case is filed', type: 'text', showIf: { field: 'case_filed', equals: 'Yes — the other party filed' } },
-      { id: 'county', label: 'County and state where you live', type: 'text', required: true },
-      { id: 'residency_length', label: 'How long have you lived there?', type: 'text', required: true, help: 'Residency requirements affect where a case can be filed.' },
-      {
-        id: 'children_involved',
-        label: 'Are children involved?',
-        type: 'radio',
-        required: true,
-        options: ['No', 'Yes'],
-      },
-      { id: 'children_detail', label: 'Children\'s first names and ages', type: 'textarea', required: true, showIf: { field: 'children_involved', equals: 'Yes' } },
-      { id: 'current_arrangement', label: 'What is the current arrangement?', type: 'textarea', showIf: { field: 'children_involved', equals: 'Yes' }, help: 'Where the children live now and how time is currently divided.' },
-      {
-        id: 'safety_concern',
-        label: 'Are there any safety concerns, protective orders, or CPS involvement?',
-        type: 'radio',
-        required: true,
-        options: ['No', 'Yes'],
-        help: 'If you are in immediate danger, call 911. The National Domestic Violence Hotline is 1-800-799-7233.',
-      },
-      { id: 'safety_detail', label: 'Please describe', type: 'textarea', required: true, showIf: { field: 'safety_concern', equals: 'Yes' } },
-      { id: 'property', label: 'Major assets and debts', type: 'textarea', help: 'House, retirement accounts, vehicles, business interests, significant debts.' },
-      { id: 'goals', label: 'What outcome are you hoping for?', type: 'textarea', required: true },
-    ],
-    letter: [
-      {
-        heading: '1. Scope of Representation',
-        body: [
-          'You have asked the firm to represent you in a family law matter involving {{answers.other_party}} in {{answers.county}}, specifically: {{answers.family_matter}}.',
-          'The representation includes advising you on your rights and obligations, preparing and filing the necessary pleadings, conducting discovery appropriate to the matter, negotiating toward an agreed resolution, and appearing on your behalf at hearings in the trial court in that matter.',
-          'The representation does not include any appeal, any enforcement or modification brought after this matter concludes, any bankruptcy, criminal, or protective-order proceeding, the preparation of a qualified domestic relations order (QDRO), or the preparation or recording of deeds, unless separately agreed in writing.',
-        ],
-      },
-      {
-        heading: '2. What the Firm Cannot Promise',
-        body: [
-          'The firm cannot predict or guarantee a custody outcome, a property division, a support amount, or how long the matter will take. Those decisions rest with the court or with the parties\' agreement, and they turn on facts and on judicial discretion.',
-          'The cost of a family law matter is driven largely by the other side\'s conduct. A matter that could resolve in weeks can take a year if the other party contests every issue. Any estimate the firm gives you is an estimate, not a cap.',
-          'The firm represents you and not your children. Where the court appoints an amicus attorney or guardian ad litem for the children, that attorney is independent of the firm and their fees are an additional cost.',
-        ],
-      },
-      {
-        heading: '3. Your Conduct During the Case',
-        body: [
-          'What you do during the case matters as much as what the firm files. You agree not to discuss the case with or in front of the children, not to disparage the other party to them, and not to post about the case, the other party, or your personal life on social media. Courts see these posts, and they are routinely used as evidence.',
-          'Follow every existing court order exactly, even one you believe is unfair, until it is changed. Violating an order damages your position far more than the order does.',
-          'Tell the firm the bad facts. The firm can almost always address a difficult fact it knows about in advance; it can rarely repair one it first hears from opposing counsel.',
-        ],
-      },
-    ],
-  },
 ];
 
 /* ------------------------------------------------------------------------ */
