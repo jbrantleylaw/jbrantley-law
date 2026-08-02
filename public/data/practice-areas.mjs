@@ -130,11 +130,43 @@ export const COMMON_QUESTIONS = [
     showIf: { field: 'prior_counsel', equals: 'Yes' },
   },
   {
+    id: 'military_affiliation',
+    label: 'Are you part of the military community?',
+    type: 'radio',
+    required: true,
+    options: [
+      'Active duty',
+      'Reserve or National Guard',
+      'Veteran',
+      'Military spouse or dependent',
+      'Gold Star family',
+      'No',
+    ],
+    help: 'The firm supports the military community with reduced fee services — Attorney Brantley is a military spouse. '
+      + 'Supporting documentation will need to be provided before an invoice is issued.',
+  },
+  {
     id: 'anything_else',
     label: 'Anything else you want the attorney to know before your consultation?',
     type: 'textarea',
   },
 ];
+
+/* ---------------------------------------------------------------------------
+ * Shown on the payment screen to anyone who identified as military, so they
+ * know not to pay a standard fee before the reduced fee has been applied.
+ * The question above is `military_affiliation`; "No" is the only answer that
+ * does not trigger this.
+ * ------------------------------------------------------------------------- */
+export const MILITARY_NOTE = {
+  heading: 'Military and veteran families',
+  body:
+    'Attorney Brantley is a military spouse, and the firm offers reduced fee services to the '
+    + 'military community. Supporting documentation — a military ID, LES, DD-214, or dependent ID — '
+    + 'must be provided before an invoice is issued. If you would like a reduced fee applied to your '
+    + 'matter, you can wait for your invoice rather than paying a standard fee below. Thank you for '
+    + 'your service.',
+};
 
 /* ---------------------------------------------------------------------------
  * The opening of every engagement letter, above the numbered sections.

@@ -152,6 +152,25 @@ break a signed or tokenised URL.
 While a `paymentLink` is empty, that practice area tells the client an invoice
 will follow by email — so you can launch before every link exists.
 
+### Military and veteran clients
+
+Every intake asks *"Are you part of the military community?"* (active duty,
+Reserve or Guard, veteran, military spouse or dependent, Gold Star family, or
+No). Any answer other than **No**:
+
+- shows the reduced-fee note on the payment screen, above the fee buttons, so a
+  military client does not pay a standard fee before the reduction is applied;
+- adds `[Military]` to the subject line of the email you receive;
+- puts a highlighted callout at the top of that email reminding you to collect
+  supporting documentation before issuing an invoice.
+
+The answer is also on the intake page of the signed PDF, so it is in the file
+permanently. Edit the wording in `MILITARY_NOTE` in
+[`public/data/practice-areas.mjs`](public/data/practice-areas.mjs).
+
+It is asked during intake rather than at checkout on purpose: it affects the
+fee, so it needs to be on record before the fee is settled.
+
 ### Payment plan requests
 
 Under the payment buttons, every client sees *"Need to discuss a payment plan?"*

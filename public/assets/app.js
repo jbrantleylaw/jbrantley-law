@@ -1,7 +1,7 @@
 /**
  * Intake wizard: contact -> matter questions -> read & sign -> pay.
  */
-import { FIRM, getArea, questionsFor, CONTACT_FIELDS, isVisible } from '/data/practice-areas.mjs';
+import { FIRM, MILITARY_NOTE, getArea, questionsFor, CONTACT_FIELDS, isVisible } from '/data/practice-areas.mjs';
 import { buildLetter, formatDate, signerName } from '/data/letter.mjs';
 import { SignaturePad } from '/assets/signature-pad.js';
 
@@ -520,9 +520,24 @@ function init(area) {
     });
   }
 
+  /** True unless they answered "No" (or skipped the question). */
+  function isMilitary() {
+    const v = state.answers.military_affiliation;
+    return Boolean(v) && v !== 'No';
+  }
+
+  function renderMilitaryNote(box) {
+    if (!isMilitary()) return;
+    const note = el('div', 'military-note');
+    note.appendChild(el('h4', '', MILITARY_NOTE.heading));
+    note.appendChild(el('p', '', MILITARY_NOTE.body));
+    box.appendChild(note);
+  }
+
   function renderPayBox(data) {
     const box = document.getElementById('payBox');
     box.replaceChildren();
+    renderMilitaryNote(box);
 
     // An option tied to an answer is offered only to the clients it applies to.
     // Options with no `whenAnswer` are offered to everyone.

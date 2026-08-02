@@ -26,9 +26,27 @@ function contactRows(contact) {
   ].filter(([, v]) => v && String(v).trim());
 }
 
+/**
+ * Called out at the top of the email rather than left buried in the answers:
+ * it changes the fee and requires documentation before an invoice goes out.
+ */
+function militaryBanner(answers) {
+  const status = answers?.military_affiliation;
+  if (!status || status === 'No') return '';
+  return `
+      <div style="margin:20px 0 0;padding:14px 16px;background:#f3ecdd;border-left:4px solid #16263c;border-radius:6px;">
+        <div style="font:600 12px/1 -apple-system,Segoe UI,Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#16263c;">Military — reduced fee</div>
+        <div style="margin-top:6px;font:14px/1.55 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
+          Client identified as <strong style="color:#16263c;">${escapeHtml(status)}</strong>.
+          Collect supporting documentation before issuing an invoice.
+        </div>
+      </div>`;
+}
+
 export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymentOptions = [] }) {
   const name = clientOfRecord(contact);
-  const subject = `${name} — ${area.name}`;
+  const flagged = answers?.military_affiliation && answers.military_affiliation !== 'No';
+  const subject = `${name} — ${area.name}${flagged ? ' [Military]' : ''}`;
 
   const row = (label, value) => `
     <tr>
@@ -55,6 +73,7 @@ export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymen
         ${escapeHtml(area.name)} engagement letter. The signed PDF is attached, with the intake
         answers on the last page.
       </p>
+      ${militaryBanner(answers)}
 
       ${section('Contact', contactRows(contact).map(([l, v]) => row(l, v)).join(''))}
       ${section('Intake answers', answerPairs(area, answers).map((p) => row(p.label, p.value)).join(''))}
@@ -74,9 +93,15 @@ export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymen
   </div>
 </div>`;
 
+  const militaryStatus = answers?.military_affiliation;
+  const militaryLine = militaryStatus && militaryStatus !== 'No'
+    ? [`** MILITARY — REDUCED FEE: client identified as ${militaryStatus}. Collect supporting documentation before issuing an invoice. **`, '']
+    : [];
+
   const text = [
     `New signed engagement — ${area.name}`,
     '',
+    ...militaryLine,
     ...contactRows(contact).map(([l, v]) => `${l}: ${v}`),
     '',
     'INTAKE ANSWERS',
