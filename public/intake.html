@@ -177,9 +177,14 @@
         relationship begins when the firm has completed a conflicts check, countersigned your
         engagement agreement, and received any required payment.
       </p>
+      <p id="footerOther"></p>
     </div>
   </footer>
 
+  <script type="module">
+    import { otherServiceMessage } from '/data/practice-areas.mjs';
+    document.getElementById('footerOther').innerHTML = otherServiceMessage();
+  </script>
   <script type="module" src="/assets/app.js"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@ import {
   questionsFor, letterSectionsFor,
 } from '../public/data/practice-areas.mjs';
 import { buildContext, paymentChoicesFor } from '../public/data/letter.mjs';
+import { LETTERS } from '../public/data/letters.generated.mjs';
 
 const problems = [];
 const notes = [];
@@ -29,7 +30,24 @@ for (const area of PRACTICE_AREAS) {
   for (const key of ['name', 'short', 'blurb', 'feeSummary']) {
     if (!area[key]) fail(`${where} missing "${key}".`);
   }
-  if (!Array.isArray(area.letter) || area.letter.length === 0) fail(`${where} has no letter sections.`);
+  // Every reachable letter, not just the draft fallback: an area with
+  // letterKeyField shows a different signed agreement per answer, and each one
+  // ships to a real client. A blank answer set alone would only ever check the
+  // draft fallback and never notice a mistake in an imported .docx.
+  const importedKeys = Object.keys(LETTERS).filter((k) => k.startsWith(`${area.slug}:`));
+  const selections = importedKeys.length
+    ? importedKeys.map((k) => {
+      const suffix = k.slice(area.slug.length + 1);
+      return suffix === 'default' ? {} : { [area.letterKeyField]: suffix };
+    })
+    : [{}]; // no imported agreement at all: check the draft fallback only
+
+  for (const answers of selections) {
+    const sections = letterSectionsFor(area, answers);
+    if (!Array.isArray(sections) || sections.length === 0) {
+      fail(`${where} has no letter sections for ${JSON.stringify(answers)}.`);
+    }
+  }
 
   const ids = new Set();
   const all = questionsFor(area);
@@ -82,26 +100,32 @@ for (const area of PRACTICE_AREAS) {
   const dupe = urls.find((u, i) => urls.indexOf(u) !== i);
   if (dupe) fail(`${where} uses the same payment link for two options — one of them is probably wrong.`);
 
-  // Checkbox lines: "[ ] text" is optional, "[*] text" must be ticked.
-  for (const section of letterSectionsFor(area)) {
-    for (const line of section.body) {
-      if (/^\s*\[/.test(line) && !/^\[[ *]\]\s*\S/.test(line)) {
-        fail(`${where} letter line starts with "[" but is not a valid checkbox — use "[ ] text" or "[*] text": ${line.slice(0, 50)}…`);
+  // Checkbox lines and merge fields, checked against EVERY reachable letter —
+  // an imported agreement is real content a client will sign, not a fixture.
+  const sampleContact = Object.fromEntries(CONTACT_FIELDS.map((f) => [f.id, 'x']));
+
+  for (const answers of selections) {
+    const sections = letterSectionsFor(area, answers);
+    const tag = importedKeys.length ? ` (${JSON.stringify(answers)})` : '';
+
+    for (const section of sections) {
+      for (const line of section.body) {
+        if (/^\s*\[/.test(line) && !/^\[[ *]\]\s*\S/.test(line)) {
+          fail(`${where}${tag} letter line starts with "[" but is not a valid checkbox — use "[ ] text" or "[*] text": ${line.slice(0, 50)}…`);
+        }
       }
     }
-  }
 
-  // Every {{merge}} field in the letter must resolve against a real key.
-  const sampleContact = Object.fromEntries(CONTACT_FIELDS.map((f) => [f.id, 'x']));
-  const known = new Set(Object.keys(buildContext(area, sampleContact, {})));
-  const letterText = [
-    ...LETTER_INTRO,
-    ...letterSectionsFor(area).flatMap((s) => [s.heading || '', ...s.body]),
-    area.feeSummary,
-  ].join('\n');
+    const known = new Set(Object.keys(buildContext(area, sampleContact, answers)));
+    const letterText = [
+      ...LETTER_INTRO,
+      ...sections.flatMap((s) => [s.heading || '', ...s.body]),
+      area.feeSummary,
+    ].join('\n');
 
-  for (const [, token] of letterText.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)) {
-    if (!known.has(token)) fail(`${where} letter references {{${token}}}, which is not a known merge field.`);
+    for (const [, token] of letterText.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)) {
+      if (!known.has(token)) fail(`${where}${tag} letter references {{${token}}}, which is not a known merge field.`);
+    }
   }
 }
 

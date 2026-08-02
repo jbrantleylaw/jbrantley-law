@@ -493,13 +493,14 @@ export const LETTERS = {
     },
     {
       "heading": "Section 11. Governing Law",
-      "body": []
+      "body": [
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
     },
     {
       "heading": "Section 12. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
       ]
     }
   ],
@@ -593,13 +594,14 @@ export const LETTERS = {
     },
     {
       "heading": "Section 11. Governing Law",
-      "body": []
+      "body": [
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
     },
     {
       "heading": "Section 12. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
       ]
     }
   ],
@@ -614,8 +616,7 @@ export const LETTERS = {
       "heading": "Section 1. Scope of Engagement",
       "body": [
         "Attorney will prepare a Last Will and Testament for one individual Client, including nomination of an executor, distribution of Client's estate, and, if applicable, nomination of a guardian for minor children. The document will be prepared for execution with the witness and self-proving affidavit formalities required under Client's state of residence.",
-        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
       ]
     },
     {
@@ -678,7 +679,8 @@ export const LETTERS = {
     {
       "heading": "Section 11. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -693,8 +695,7 @@ export const LETTERS = {
       "heading": "Section 1. Scope of Engagement",
       "body": [
         "Attorney will prepare separate, reciprocal Last Wills and Testaments for each Client, including nomination of an executor, distribution of each Client's estate, and, if applicable, nomination of a guardian for minor children. Each document will be prepared for execution with the witness and self-proving affidavit formalities required under Client's state of residence.",
-        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
       ]
     },
     {
@@ -764,7 +765,8 @@ export const LETTERS = {
     {
       "heading": "Section 12. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -783,8 +785,7 @@ export const LETTERS = {
         "A Statutory Durable Power of Attorney for financial and property matters; and",
         "An Advance Directive for Health Care (living will) and healthcare agent designation.",
         "Each document will be prepared for execution with the formalities required under Client's state of residence.",
-        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
       ]
     },
     {
@@ -847,7 +848,8 @@ export const LETTERS = {
     {
       "heading": "Section 11. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -866,8 +868,7 @@ export const LETTERS = {
         "A Statutory Durable Power of Attorney for financial and property matters; and",
         "An Advance Directive for Health Care (living will) and healthcare agent designation.",
         "Each document will be prepared for execution with the formalities required under Client's state of residence.",
-        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
       ]
     },
     {
@@ -937,7 +938,8 @@ export const LETTERS = {
     {
       "heading": "Section 12. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -952,8 +954,7 @@ export const LETTERS = {
       "heading": "Section 1. Scope of Engagement",
       "body": [
         "Attorney will prepare an Advance Directive for Health Care (living will) and healthcare agent designation for one individual Client, prepared for execution with the formalities required under Client's state of residence.",
-        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
       ]
     },
     {
@@ -1016,7 +1017,8 @@ export const LETTERS = {
     {
       "heading": "Section 11. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -1031,8 +1033,7 @@ export const LETTERS = {
       "heading": "Section 1. Scope of Engagement",
       "body": [
         "Attorney will prepare an Advance Directive for Health Care (living will) and healthcare agent designation for each Client, prepared for execution with the formalities required under Client's state of residence.",
-        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
       ]
     },
     {
@@ -1102,7 +1103,8 @@ export const LETTERS = {
     {
       "heading": "Section 12. Entire Agreement",
       "body": [
-        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -1181,7 +1183,7 @@ export const LETTERS = {
       "heading": "Section 11. Entire Agreement",
       "body": [
         "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -1267,7 +1269,7 @@ export const LETTERS = {
       "heading": "Section 12. Entire Agreement",
       "body": [
         "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
       ]
     }
   ],
@@ -1440,8 +1442,7 @@ export const LETTERS = {
       "heading": "Section 1. Scope of Engagement",
       "body": [
         "Attorney will prepare a Statutory Durable Power of Attorney for financial and property matters for one individual Client, prepared for execution with the formalities required under Client's state of residence.",
-        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed.",
-        "[*] My state of residence, and the governing law for this engagement, is {{clientState}}."
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
       ]
     },
     {
@@ -1504,6 +1505,91 @@ export const LETTERS = {
     {
       "heading": "Section 11. Entire Agreement",
       "body": [
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
+    }
+  ],
+  "name-change:default": [
+    {
+      "heading": "",
+      "body": [
+        "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual (\"Client\"), collectively the \"Parties.\""
+      ]
+    },
+    {
+      "heading": "Section 1. Scope of Engagement",
+      "body": [
+        "Attorney will handle a simple, uncontested adult name change matter for Client in the state Client elects below, including preparation of a Petition for Change of Name, a Proposed Order Granting Name Change, filing of the petition with the court, and either attendance at the prove-up hearing or arranging a waiver of the hearing where the court permits, along with a post-order agency notification checklist covering common agencies such as the Social Security Administration, the state driver's license or ID authority, and the U.S. passport office. Court filing fees, fingerprinting fees, and any publication costs are separate government or vendor costs and are Client's responsibility, not included in the attorney fee below.",
+        "The flat fee stated in Section 3 covers a simple, uncontested matter only, with no criminal history complications. If Attorney determines, at intake or at any point during the engagement, that Client's matter is contested or involves criminal history complications requiring additional work, Attorney will notify Client and issue an invoice for the difference between the flat fee already paid and the applicable complex-matter fee, which ranges from $1,200 to $2,000 depending on the scope of the additional work required.",
+        "If Client's matter is filed in Georgia, publication of the petition is required by statute, and Attorney will provide guidance on satisfying that requirement. Texas generally does not require publication for an adult name change petition, though the court may impose additional requirements at its discretion."
+      ]
+    },
+    {
+      "heading": "Section 2. Jurisdiction Election",
+      "body": [
+        "[*] Client's name change petition will be filed in {{clientState}}."
+      ]
+    },
+    {
+      "heading": "Section 3. Fee and Payment",
+      "body": [
+        "The flat fee for a simple, uncontested matter is $1,000. The total fee is due in full at the time Client signs this Agreement, payable through the Firm's online payment portal. Advance fees are deposited into Attorney's IOLTA trust account and are not earned by Attorney until the petition is filed and the hearing is completed or waived, consistent with Attorney's standard trust accounting practice.",
+        "If Client wishes to pay in installments rather than in full at signing, Client may request an installment payment plan before signing. Any installment plan must be set up through Attorney's practice management system and requires a saved payment method on file. Amounts collected under an installment plan remain unearned advance fees held in trust until the petition is filed and the hearing is completed or waived, regardless of the collection schedule, and installment payments do not begin the engagement or reserve Attorney's services until the plan is approved and the first payment is processed.",
+        "Invoices for the complex-matter fee difference described in Section 1, and for any other out-of-scope work billed under this Agreement, are due within 7 days of the invoice date. Client authorizes automatic billing of any card or payment method on file for amounts due under this Agreement. Where no card is on file, unpaid balances accrue a late fee of 1.5% per month (18% per annum maximum). Attorney reserves the right to suspend services for any account with an unpaid balance more than 30 days past due."
+      ]
+    },
+    {
+      "heading": "Section 4. Deliverables and Acceptance",
+      "body": [
+        "Client has 5 business days from the date of delivery to review the deliverable and request revisions within the scope of this engagement. The deliverable is deemed accepted if Attorney receives no written objection within that period. Revisions requested outside that window, or revisions that exceed the scope of this engagement, will be billed as an out-of-scope service at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 5. Client Responsibilities",
+      "body": [
+        "Client agrees to provide complete and accurate information necessary for Attorney to perform the services described in this Agreement, and to respond to Attorney's requests in a timely manner. Delay in providing requested information may delay delivery of the deliverable and, where applicable, may extend USPTO or state filing timelines beyond Attorney's control."
+      ]
+    },
+    {
+      "heading": "Section 6. Communication and Business Hours",
+      "body": [
+        "The Firm's business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Attorney has no obligation to respond to communications received outside of business hours, and after-hours voicemails may be deleted without response. Attorney reserves the right to bill any expedited or after-hours request at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 7. Confidentiality",
+      "body": [
+        "Attorney will maintain the confidentiality of information Client provides in connection with this engagement, consistent with Georgia Rule of Professional Conduct 1.6 and Texas Disciplinary Rule of Professional Conduct 1.05."
+      ]
+    },
+    {
+      "heading": "Section 8. Termination",
+      "body": [
+        "Either Party may terminate this Agreement as provided under Georgia Rule of Professional Conduct 1.16 and Texas Disciplinary Rule of Professional Conduct 1.15. Fees for work performed prior to termination are earned and non-refundable. Any unearned trust deposit will be refunded to Client following termination."
+      ]
+    },
+    {
+      "heading": "Section 9. Malpractice Insurance Disclosure",
+      "body": [
+        "Attorney carries professional liability (malpractice) insurance."
+      ]
+    },
+    {
+      "heading": "Section 10. Dispute Resolution",
+      "body": [
+        "Any dispute regarding fees arising under this Agreement is subject to a seven (7) day written notice period as a good faith prerequisite to formal proceedings. If the dispute is not resolved within that period, it will be submitted to binding arbitration administered under the State Bar of Texas fee dispute and arbitration procedures, before a single arbitrator, with each Party bearing its own costs and fees. Both Parties waive the right to a jury trial."
+      ]
+    },
+    {
+      "heading": "Section 11. Governing Law",
+      "body": [
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
+    },
+    {
+      "heading": "Section 12. Entire Agreement",
+      "body": [
         "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
       ]
     }
@@ -1527,5 +1613,6 @@ export const SCOPES = {
   "estate-planning:Revocable Living Trust — married couple": "Attorney will prepare a joint Revocable Living Trust for both Clients, along with a related Certification of Trust and reciprocal pour-over Last Wills and Testaments. This engagement covers drafting of the trust instrument only. Funding of the trust, including preparation of deeds, retitling of financial accounts, or changes to beneficiary designations, is not included in this engagement and is available as a separately elected service.",
   "estate-planning:Lady Bird Deed (Texas only)": "Attorney will prepare an Enhanced Life Estate Deed (commonly known as a Ladybird Deed) conveying one parcel of Texas real property, reserving to Client a life estate with the power to sell, convey, mortgage, or otherwise dispose of the property during Client's lifetime without the consent of the remainder beneficiary. This engagement does not include a title search or title opinion unless separately elected in writing.",
   "estate-planning:Transfer on Death Deed (Texas only)": "Attorney will prepare a Transfer on Death Deed under Texas Estates Code Chapter 114, conveying one parcel of Texas real property to Client's designated beneficiary or beneficiaries effective upon Client's death, revocable by Client at any time during Client's lifetime. This engagement does not include a title search or title opinion unless separately elected in writing, and does not include recording of the deed unless separately elected.",
-  "estate-planning:Durable Power of Attorney — one person": "Attorney will prepare a Statutory Durable Power of Attorney for financial and property matters for one individual Client, prepared for execution with the formalities required under Client's state of residence."
+  "estate-planning:Durable Power of Attorney — one person": "Attorney will prepare a Statutory Durable Power of Attorney for financial and property matters for one individual Client, prepared for execution with the formalities required under Client's state of residence.",
+  "name-change:default": "Attorney will handle a simple, uncontested adult name change matter for Client in the state Client elects below, including preparation of a Petition for Change of Name, a Proposed Order Granting Name Change, filing of the petition with the court, and either attendance at the prove-up hearing or arranging a waiver of the hearing where the court permits, along with a post-order agency notification checklist covering common agencies such as the Social Security Administration, the state driver's license or ID authority, and the U.S. passport office. Court filing fees, fingerprinting fees, and any publication costs are separate government or vendor costs and are Client's responsibility, not included in the attorney fee below."
 };

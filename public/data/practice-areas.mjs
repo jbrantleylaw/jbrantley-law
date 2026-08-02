@@ -97,6 +97,15 @@ export const CONSULT_ONLY = [
   'Government contracting',
 ];
 
+/** Shown on every page — a client whose matter is not listed at all should never be stuck. */
+export function otherServiceMessage() {
+  const where = FIRM.consultUrl
+    ? `<a href="${FIRM.consultUrl}" target="_blank" rel="noopener">schedule a consultation</a>`
+    : `email <a href="mailto:${FIRM.email}">${FIRM.email}</a>`;
+  return `Don't see what you need, or need something this portal doesn't cover? Please ${where} — `
+    + `most matters can be scoped with a custom engagement letter.`;
+}
+
 /* ---------------------------------------------------------------------------
  * Screen 1 — contact information. Shared by every practice area.
  * ------------------------------------------------------------------------- */
@@ -517,12 +526,30 @@ export const PRACTICE_AREAS = [
     short: 'Contracts',
     blurb: 'Review, drafting, or negotiation of the contracts you provide — three tiers, from a single review to full negotiation.',
     icon: '§',
-    // TODO: create the Contract Review OneLinks and paste them into `url`, and
-    // describe what each tier covers in its `note`.
+    // The three OneLinks the firm sent were labelled "Contract Command (Tier 1)",
+    // "Contract Review and Revise (Tier 2)", "Contract Draft and Deliver (Tier 3)" —
+    // none of those names match a tier in the signed agreement, where "Contract
+    // Command" is explicitly the $2,000 top tier, not $500. Resolved by trusting
+    // the tier NUMBER and DOLLAR AMOUNT (unambiguous, and consistent with the
+    // fee schedule given earlier), and using the agreement's own tier names on
+    // screen — a client should see the label that appears in what they sign.
+    // Flagged for the firm to confirm.
     paymentOptions: [
-      { label: 'Review & Advise', amount: '$500', note: 'Review and written advice on the contract you provide', url: '' },
-      { label: 'Draft & Deliver', amount: '$1,200', note: 'Drafting or redrafting, delivered ready to sign', url: '' },
-      { label: 'Contract Command', amount: '$2,000', note: 'Drafting plus negotiation with the other side', url: '' },
+      {
+        label: 'Review & Advise', amount: '$500',
+        note: 'Review and written advice on the contract you provide',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/f82d312e-6e29-4525-b594-52d5d2f9810b', // "Tier 1"
+      },
+      {
+        label: 'Draft & Deliver', amount: '$1,200',
+        note: 'Drafting or redrafting, delivered ready to sign',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/a912a954-df99-493b-bf05-d643fefa40a2', // "Tier 2"
+      },
+      {
+        label: 'Contract Command', amount: '$2,000',
+        note: 'Drafting plus negotiation with the other side',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/884cfe72-6922-49dd-8b2d-960d947f51c5', // "Tier 3"
+      },
     ],
     feeSummary:
       'The flat fee for this matter is set by the tier you elect in the agreement: Review & Advise, $500.00; '
@@ -704,19 +731,23 @@ export const PRACTICE_AREAS = [
     short: 'Name Change',
     blurb: 'An uncontested adult name change, filed in your county of residence in Texas or Georgia.',
     icon: '✎',
-    // TODO: confirm the flat fee, and add it to `amount` below.
     paymentOptions: [
       {
         label: 'Adult name change',
-        amount: '',
+        amount: '$1,000',
+        note: 'A simple, uncontested matter with no criminal-history complications',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/8169a29d-ebab-4c80-ac73-c26e0dfd8f91',
       },
     ],
     feeSummary:
-      'The flat fee for this matter is stated in the agreement below and is payable in full before work '
-      + 'begins. It does not include the court filing fee, the cost of fingerprinting or a criminal history '
-      + 'check where the court requires one, publication costs, or the cost of certified copies of the final '
-      + 'order, all of which are paid to the court or third parties and are your responsibility.',
+      'The flat fee for a simple, uncontested matter is $1,000.00, payable in full before work begins. '
+      + 'If the firm determines, at intake or at any point during the engagement, that the matter is not '
+      + 'simple and uncontested — for example because of a criminal history complication — the firm will '
+      + 'tell you before doing any further work and quote the difference separately. The flat fee does not '
+      + 'include the court filing fee, the cost of fingerprinting or a criminal history check where the '
+      + 'court requires one, publication costs (required by statute for matters filed in Georgia), or the '
+      + 'cost of certified copies of the final order, all of which are paid to the court or third parties '
+      + 'and are your responsibility.',
     questions: [
       { id: 'current_name', label: 'Your current full legal name', type: 'text', required: true, help: 'Exactly as it appears on your birth certificate or current government ID.' },
       { id: 'desired_name', label: 'The full name you want going forward', type: 'text', required: true },
@@ -750,26 +781,8 @@ export const PRACTICE_AREAS = [
         help: 'For example a pending divorce, a creditor dispute, or a bankruptcy.',
       },
     ],
-    // TODO: no signed agreement on file for this service yet. Drop the Word
-    // agreement into ./letters, add it to MAP in scripts/import-letters.mjs,
-    // and run `npm run letters`. Until then this draft is used.
-    letter: [
-      {
-        heading: '1. Scope of Representation',
-        body: [
-          'You have asked the firm to represent you in an uncontested adult name change, changing your name from {{answers.current_name}} to {{answers.desired_name}}, to be filed in {{answers.county}}.',
-          'The representation includes preparing and filing the petition, arranging the criminal history check the court requires, communicating with the court coordinator, preparing the order for the judge\'s signature, and appearing with you at the hearing if the court holds one.',
-          'It does not include updating your name with the Social Security Administration, the DMV, passport services, banks, or any other institution after the order is signed; contested proceedings; a name change for a minor; or any related family law matter.',
-        ],
-      },
-      {
-        heading: '2. What the Court Decides',
-        body: [
-          'A name change is granted by a judge, not by the firm. Courts in Texas and Georgia grant uncontested adult name changes as a matter of course where the petition is in order and the criminal history check raises nothing, but the decision is the court\'s and the firm cannot guarantee it.',
-          'You must tell the firm about any arrest, charge, or conviction, and about any pending case. The court will find these regardless, and an accurate petition is the difference between a routine hearing and a denied one.',
-        ],
-      },
-    ],
+    // The firm's own agreement (letters/07_Adult_Name_Change_Engagement_Agreement.docx)
+    // is used; no fallback draft is needed now that it is on file.
   },
 
   /* ======================================================================= */

@@ -184,6 +184,17 @@ Set `FIRM.consultUrl` in
 scheduling link; while it is blank the button opens an email to the firm
 instead. Both `TX` and `Texas` are accepted in the address field.
 
+### A letter with more than one state election
+
+Some agreements elect the client's state more than once — for example Adult
+Name Change elects both the filing jurisdiction (Section 2) and the governing
+law (Section 11), in different wording. The importer collapses **each such
+pair independently**, keeping that section's own sentence and substituting
+only the state name, rather than merging every election in the document into
+one canned sentence. A pair is recognised by two adjacent checkboxes with the
+same lead-in text and opposite states — regardless of exact phrasing — so a
+new agreement with this pattern needs no code change.
+
 ### The engagement agreements
 
 The Word agreements in [`letters/`](letters) are the source of truth. To change
@@ -208,11 +219,13 @@ cannot creep into a legal document. The importer:
 Estate planning and trademark use a different agreement per package, chosen by
 the client's answer (`letterKeyField` on the area).
 
-**Two selections have no signed agreement on file yet** and run on a draft:
-Adult Name Change, and Estate Planning's Durable Power of Attorney — married
-couple (the firm supplied a Single POA agreement only). Drop the .docx into
-`letters/`, add it to `MAP` in `scripts/import-letters.mjs`, and run
-`npm run letters`.
+**One selection has no signed agreement on file** and runs on a draft: Estate
+Planning's Durable Power of Attorney — married couple (the firm supplied a
+Single POA agreement only). Drop the .docx into `letters/`, add it to `MAP` in
+`scripts/import-letters.mjs`, and run `npm run letters`.
+
+Every other selection — including Adult Name Change — now has a signed
+agreement on file.
 
 ### Matters that are not on the portal
 
@@ -221,6 +234,12 @@ contracting always start with a consultation, so they have no intake form. They
 are listed on the landing page as a route to a call — edit `CONSULT_ONLY` in
 [`public/data/practice-areas.mjs`](public/data/practice-areas.mjs) to change
 that list.
+
+Below that, every page — the landing page and the footer of every intake page —
+carries a standing line: *"Don't see what you need? Please schedule a
+consultation."* No client should ever reach a dead end just because their
+matter is not one of the ones listed. Edit the wording in `otherServiceMessage()`
+in the same file.
 
 ### Payment plan requests
 

@@ -47,10 +47,11 @@ const MAP = {
   'estate-planning:Durable Power of Attorney — one person': '11_Durable_POA_Engagement_Agreement.docx',
   // No joint/married POA agreement supplied yet — 'Durable Power of Attorney — married couple' has no
   // entry here, so practice-areas.mjs falls back to its draft `letter` for that selection until one is added.
+  'name-change:default': '07_Adult_Name_Change_Engagement_Agreement.docx',
 };
 
 /** Areas where the client's state is elected in the letter (TX/GA only). */
-const STATE_ELECTION_AREAS = new Set(['business-formation', 'contracts', 'estate-planning']);
+const STATE_ELECTION_AREAS = new Set(['business-formation', 'contracts', 'estate-planning', 'name-change']);
 
 /* ---------------------------------------------------------------- docx ---- */
 
@@ -143,12 +144,17 @@ function paragraphs(xml) {
 /* -------------------------------------------------------------- convert --- */
 
 const BOX = /^[☐☑▢□]\s*/;
+// Matches a checkbox that elects one of the two states the firm practices in,
+// however the sentence is phrased — "governing law ... is Georgia",
+// "petition will be filed in Texas", etc. Captures the state so a pair can be
+// recognised regardless of which section of the letter it appears in.
+const STATE_ELECTION = /^(.*\b(?:is|in))\s+(Georgia|Texas)\s*$/i;
 
 function convert(paras, { areaSlug }) {
   const sections = [];
   let current = null;
   let scope = '';
-  const stateBoxes = [];
+  const autoFillStates = STATE_ELECTION_AREAS.has(areaSlug);
 
   const push = (line) => {
     if (!current) {
@@ -177,35 +183,33 @@ function convert(paras, { areaSlug }) {
 
     if (BOX.test(text)) {
       const label = text.replace(BOX, '').trim();
-      const stateMatch = label.match(/governing law for this engagement is (Georgia|Texas)/i);
-      if (stateMatch) {
-        stateBoxes.push({ state: stateMatch[1], label });
-        continue; // handled after the loop
+      const m = label.match(STATE_ELECTION);
+
+      // A letter can contain more than one such pair (e.g. a filing-jurisdiction
+      // election in one section and a governing-law election in another). Each
+      // pair keeps its own wording — only the state name is templated — so the
+      // two are never conflated into a single sentence that mismatches its section.
+      if (m && autoFillStates) {
+        const next = paras[i + 1];
+        const nextLabel = next && BOX.test(next.text) ? next.text.replace(BOX, '').trim() : null;
+        const nm = nextLabel?.match(STATE_ELECTION);
+        if (nm && nm[1].trim() === m[1].trim() && nm[2].toLowerCase() !== m[2].toLowerCase()) {
+          // A genuine pair: same lead-in text, opposite states. Collapse to one
+          // required box naming whichever state the client actually gave.
+          push(`[*] ${m[1]} {{clientState}}.`);
+          i += 1; // consume the paired box
+          continue;
+        }
       }
+
+      // No pairing (a lone box, a federal letter, or an unmatched wording) —
+      // leave it as an ordinary optional checkbox rather than guessing.
       push(`[ ] ${label}`);
       continue;
     }
 
     push(text);
     if (/^Section 1\./i.test(sections.at(-1)?.heading || '') && !scope) scope = text;
-  }
-
-  // Two mutually exclusive state elections become one required box naming the
-  // state the client actually gave, so it can never be left blank or ticked twice.
-  if (stateBoxes.length) {
-    const target = sections.find((s) => /^Section\s+\d+\./.test(s.heading)) ? sections : null;
-    const line = STATE_ELECTION_AREAS.has(areaSlug)
-      ? '[*] My state of residence, and the governing law for this engagement, is {{clientState}}.'
-      : null;
-    if (line && target) {
-      // Put it back where the original boxes were: the section that mentioned them.
-      const idx = sections.findIndex((s) => s.body.some((b) => /state of residence/i.test(b)));
-      (idx >= 0 ? sections[idx] : sections.at(-1)).body.push(line);
-    } else if (target) {
-      // Federal matters: keep both elections optional, since the client may be
-      // outside Texas and Georgia entirely.
-      for (const b of stateBoxes) sections.at(-1).body.push(`[ ] ${b.label}`);
-    }
   }
 
   return {

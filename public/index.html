@@ -63,7 +63,7 @@
   </footer>
 
   <script type="module">
-    import { PRACTICE_AREAS, FIRM, CONSULT_ONLY } from '/data/practice-areas.mjs';
+    import { PRACTICE_AREAS, FIRM, CONSULT_ONLY, otherServiceMessage } from '/data/practice-areas.mjs';
 
     const grid = document.getElementById('areaGrid');
     grid.innerHTML = PRACTICE_AREAS.map((a) => `
@@ -85,7 +85,8 @@
         these matters start with a conversation rather than a form, because the firm needs to
         understand the facts before it can tell you what it would cost or whether it is the right
         fit. Please ${consultTarget} and Attorney Brantley will speak with you directly.
-      </p>`;
+      </p>
+      <p style="margin-top:10px">${otherServiceMessage()}</p>`;
 
     const contact = [
       FIRM.name,
