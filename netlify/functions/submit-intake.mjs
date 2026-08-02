@@ -10,7 +10,7 @@
  */
 import { createHash, randomUUID } from 'node:crypto';
 import { getArea, questionsFor, CONTACT_FIELDS, isVisible } from '../../public/data/practice-areas.mjs';
-import { clientOfRecord } from '../../public/data/letter.mjs';
+import { clientOfRecord, paymentChoicesFor } from '../../public/data/letter.mjs';
 import { buildEngagementPdf } from './lib/pdf.mjs';
 import { sendMail, mailConfig } from './lib/mailer.mjs';
 import { buildEmail, buildClientCopy } from './lib/email-body.mjs';
@@ -81,7 +81,7 @@ export default async (req, context) => {
     docId,
     signedAt: signedAt.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC'),
     ip,
-    paymentLink: area.paymentLink || area.stripeLink,
+    paymentOptions: paymentChoicesFor(area),
   });
 
   const delivery = await sendMail({
@@ -126,7 +126,7 @@ export default async (req, context) => {
     filename,
     pdfBase64,
     emailed: delivery.ok,
-    paymentRequired: Boolean(area.paymentLink || area.stripeLink),
+    paymentRequired: paymentChoicesFor(area).length > 0,
   });
 };
 

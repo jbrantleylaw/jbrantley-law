@@ -98,11 +98,35 @@ setting and the next submission goes through normally.
 
 ### 3. Add the payment links
 
-Paste each service's online payment URL into the matching `paymentLink` in
-[`public/data/practice-areas.mjs`](public/data/practice-areas.mjs). Any hosted
-payment page works — Stripe, LawPay, Clio, Square, PayPal, Confido, or your own
-page. If the page also lists your fees, that is fine; it opens in a new tab
-after the client signs.
+Payment links go in [`public/data/practice-areas.mjs`](public/data/practice-areas.mjs).
+Any hosted payment page works — PracticePanther OneLink, Stripe, LawPay, Clio,
+Square, PayPal, or your own page.
+
+If a practice area has **one fee**, give it a single link:
+
+```js
+paymentLink: 'https://app.practicepanther.com/Payment/OneLinkPayment/...',
+```
+
+If it has **several fees**, list them. The client sees one row per fee with its
+own button, so they know what they are paying for:
+
+```js
+paymentOptions: [
+  {
+    label: 'LLC formation — single member',
+    amount: '$750',
+    note: 'Includes the company agreement',
+    url: 'https://app.practicepanther.com/Payment/OneLinkPayment/...',
+    whenAnswer: { field: 'formation_need', equals: 'Form a new entity' },
+  },
+],
+```
+
+`whenAnswer` is optional and ties a fee to an intake answer: when the client's
+answer matches, that option is moved to the top and flagged *Matches your
+answers*, with the others still listed underneath. `equals` also accepts an
+array if one fee covers several answers.
 
 The button names the processor it recognises from the link ("Pay securely with
 LawPay"), and falls back to "Go to secure payment" for anything it does not

@@ -26,7 +26,7 @@ function contactRows(contact) {
   ].filter(([, v]) => v && String(v).trim());
 }
 
-export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymentLink }) {
+export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymentOptions = [] }) {
   const name = clientOfRecord(contact);
   const subject = `${name} — ${area.name}`;
 
@@ -62,7 +62,9 @@ export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymen
         row('Document ID', docId),
         row('Signed at', signedAt),
         row('Client IP', ip || 'not recorded'),
-        row('Payment', paymentLink ? 'Stripe payment link presented to client' : 'No payment link configured — invoice manually'),
+        row('Payment', paymentOptions.length
+          ? `${paymentOptions.length} payment option${paymentOptions.length > 1 ? 's' : ''} shown to the client`
+          : 'No payment link configured — invoice manually'),
       ].join(''))}
 
       <p style="margin:28px 0 0;padding-top:16px;border-top:1px solid #e2ddd3;font:12px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#7b8798;">

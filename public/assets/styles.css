@@ -288,6 +288,31 @@ input:focus, select:focus, textarea:focus {
 .pay-box h3 { margin-top: 0; }
 .pay-box p { font-size: .93rem; color: var(--ink-soft); }
 
+/* several fees for one practice area */
+.pay-options { display: grid; gap: 9px; margin: 18px 0 4px; }
+.pay-option {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  background: #fff; border: 1px solid var(--line-strong);
+  border-radius: 8px; padding: 13px 15px;
+}
+.pay-option.suggested { border-color: var(--gold); border-width: 2px; padding: 12px 14px; }
+.pay-option-text { flex: 1; min-width: 190px; display: flex; flex-direction: column; gap: 2px; }
+.pay-option-label { font-weight: 600; font-size: .95rem; color: var(--ink); }
+.pay-option-note { font-size: .84rem; color: var(--ink-faint); }
+.pay-option-flag {
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--gold); font-weight: 600; margin-top: 3px;
+}
+.pay-option-amount {
+  font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--ink);
+  white-space: nowrap;
+}
+.pay-option .btn { padding: 9px 20px; font-size: .92rem; }
+@media (max-width: 480px) {
+  .pay-option { align-items: stretch; }
+  .pay-option .btn { width: 100%; text-align: center; }
+}
+
 /* ---------- misc ---------- */
 .spinner {
   width: 17px; height: 17px; border: 2px solid rgba(255,255,255,.35);

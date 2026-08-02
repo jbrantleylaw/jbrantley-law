@@ -7,7 +7,7 @@ import {
   PRACTICE_AREAS, CONTACT_FIELDS, COMMON_QUESTIONS, FIRM, LETTER_INTRO,
   questionsFor, letterSectionsFor,
 } from '../public/data/practice-areas.mjs';
-import { buildContext } from '../public/data/letter.mjs';
+import { buildContext, paymentChoicesFor } from '../public/data/letter.mjs';
 
 const problems = [];
 const notes = [];
@@ -31,15 +31,6 @@ for (const area of PRACTICE_AREAS) {
   }
   if (!Array.isArray(area.letter) || area.letter.length === 0) fail(`${where} has no letter sections.`);
 
-  const payLink = area.paymentLink || area.stripeLink;
-  if (!payLink) {
-    note(`${where} has no payment link yet — clients are told an invoice will follow.`);
-  } else if (!/^https:\/\/[^\s/]+\.[^\s/]+/.test(payLink)) {
-    fail(`${where} paymentLink must be a full https:// address, e.g. https://buy.stripe.com/...`);
-  } else if (/\s/.test(payLink)) {
-    fail(`${where} paymentLink contains a space — it was probably pasted with trailing text.`);
-  }
-
   const ids = new Set();
   const all = questionsFor(area);
   for (const q of all) {
@@ -58,6 +49,38 @@ for (const area of PRACTICE_AREAS) {
       }
     }
   }
+
+  const payOptions = paymentChoicesFor(area);
+  if (!payOptions.length) {
+    note(`${where} has no payment link yet — clients are told an invoice will follow.`);
+  }
+  for (const [i, opt] of payOptions.entries()) {
+    const at = `${where} payment option ${i + 1}`;
+    if (!/^https:\/\/[^\s/]+\.[^\s/]+/.test(opt.url)) {
+      fail(`${at} must be a full https:// address.`);
+    } else if (/\s/.test(opt.url)) {
+      fail(`${at} contains a space — it was probably pasted with trailing text.`);
+    }
+    if (payOptions.length > 1 && !opt.label) {
+      fail(`${at} needs a label — with several options the client has to be told what each fee is for.`);
+    }
+    if (opt.whenAnswer) {
+      const q = all.find((x) => x.id === opt.whenAnswer.field);
+      if (!q) {
+        fail(`${at} keys off question "${opt.whenAnswer.field}", which does not exist in this area.`);
+      } else if (q.options) {
+        const wanted = Array.isArray(opt.whenAnswer.equals) ? opt.whenAnswer.equals : [opt.whenAnswer.equals];
+        for (const w of wanted) {
+          if (!q.options.includes(w)) {
+            fail(`${at} waits for "${q.id}" to equal "${w}", which is not one of its options.`);
+          }
+        }
+      }
+    }
+  }
+  const urls = payOptions.map((o) => o.url);
+  const dupe = urls.find((u, i) => urls.indexOf(u) !== i);
+  if (dupe) fail(`${where} uses the same payment link for two options — one of them is probably wrong.`);
 
   // Every {{merge}} field in the letter must resolve against a real key.
   const sampleContact = Object.fromEntries(CONTACT_FIELDS.map((f) => [f.id, 'x']));

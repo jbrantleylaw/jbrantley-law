@@ -412,9 +412,9 @@ function init(area) {
     const box = document.getElementById('payBox');
     box.replaceChildren();
 
-    const link = area.paymentLink || area.stripeLink || '';
+    const options = paymentChoices(area);
 
-    if (!link) {
+    if (!options.length) {
       box.appendChild(el('h3', '', 'Payment'));
       box.appendChild(el('p', '',
         `The firm will send your invoice by email to ${state.contact.email || 'the address you provided'}, ` +
@@ -422,24 +422,70 @@ function init(area) {
       return;
     }
 
-    const { url, processor } = paymentUrl(link, state.contact.email, data.id);
+    const processor = paymentUrl(options[0].url, '', '').processor;
+    const reassurance =
+      `${processor ? `Payment is processed by ${processor}.` : 'Payment is handled on a secure payment page.'} ` +
+      'The firm never sees or stores your card number. ' +
+      'Your representation begins once payment is received.';
+
+    /* --- one fee for this service: a single button ------------------- */
+    if (options.length === 1) {
+      const { url } = paymentUrl(options[0].url, state.contact.email, data.id);
+      box.appendChild(el('h3', '', 'Pay for your services'));
+      box.appendChild(el('p', '', reassurance));
+
+      const a = document.createElement('a');
+      a.className = 'btn btn-gold btn-lg';
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = processor ? `Pay securely with ${processor} →` : 'Go to secure payment →';
+      box.appendChild(a);
+      box.appendChild(el('p', 'help', referenceNote(data.id)));
+      return;
+    }
+
+    /* --- several fees: list them, highlighting the likely one -------- */
+    const suggested = options.filter((o) => matchesAnswers(o, state.answers));
 
     box.appendChild(el('h3', '', 'Pay for your services'));
     box.appendChild(el('p', '',
-      `${processor ? `Payment is processed by ${processor}.` : 'Payment is handled on a secure payment page.'} ` +
-      'The firm never sees or stores your card number. ' +
-      'Your representation begins once payment is received.'));
+      suggested.length
+        ? 'Based on what you told us, the option below matches your matter. If the firm quoted you something different, choose that instead — or wait for your invoice.'
+        : 'Choose the service you are paying for. If you are not sure which applies, wait for your invoice and the firm will confirm.'));
+    box.appendChild(el('p', '', reassurance));
 
-    const a = document.createElement('a');
-    a.className = 'btn btn-gold btn-lg';
-    a.href = url;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.textContent = processor ? `Pay securely with ${processor} →` : 'Go to secure payment →';
-    box.appendChild(a);
+    const list = el('div', 'pay-options');
+    const ordered = [...suggested, ...options.filter((o) => !suggested.includes(o))];
 
-    box.appendChild(el('p', 'help',
-      `Opens in a new tab. Your reference number is ${data.id} — quote it if you have any question about the payment.`));
+    for (const opt of ordered) {
+      const { url } = paymentUrl(opt.url, state.contact.email, data.id);
+      const row = el('div', 'pay-option' + (suggested.includes(opt) ? ' suggested' : ''));
+
+      const text = el('div', 'pay-option-text');
+      text.appendChild(el('span', 'pay-option-label', opt.label));
+      if (opt.note) text.appendChild(el('span', 'pay-option-note', opt.note));
+      if (suggested.includes(opt)) text.appendChild(el('span', 'pay-option-flag', 'Matches your answers'));
+      row.appendChild(text);
+
+      if (opt.amount) row.appendChild(el('span', 'pay-option-amount', opt.amount));
+
+      const a = document.createElement('a');
+      a.className = 'btn ' + (suggested.includes(opt) ? 'btn-gold' : 'btn-ghost');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = 'Pay →';
+      row.appendChild(a);
+
+      list.appendChild(row);
+    }
+    box.appendChild(list);
+    box.appendChild(el('p', 'help', referenceNote(data.id)));
+  }
+
+  function referenceNote(id) {
+    return `Opens in a new tab. Your reference number is ${id} — quote it if you have any question about the payment.`;
   }
 
   function downloadPdf(data) {
@@ -462,6 +508,35 @@ function init(area) {
 /* ------------------------------------------------------------- helpers ---- */
 
 /**
+ * A practice area's payment options, normalised.
+ *
+ * `paymentOptions` is a list of named fees, each with its own link — which is
+ * what most practice areas actually look like. `paymentLink` remains supported
+ * for an area with a single fee.
+ */
+export function paymentChoices(area) {
+  if (Array.isArray(area.paymentOptions) && area.paymentOptions.length) {
+    return area.paymentOptions.filter((o) => o && o.url);
+  }
+  const single = area.paymentLink || area.stripeLink;
+  return single ? [{ label: '', url: single }] : [];
+}
+
+/**
+ * True when an option declares `whenAnswer` and the client's intake answer
+ * matches it — used to put the right fee at the top of the list.
+ * `equals` may be a single value or an array of values.
+ */
+export function matchesAnswers(option, answers) {
+  if (!option.whenAnswer) return false;
+  const { field, equals } = option.whenAnswer;
+  const given = answers[field];
+  const wanted = Array.isArray(equals) ? equals : [equals];
+  if (Array.isArray(given)) return given.some((g) => wanted.includes(g));
+  return wanted.includes(given);
+}
+
+/**
  * Payment pages the portal can name on the button. Anything not listed still
  * works — the button just reads "Go to secure payment" instead.
  */
@@ -478,6 +553,9 @@ const PROCESSORS = [
   { match: /(^|\.)quickbooks\.com$/, name: 'QuickBooks' },
   { match: /(^|\.)confidolegal\.com$/, name: 'Confido Legal' },
   { match: /(^|\.)gravity(forms|payments)\.com$/, name: 'Gravity Payments' },
+  // PracticePanther OneLink. Clients know the firm, not the firm's software,
+  // so the button stays generic rather than naming the practice-management tool.
+  { match: /(^|\.)practicepanther\.com$/, name: '' },
 ];
 
 /**

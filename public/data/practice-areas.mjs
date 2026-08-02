@@ -207,12 +207,30 @@ const COMMON_CLOSING = [
 /* ---------------------------------------------------------------------------
  * The practice areas.
  *
- * paymentLink: the URL clients pay at for that service — a Stripe Payment
- * Link, a LawPay link, a Square or PayPal link, or any other hosted payment
- * page. If the page also lists your fees, that is fine: the client opens it in
- * a new tab after signing. While it is blank the client is shown an
- * invoice-will-follow message instead of a button, so the portal is safe to
- * launch before the links exist.
+ * PAYMENT. Two shapes, depending on how many fees the area has.
+ *
+ *   One fee — a single link:
+ *     paymentLink: 'https://app.practicepanther.com/Payment/OneLinkPayment/...'
+ *
+ *   Several fees — a labelled list. `label` is required (the client has to know
+ *   what each button charges for), `amount` and `note` are optional, and
+ *   `whenAnswer` optionally ties an option to an intake answer so the right fee
+ *   is pulled to the top and marked "Matches your answers":
+ *     paymentOptions: [
+ *       {
+ *         label: 'LLC formation — single member',
+ *         amount: '$750',
+ *         note: 'Includes the company agreement',
+ *         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/...',
+ *         whenAnswer: { field: 'formation_need', equals: 'Form a new entity' },
+ *       },
+ *     ]
+ *   `equals` also accepts an array if one fee covers several answers.
+ *
+ * Any hosted payment page works — PracticePanther OneLink, Stripe, LawPay,
+ * Clio, Square, PayPal. While an area has no link at all, the client is shown
+ * an invoice-will-follow message instead of a button, so the portal is safe to
+ * launch before every link exists.
  * ------------------------------------------------------------------------- */
 export const PRACTICE_AREAS = [
   /* ======================================================================= */

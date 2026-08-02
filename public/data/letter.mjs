@@ -124,4 +124,17 @@ export function answerPairs(area, answers) {
   return pairs;
 }
 
+/**
+ * A practice area's payment options as a flat list, whether the area declares
+ * one `paymentLink` or a list of named `paymentOptions`. Shared so the browser,
+ * the function, and the config check all agree on what counts as "payable".
+ */
+export function paymentChoicesFor(area) {
+  if (Array.isArray(area.paymentOptions) && area.paymentOptions.length) {
+    return area.paymentOptions.filter((o) => o && o.url);
+  }
+  const single = area.paymentLink || area.stripeLink;
+  return single ? [{ label: '', url: single }] : [];
+}
+
 export { BLANK };

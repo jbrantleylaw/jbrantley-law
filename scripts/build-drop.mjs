@@ -22,6 +22,7 @@ import { cp, mkdir, rm, writeFile, readFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { PRACTICE_AREAS } from '../public/data/practice-areas.mjs';
+import { paymentChoicesFor } from '../public/data/letter.mjs';
 
 const run = promisify(execFile);
 const DIST = 'dist';
@@ -152,7 +153,10 @@ if (result.errors.length) {
 await writeFile(`${DIST}/netlify.toml`, DROP_TOML);
 
 const areaList = PRACTICE_AREAS
-  .map((a) => `  ${a.name}${(a.paymentLink || a.stripeLink) ? '' : '   (no payment link set yet)'}`)
+  .map((a) => {
+    const n = paymentChoicesFor(a).length;
+    return `  ${a.name}${n ? `   (${n} payment option${n > 1 ? 's' : ''})` : '   (no payment link set yet)'}`;
+  })
   .join('\n');
 await writeFile(`${DIST}/READ ME FIRST.txt`, `${READ_ME_FIRST}${areaList}\n`);
 
