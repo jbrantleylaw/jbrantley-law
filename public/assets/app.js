@@ -412,7 +412,9 @@ function init(area) {
     const box = document.getElementById('payBox');
     box.replaceChildren();
 
-    if (!area.stripeLink) {
+    const link = area.paymentLink || area.stripeLink || '';
+
+    if (!link) {
       box.appendChild(el('h3', '', 'Payment'));
       box.appendChild(el('p', '',
         `The firm will send your invoice by email to ${state.contact.email || 'the address you provided'}, ` +
@@ -420,18 +422,12 @@ function init(area) {
       return;
     }
 
-    let url = area.stripeLink;
-    try {
-      const u = new URL(area.stripeLink);
-      if (state.contact.email) u.searchParams.set('prefilled_email', state.contact.email);
-      // Ties the Stripe payment back to this submission in the firm's records.
-      u.searchParams.set('client_reference_id', String(data.id).replace(/[^A-Za-z0-9_-]/g, ''));
-      url = u.toString();
-    } catch { /* a malformed link still opens as configured */ }
+    const { url, processor } = paymentUrl(link, state.contact.email, data.id);
 
     box.appendChild(el('h3', '', 'Pay for your services'));
     box.appendChild(el('p', '',
-      'Payment is processed by Stripe. The firm never sees or stores your card number. ' +
+      `${processor ? `Payment is processed by ${processor}.` : 'Payment is handled on a secure payment page.'} ` +
+      'The firm never sees or stores your card number. ' +
       'Your representation begins once payment is received.'));
 
     const a = document.createElement('a');
@@ -439,8 +435,11 @@ function init(area) {
     a.href = url;
     a.target = '_blank';
     a.rel = 'noopener';
-    a.textContent = 'Pay securely with Stripe →';
+    a.textContent = processor ? `Pay securely with ${processor} →` : 'Go to secure payment →';
     box.appendChild(a);
+
+    box.appendChild(el('p', 'help',
+      `Opens in a new tab. Your reference number is ${data.id} — quote it if you have any question about the payment.`));
   }
 
   function downloadPdf(data) {
@@ -461,6 +460,51 @@ function init(area) {
 }
 
 /* ------------------------------------------------------------- helpers ---- */
+
+/**
+ * Payment pages the portal can name on the button. Anything not listed still
+ * works — the button just reads "Go to secure payment" instead.
+ */
+const PROCESSORS = [
+  { match: /(^|\.)stripe\.com$/, name: 'Stripe', prefill: 'stripe' },
+  { match: /(^|\.)lawpay\.com$/, name: 'LawPay' },
+  { match: /(^|\.)affinipay\.com$/, name: 'LawPay' },
+  { match: /(^|\.)clio\.com$/, name: 'Clio' },
+  { match: /(^|\.)squareup\.com$/, name: 'Square' },
+  { match: /(^|\.)square\.link$/, name: 'Square' },
+  { match: /(^|\.)paypal\.com$/, name: 'PayPal' },
+  { match: /(^|\.)paypal\.me$/, name: 'PayPal' },
+  { match: /(^|\.)intuit\.com$/, name: 'QuickBooks' },
+  { match: /(^|\.)quickbooks\.com$/, name: 'QuickBooks' },
+  { match: /(^|\.)confidolegal\.com$/, name: 'Confido Legal' },
+  { match: /(^|\.)gravity(forms|payments)\.com$/, name: 'Gravity Payments' },
+];
+
+/**
+ * Builds the URL the client is sent to, and works out what to call the payment
+ * page on the button. Stripe accepts query parameters that prefill the email
+ * and carry a reference back into the dashboard; other providers may not, and
+ * unknown parameters can break a signed or tokenised link — so they are only
+ * added for Stripe.
+ */
+export function paymentUrl(link, email, reference) {
+  let u;
+  try {
+    u = new URL(link);
+  } catch {
+    return { url: link, processor: '' }; // malformed link still opens as configured
+  }
+
+  const host = u.hostname.toLowerCase();
+  const known = PROCESSORS.find((p) => p.match.test(host));
+
+  if (known?.prefill === 'stripe') {
+    if (email) u.searchParams.set('prefilled_email', email);
+    u.searchParams.set('client_reference_id', String(reference).replace(/[^A-Za-z0-9_-]/g, ''));
+  }
+
+  return { url: u.toString(), processor: known?.name || '' };
+}
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

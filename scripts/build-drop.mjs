@@ -102,7 +102,7 @@ built from, not in this zip -- the function here is compiled, so editing the
 files inside the zip will change what a client reads on screen but NOT what
 comes out in the signed PDF, which is exactly the mismatch you do not want.
 
-To change the letters, questions, fees, or Stripe links, edit
+To change the letters, questions, fees, or payment links, edit
 public/data/practice-areas.mjs in the project, run "npm run build:drop", and
 drop the new zip. Netlify replaces the site in place and the address stays the
 same.
@@ -152,7 +152,7 @@ if (result.errors.length) {
 await writeFile(`${DIST}/netlify.toml`, DROP_TOML);
 
 const areaList = PRACTICE_AREAS
-  .map((a) => `  ${a.name}${a.stripeLink ? '' : '   (no Stripe link set yet)'}`)
+  .map((a) => `  ${a.name}${(a.paymentLink || a.stripeLink) ? '' : '   (no payment link set yet)'}`)
   .join('\n');
 await writeFile(`${DIST}/READ ME FIRST.txt`, `${READ_ME_FIRST}${areaList}\n`);
 

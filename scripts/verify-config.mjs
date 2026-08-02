@@ -31,10 +31,13 @@ for (const area of PRACTICE_AREAS) {
   }
   if (!Array.isArray(area.letter) || area.letter.length === 0) fail(`${where} has no letter sections.`);
 
-  if (!area.stripeLink) {
-    note(`${where} has no Stripe link yet — clients are told an invoice will follow.`);
-  } else if (!/^https:\/\/(buy\.stripe\.com|[\w.-]*\.?stripe\.com)\//.test(area.stripeLink)) {
-    fail(`${where} stripeLink does not look like a Stripe Payment Link URL.`);
+  const payLink = area.paymentLink || area.stripeLink;
+  if (!payLink) {
+    note(`${where} has no payment link yet — clients are told an invoice will follow.`);
+  } else if (!/^https:\/\/[^\s/]+\.[^\s/]+/.test(payLink)) {
+    fail(`${where} paymentLink must be a full https:// address, e.g. https://buy.stripe.com/...`);
+  } else if (/\s/.test(payLink)) {
+    fail(`${where} paymentLink contains a space — it was probably pasted with trailing text.`);
   }
 
   const ids = new Set();

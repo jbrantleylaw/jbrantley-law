@@ -81,7 +81,7 @@ export default async (req, context) => {
     docId,
     signedAt: signedAt.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC'),
     ip,
-    paymentLink: area.stripeLink,
+    paymentLink: area.paymentLink || area.stripeLink,
   });
 
   const delivery = await sendMail({
@@ -126,7 +126,7 @@ export default async (req, context) => {
     filename,
     pdfBase64,
     emailed: delivery.ok,
-    paymentRequired: Boolean(area.stripeLink),
+    paymentRequired: Boolean(area.paymentLink || area.stripeLink),
   });
 };
 

@@ -2,7 +2,7 @@
 
 A standalone site where a prospective client picks a practice area, fills out
 intake, reads and signs the engagement letter with a finger or mouse, downloads
-the signed PDF, and pays through a Stripe Payment Link — without leaving the
+the signed PDF, and pays through your online payment link — without leaving the
 page.
 
 The moment they sign, the signed engagement letter goes to
@@ -22,7 +22,7 @@ no database, and no monthly e-signature subscription.
 | 1 | Contact information |
 | 2 | Intake questions for that practice area, plus the conflict-check questions |
 | 3 | The full engagement letter, merged with their answers, with a signature box below it |
-| 4 | Signed PDF downloads automatically, then the Stripe payment button |
+| 4 | Signed PDF downloads automatically, then the payment button |
 
 The signature box stays locked until they have scrolled to the end of the
 letter, and the submit button stays disabled until they have signed, typed their
@@ -96,18 +96,27 @@ Nothing breaks if you skip this step: the client still signs and downloads the
 PDF, and the confirmation screen asks them to email it to the firm. Fix the
 setting and the next submission goes through normally.
 
-### 3. Add the Stripe payment links
+### 3. Add the payment links
 
-In Stripe, create a **Payment Link** for each service, then paste each URL into
-the matching `stripeLink` in
-[`public/data/practice-areas.mjs`](public/data/practice-areas.mjs).
+Paste each service's online payment URL into the matching `paymentLink` in
+[`public/data/practice-areas.mjs`](public/data/practice-areas.mjs). Any hosted
+payment page works — Stripe, LawPay, Clio, Square, PayPal, Confido, or your own
+page. If the page also lists your fees, that is fine; it opens in a new tab
+after the client signs.
 
-While a `stripeLink` is empty, that practice area tells the client an invoice
+The button names the processor it recognises from the link ("Pay securely with
+LawPay"), and falls back to "Go to secure payment" for anything it does not
+know. To add a name to that list, edit `PROCESSORS` in
+[`public/assets/app.js`](public/assets/app.js).
+
+For **Stripe links only**, the portal appends `prefilled_email` and
+`client_reference_id` (the document ID printed on the signed PDF), so a payment
+can be matched back to the engagement letter it belongs to. Other providers'
+links are passed through untouched, since an unexpected query parameter can
+break a signed or tokenised URL.
+
+While a `paymentLink` is empty, that practice area tells the client an invoice
 will follow by email — so you can launch before every link exists.
-
-The portal appends `prefilled_email` and `client_reference_id` (the document ID
-from the signed PDF) to the link, so a Stripe payment can always be matched back
-to the engagement letter it belongs to.
 
 ### 4. Link it from the marketing site
 

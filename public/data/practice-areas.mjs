@@ -5,7 +5,7 @@
  *
  *  Everything the portal shows a client lives in this file: the list of
  *  practice areas, the intake questions for each one, the engagement letter
- *  text for each one, and the Stripe payment link for each one.
+ *  text for each one, and the payment link for each one.
  *
  *  It is loaded by BOTH the browser (to draw the forms and preview the letter)
  *  and the Netlify function (to build the PDF), so there is only ever one copy
@@ -207,9 +207,12 @@ const COMMON_CLOSING = [
 /* ---------------------------------------------------------------------------
  * The practice areas.
  *
- * stripeLink: paste the Stripe Payment Link URL for that service. While it is
- * blank the client is shown an invoice-will-follow message instead of a button,
- * so the portal is safe to launch before the links exist.
+ * paymentLink: the URL clients pay at for that service — a Stripe Payment
+ * Link, a LawPay link, a Square or PayPal link, or any other hosted payment
+ * page. If the page also lists your fees, that is fine: the client opens it in
+ * a new tab after signing. While it is blank the client is shown an
+ * invoice-will-follow message instead of a button, so the portal is safe to
+ * launch before the links exist.
  * ------------------------------------------------------------------------- */
 export const PRACTICE_AREAS = [
   /* ======================================================================= */
@@ -219,7 +222,7 @@ export const PRACTICE_AREAS = [
     short: 'Trademark',
     blurb: 'Federal trademark searching, registration, monitoring, and enforcement — available nationwide.',
     icon: '®',
-    stripeLink: '',
+    paymentLink: '',
     feeSummary:
       'The flat fee for this matter is $__________, payable in full before work begins. This fee covers the attorney services described above. It does not include the USPTO filing fee, which is currently $350.00 per class of goods or services and is paid directly to the government at the time of filing, and it does not include fees for responding to a substantive Office Action, opposition, or appeal, which are quoted separately if they become necessary.',
     questions: [
@@ -298,7 +301,7 @@ export const PRACTICE_AREAS = [
     short: 'Contracts',
     blurb: 'Agreements drafted or reviewed line by line, so you know exactly what you are signing.',
     icon: '§',
-    stripeLink: '',
+    paymentLink: '',
     feeSummary:
       'The flat fee for this matter is $__________, payable in full before work begins. The fee covers one drafting or review pass and one round of revisions after your comments. Additional rounds of negotiation, or a redraft after the other side proposes material changes, are billed at the firm\'s hourly rate of $__________ per hour in one-tenth-hour increments, and the firm will tell you before that work begins.',
     questions: [
@@ -376,7 +379,7 @@ export const PRACTICE_AREAS = [
     short: 'Business Formation',
     blurb: 'Entity setup and governance documents that actually protect the owners behind them.',
     icon: '◆',
-    stripeLink: '',
+    paymentLink: '',
     feeSummary:
       'The flat fee for this matter is $__________, payable in full before work begins. This fee covers the attorney services described above. It does not include the Secretary of State filing fee, registered agent fees, franchise tax, publication costs, or federal or state tax filings, all of which are your responsibility.',
     questions: [
@@ -454,7 +457,7 @@ export const PRACTICE_AREAS = [
     short: 'Government Contracting',
     blurb: 'Registration, compliance, teaming, bid protests, and claims — from a former federal attorney.',
     icon: '★',
-    stripeLink: '',
+    paymentLink: '',
     feeSummary:
       'This matter is billed at the firm\'s hourly rate of $__________ per hour in one-tenth-hour increments, against an advance fee deposit of $__________ paid before work begins. The deposit is held in the firm\'s trust account and applied to fees and costs as they are earned or incurred. When the balance falls below $__________ you agree to replenish it to the original amount within ten (10) days of the firm\'s request. Any unearned balance is refunded when the matter closes.',
     questions: [
@@ -523,7 +526,7 @@ export const PRACTICE_AREAS = [
     short: 'Personal Injury',
     blurb: 'Injured through someone else\'s negligence? No fee unless the firm recovers for you.',
     icon: '✚',
-    stripeLink: '',
+    paymentLink: '',
     feeSummary:
       'This matter is handled on a contingency fee basis. You owe no attorney fee unless the firm obtains a recovery for you. If there is a recovery, the firm\'s fee is thirty-three and one-third percent (33 1/3%) of the gross recovery if the matter resolves before a lawsuit is filed, and forty percent (40%) of the gross recovery if it resolves after a lawsuit is filed. Case expenses advanced by the firm are reimbursed out of the recovery in addition to the fee. If there is no recovery, you owe no attorney fee and, at the firm\'s discretion, no reimbursement of advanced expenses. A separate contingency fee contract complying with the applicable state rules will be provided for your signature; where its terms differ from this letter, that contract controls.',
     questions: [
@@ -612,7 +615,7 @@ export const PRACTICE_AREAS = [
     short: 'Estate Planning',
     blurb: 'Wills, powers of attorney, and directives — so your family is not left guessing.',
     icon: '⌂',
-    stripeLink: '',
+    paymentLink: '',
     feeSummary:
       'The flat fee for this matter is $__________ for an individual plan or $__________ for a couple, payable in full before drafting begins. The fee covers the documents described above, one round of revisions after your review, and the signing ceremony. It does not include funding a trust (retitling accounts and property), deed preparation and recording, beneficiary designation changes with your financial institutions, or any tax return, each of which is quoted separately.',
     questions: [
@@ -700,7 +703,7 @@ export const PRACTICE_AREAS = [
     short: 'Family Law',
     blurb: 'Low-conflict, forward-looking representation in select family matters.',
     icon: '♡',
-    stripeLink: '',
+    paymentLink: '',
     feeSummary:
       'This matter is billed at the firm\'s hourly rate of $__________ per hour in one-tenth-hour increments, against an advance fee deposit of $__________ paid before work begins. The deposit is held in the firm\'s trust account and applied to fees and costs as they are earned or incurred. When the balance falls below $__________ you agree to replenish it to the original amount within ten (10) days of the firm\'s request. Any unearned balance is refunded when the matter closes. The total cost of a family law matter depends heavily on how much the other side contests, which no attorney can predict or control.',
     questions: [
