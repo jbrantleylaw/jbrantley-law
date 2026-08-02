@@ -48,10 +48,34 @@ answers — so one file is the whole opening file.
 
 ### 1. Deploy to Netlify
 
-Connect this repository as a **new Netlify site** (separate from the marketing
-site). No build settings need changing — `netlify.toml` has them.
+Two ways, and both end up at the same place.
 
-Then either give it a subdomain such as `start.fineprintlawyer.com` or
+**A. Drag and drop (no Git).**
+
+```bash
+npm run build:drop
+```
+
+That writes `jbrantley-portal.zip`. Drag it onto
+[app.netlify.com/drop](https://app.netlify.com/drop) and the site is live in
+seconds. The zip has the serverless function already compiled with its
+dependencies inside it, so Netlify has nothing to install and no build to run.
+A `READ ME FIRST.txt` inside the zip repeats the setup steps.
+
+Re-running the build and dropping the new zip on the same site replaces it in
+place, keeping the address.
+
+The catch: a dropped bundle is a compiled artifact. Editing
+`data/practice-areas.mjs` *inside* the zip would change what a client reads on
+screen but not what the PDF says — so make content changes in this project and
+rebuild, rather than editing the zip.
+
+**B. Connect this repository** as a **new Netlify site** (separate from the
+marketing site). No build settings need changing — `netlify.toml` has them.
+This is the better long-term setup: edit a letter, commit, and the site
+redeploys itself.
+
+Either way, give it a subdomain such as `start.fineprintlawyer.com` or
 `intake.fineprintlawyer.com`, or use the `*.netlify.app` URL Netlify assigns.
 
 ### 2. Turn on email
@@ -220,6 +244,7 @@ scripts/
   verify-config.mjs             npm run check
   preview-pdf.mjs               npm run preview
   dev-server.mjs                npm run dev:local
+  build-drop.mjs                npm run build:drop
 ```
 
 `public/data/` is shared by the browser and the function on purpose, so the

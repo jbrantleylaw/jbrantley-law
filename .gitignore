@@ -6,3 +6,5 @@ node_modules/
 preview/
 .DS_Store
 *.log
+dist/
+jbrantley-portal.zip
