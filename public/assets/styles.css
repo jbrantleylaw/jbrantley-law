@@ -221,6 +221,22 @@ input:focus, select:focus, textarea:focus {
 .letter li { margin-bottom: 6px; }
 .letter .lt-close { margin-top: 30px; }
 
+/* checkboxes the client ticks inside the letter */
+.letter-check {
+  display: flex; gap: 11px; align-items: flex-start;
+  margin: 0 0 11px; padding: 11px 13px;
+  border: 1px solid var(--line-strong); border-radius: 7px;
+  background: #fff; cursor: pointer;
+  font-family: var(--sans); font-size: .93rem; line-height: 1.55;
+  transition: border-color .12s, background .12s;
+}
+.letter-check:hover { border-color: var(--gold); }
+.letter-check input { margin: 3px 0 0; accent-color: var(--gold); flex: none; width: 17px; height: 17px; }
+.letter-check:has(input:checked) { border-color: var(--gold); background: var(--gold-soft); }
+.letter-check.required { border-left: 4px solid var(--gold); }
+.letter-check.unticked { border-color: var(--danger); background: var(--danger-bg); }
+.letter-check .req-mark { color: var(--gold); font-weight: 700; }
+
 .scroll-nudge {
   font-size: .85rem; color: var(--ink-faint); text-align: center;
   margin-top: 10px; transition: opacity .2s;

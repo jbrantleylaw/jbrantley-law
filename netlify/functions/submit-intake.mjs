@@ -10,7 +10,7 @@
  */
 import { createHash, randomUUID } from 'node:crypto';
 import { getArea, questionsFor, CONTACT_FIELDS, isVisible } from '../../public/data/practice-areas.mjs';
-import { clientOfRecord, paymentChoicesFor } from '../../public/data/letter.mjs';
+import { clientOfRecord, paymentChoicesFor, letterChecks } from '../../public/data/letter.mjs';
 import { buildEngagementPdf } from './lib/pdf.mjs';
 import { sendMail, mailConfig } from './lib/mailer.mjs';
 import { buildEmail, buildClientCopy } from './lib/email-body.mjs';
@@ -43,8 +43,9 @@ export default async (req, context) => {
   // The signature is a base64 PNG and legitimately runs to tens of KB, so it
   // gets its own limit. Truncating it would hand pdf-lib a half-finished image.
   const signature = plainObject(payload.signature, 1_600_000);
+  const checks = plainObject(payload.checks, 10);
 
-  const problem = validate({ area, contact, answers, signature });
+  const problem = validate({ area, contact, answers, signature, checks });
   if (problem) return fail(422, problem);
 
   const signedAt = parseDate(signature.signedAt);
@@ -52,7 +53,7 @@ export default async (req, context) => {
 
   let pdfBytes;
   try {
-    pdfBytes = await buildEngagementPdf({ area, contact, answers, signature, docId, ip, signedAt });
+    pdfBytes = await buildEngagementPdf({ area, contact, answers, signature, docId, ip, signedAt, checks });
   } catch (err) {
     console.error('PDF generation failed', { docId, area: area.slug, error: err?.stack || err });
     return fail(500, 'We could not generate your engagement letter. Nothing was submitted — please try again.');
@@ -120,7 +121,7 @@ export default async (req, context) => {
 
 /* ------------------------------------------------------------- helpers ---- */
 
-function validate({ area, contact, answers, signature }) {
+function validate({ area, contact, answers, signature, checks }) {
   for (const f of CONTACT_FIELDS) {
     if (!isVisible(f, contact) || !f.required) continue;
     if (isEmpty(contact[f.id])) return `Please complete "${f.label}".`;
@@ -138,6 +139,14 @@ function validate({ area, contact, answers, signature }) {
     return 'We did not receive your signature. Please draw it again.';
   }
   if (signature.image.length > 1_500_000) return 'That signature image is too large.';
+
+  // A required checkbox in the letter has to be ticked here too — the browser
+  // enforces it, but the browser is not the authority on what was agreed.
+  for (const box of letterChecks(area, contact, answers)) {
+    if (box.required && checks[box.id] !== true) {
+      return 'Please tick every box marked with an asterisk in the letter before signing.';
+    }
+  }
   return null;
 }
 

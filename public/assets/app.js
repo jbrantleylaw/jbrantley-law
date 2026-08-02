@@ -35,6 +35,7 @@ function init(area) {
     contact: {},
     answers: {},
     startedAt: Date.now(),
+    checks: {},        // letter checkboxes the client ticked
     read: false,
     result: null,
   };
@@ -256,6 +257,26 @@ function init(area) {
         continue;
       }
       list = null;
+
+      if (b.type === 'check') {
+        const label = el('label', 'letter-check' + (b.required ? ' required' : ''));
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.dataset.check = b.id;
+        input.checked = Boolean(state.checks[b.id]);
+        input.addEventListener('change', () => {
+          state.checks[b.id] = input.checked;
+          label.classList.toggle('unticked', b.required && !input.checked);
+          refreshSubmit();
+        });
+        label.appendChild(input);
+        const span = el('span', '', b.text);
+        if (b.required) span.appendChild(el('span', 'req-mark', ' *'));
+        label.appendChild(span);
+        letterBody.appendChild(label);
+        continue;
+      }
+
       letterBody.appendChild(el(b.type === 'h' ? 'h4' : 'p', '', b.text));
     }
 
@@ -341,8 +362,15 @@ function init(area) {
     refreshSubmit();
   });
 
+  /** Required letter checkboxes that the client has not ticked yet. */
+  function missingChecks() {
+    const doc = buildLetter(area, state.contact, state.answers, new Date());
+    return doc.blocks.filter((b) => b.type === 'check' && b.required && !state.checks[b.id]);
+  }
+
   function refreshSubmit() {
-    submitBtn.disabled = !(state.read && pad.hasSignature() && consent.checked && typedName.value.trim().length > 1);
+    const base = state.read && pad.hasSignature() && consent.checked && typedName.value.trim().length > 1;
+    submitBtn.disabled = !(base && missingChecks().length === 0);
   }
 
   /* ------------------------------------------------------------ submit --- */
@@ -353,6 +381,17 @@ function init(area) {
     errBox.classList.add('hidden');
     if (!pad.hasSignature()) { sigWrap.classList.add('invalid'); return; }
 
+    const missing = missingChecks();
+    if (missing.length) {
+      for (const m of missing) {
+        letterBody.querySelector(`[data-check="${m.id}"]`)?.closest('.letter-check')?.classList.add('unticked');
+      }
+      errBox.textContent = `Please tick ${missing.length === 1 ? 'the box' : `all ${missing.length} boxes`} marked with an asterisk in the letter above before signing.`;
+      errBox.classList.remove('hidden');
+      letterBody.querySelector(`[data-check="${missing[0].id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     const original = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span>Preparing your document…';
@@ -361,6 +400,7 @@ function init(area) {
       areaSlug: area.slug,
       contact: state.contact,
       answers: state.answers,
+      checks: state.checks,
       signature: {
         image: pad.toDataURL(),
         typedName: typedName.value.trim(),

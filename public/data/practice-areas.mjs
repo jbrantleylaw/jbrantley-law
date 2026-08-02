@@ -27,6 +27,10 @@
  *  LETTER FORMAT -- an array of sections:
  *    { heading: "1. Scope of Representation", body: [ "paragraph", ... ] }
  *  A body line beginning with "- " is rendered as a bullet.
+ *  A body line beginning with "[ ] " becomes a checkbox the client can tick.
+ *  A body line beginning with "[*] " becomes a checkbox they MUST tick before
+ *  they can sign. Ticks are enforced in the browser and again on the server,
+ *  and are drawn into the signed PDF as filled or empty boxes.
  *  Omit `heading` for an unheaded block (used for the salutation).
  */
 
@@ -231,7 +235,10 @@ const COMMON_CLOSING = [
     heading: 'Agreement',
     body: [
       'This letter, together with the intake information attached to it, is the entire agreement between us about this matter and replaces any earlier discussion or understanding. It can be changed only in a writing signed by both of us. If any part of it is found unenforceable, the rest stays in effect.',
-      'If this letter correctly states our agreement, please sign in the box below. The representation begins when the firm has received both your signed agreement and the payment described above.',
+      'If this letter correctly states our agreement, please tick each box below and sign. The representation begins when the firm has received both your signed agreement and the payment described above.',
+      '[*] I have read this agreement in full, including the fee, and I agree to it.',
+      '[*] I understand that signing this agreement does not by itself create an attorney-client relationship, and that the firm must complete a conflicts check and confirm the engagement before work begins.',
+      '[ ] I would like the firm to mail me a printed copy of this agreement.',
     ],
   },
 ];
@@ -277,9 +284,37 @@ export const PRACTICE_AREAS = [
     short: 'Trademark',
     blurb: 'Federal trademark searching, registration, monitoring, and enforcement — available nationwide.',
     icon: '®',
-    paymentLink: '',
+    // TODO: paste the matching OneLink URL into each `url` below.
+    paymentOptions: [
+      {
+        label: 'Search and Clear',
+        amount: '$350',
+        note: 'Clearance search and opinion',
+        url: '',
+        whenAnswer: { field: 'service_requested', equals: 'Search and Clear' },
+      },
+      {
+        label: 'File and Protect',
+        amount: '$1,100',
+        note: 'Plus USPTO filing fees, paid directly to the government',
+        url: '',
+        whenAnswer: { field: 'service_requested', equals: 'File and Protect' },
+      },
+      {
+        label: 'Full Shield',
+        amount: '$2,100',
+        note: 'Plus USPTO filing fees, paid directly to the government',
+        url: '',
+        whenAnswer: { field: 'service_requested', equals: 'Full Shield' },
+      },
+    ],
     feeSummary:
-      'The flat fee for this matter is $__________, payable in full before work begins. This fee covers the attorney services described above. It does not include the USPTO filing fee, which is currently $350.00 per class of goods or services and is paid directly to the government at the time of filing, and it does not include fees for responding to a substantive Office Action, opposition, or appeal, which are quoted separately if they become necessary.',
+      'The flat fee for this matter depends on the service you selected: Search and Clear, $350.00; '
+      + 'File and Protect, $1,100.00; Full Shield, $2,100.00. The fee is payable in full before work begins. '
+      + 'For File and Protect and Full Shield the fee does not include the USPTO filing fee, which is currently '
+      + '$350.00 per class of goods or services and is paid directly to the government at the time of filing. '
+      + 'No package includes responding to a substantive Office Action, an opposition, or an appeal; those are '
+      + 'quoted separately if they become necessary. Any other trademark work is quoted before it begins.',
     questions: [
       {
         id: 'service_requested',
@@ -287,15 +322,18 @@ export const PRACTICE_AREAS = [
         type: 'radio',
         required: true,
         options: [
-          'Knockout / clearance search only',
-          'Search and federal trademark application',
-          'Federal trademark application (I already have a search)',
+          'Search and Clear',
+          'File and Protect',
+          'Full Shield',
           'Responding to an Office Action or refusal',
           'Someone is using my mark — enforcement',
           'I received a cease-and-desist letter',
           'Trademark renewal or maintenance filing',
           'Not sure yet',
         ],
+        help: 'Search and Clear is a clearance search and opinion. File and Protect adds the federal '
+          + 'application. Full Shield is the complete package. If you are not sure which fits, choose '
+          + '"Not sure yet" and the firm will recommend one.',
       },
       { id: 'mark_name', label: 'The mark you want to protect', type: 'text', required: true, placeholder: 'The exact word, phrase, or name', help: 'Type it exactly as you use it, including any spacing or punctuation.' },
       {
@@ -356,9 +394,18 @@ export const PRACTICE_AREAS = [
     short: 'Contracts',
     blurb: 'Agreements drafted or reviewed line by line, so you know exactly what you are signing.',
     icon: '§',
-    paymentLink: '',
+    // TODO: create the Contract Review OneLinks and paste them into `url`, and
+    // describe what each tier covers in its `note`.
+    paymentOptions: [
+      { label: 'Contract Review — Tier 1', amount: '$500', note: '', url: '' },
+      { label: 'Contract Review — Tier 2', amount: '$1,200', note: '', url: '' },
+      { label: 'Contract Review — Tier 3', amount: '$2,000', note: '', url: '' },
+    ],
     feeSummary:
-      'The flat fee for this matter is $__________, payable in full before work begins. The fee covers one drafting or review pass and one round of revisions after your comments. Additional rounds of negotiation, or a redraft after the other side proposes material changes, are billed at the firm\'s hourly rate of $__________ per hour in one-tenth-hour increments, and the firm will tell you before that work begins.',
+      'The flat fee for this matter is set by the tier you selected: Tier 1, $500.00; Tier 2, $1,200.00; '
+      + 'Tier 3, $2,000.00. The fee is payable in full before work begins and covers one drafting or review '
+      + 'pass and one round of revisions after your comments. Additional rounds of negotiation, or a redraft '
+      + 'after the other side proposes material changes, are quoted before that work begins.',
     questions: [
       {
         id: 'contract_need',
@@ -434,9 +481,18 @@ export const PRACTICE_AREAS = [
     short: 'Business Formation',
     blurb: 'Entity setup and governance documents that actually protect the owners behind them.',
     icon: '◆',
-    paymentLink: '',
+    // TODO: paste the matching OneLink URL into each `url` below, and describe
+    // what each tier includes in its `note` so the client can choose correctly.
+    paymentOptions: [
+      { label: 'Business Formation — Tier 1', amount: '$750', note: '', url: '' },
+      { label: 'Business Formation — Tier 2', amount: '$1,500', note: '', url: '' },
+      { label: 'Business Formation — Tier 3', amount: '$2,750', note: '', url: '' },
+    ],
     feeSummary:
-      'The flat fee for this matter is $__________, payable in full before work begins. This fee covers the attorney services described above. It does not include the Secretary of State filing fee, registered agent fees, franchise tax, publication costs, or federal or state tax filings, all of which are your responsibility.',
+      'The flat fee for this matter is set by the tier you selected: Tier 1, $750.00; Tier 2, $1,500.00; '
+      + 'Tier 3, $2,750.00. The fee is payable in full before work begins and covers the attorney services '
+      + 'described above. It does not include the Secretary of State filing fee, registered agent fees, '
+      + 'franchise tax, publication costs, or federal or state tax filings, all of which are your responsibility.',
     questions: [
       {
         id: 'formation_need',
@@ -670,9 +726,41 @@ export const PRACTICE_AREAS = [
     short: 'Estate Planning',
     blurb: 'Wills, powers of attorney, and directives — so your family is not left guessing.',
     icon: '⌂',
-    paymentLink: '',
+    // TODO: paste the matching OneLink URL into each `url` below.
+    paymentOptions: [
+      { label: 'Simple Will — one person', amount: '$1,250', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Simple Will — one person' } },
+      { label: 'Simple Wills — married couple', amount: '$1,995', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Simple Wills — married couple' } },
+      { label: 'Will Package with POA — one person', amount: '$1,750', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — one person' } },
+      { label: 'Will Package with POA — married couple', amount: '$2,995', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — married couple' } },
+      { label: 'Healthcare Directive — one person', amount: '$275', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Healthcare Directive — one person' } },
+      { label: 'Healthcare Directive — married couple', amount: '$450', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Healthcare Directive — married couple' } },
+      { label: 'Revocable Living Trust — one person', amount: '$2,500', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Revocable Living Trust — one person' } },
+      { label: 'Revocable Living Trust — married couple', amount: '$3,995', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Revocable Living Trust — married couple' } },
+      { label: 'Lady Bird Deed (Texas only)', amount: '$750', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Lady Bird Deed (Texas only)' } },
+      { label: 'Transfer on Death Deed (Texas only)', amount: '$550', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Transfer on Death Deed (Texas only)' } },
+      { label: 'Durable Power of Attorney', amount: '$275', url: '',
+        whenAnswer: { field: 'planning_need', equals: 'Durable Power of Attorney' } },
+    ],
     feeSummary:
-      'The flat fee for this matter is $__________ for an individual plan or $__________ for a couple, payable in full before drafting begins. The fee covers the documents described above, one round of revisions after your review, and the signing ceremony. It does not include funding a trust (retitling accounts and property), deed preparation and recording, beneficiary designation changes with your financial institutions, or any tax return, each of which is quoted separately.',
+      'The flat fee for this matter is set by the package you selected: Simple Will, $1,250.00 for one '
+      + 'person or $1,995.00 for a married couple; Will Package with POA, $1,750.00 for one person or '
+      + '$2,995.00 for a married couple; Revocable Living Trust, $2,500.00 for one person or $3,995.00 for a '
+      + 'married couple; Healthcare Directive, $275.00 for one person or $450.00 for a married couple; Lady '
+      + 'Bird Deed, $750.00; Transfer on Death Deed, $550.00; Durable Power of Attorney, $275.00. The fee is '
+      + 'payable in full before drafting begins and covers the documents in that package, one round of '
+      + 'revisions after your review, and the signing ceremony. It does not include funding a trust '
+      + '(retitling accounts and property), recording fees charged by the county, beneficiary designation '
+      + 'changes with your financial institutions, or any tax return, each of which is quoted separately.',
     questions: [
       {
         id: 'planning_need',
@@ -680,13 +768,21 @@ export const PRACTICE_AREAS = [
         type: 'radio',
         required: true,
         options: [
-          'A first estate plan',
-          'Update an existing will or trust',
-          'Will only',
-          'Powers of attorney and medical directives only',
-          'Trust-based plan',
-          'Not sure — I want a recommendation',
+          'Simple Will — one person',
+          'Simple Wills — married couple',
+          'Will Package with POA — one person',
+          'Will Package with POA — married couple',
+          'Healthcare Directive — one person',
+          'Healthcare Directive — married couple',
+          'Revocable Living Trust — one person',
+          'Revocable Living Trust — married couple',
+          'Lady Bird Deed (Texas only)',
+          'Transfer on Death Deed (Texas only)',
+          'Durable Power of Attorney',
+          'Not sure — I would like a recommendation',
         ],
+        help: 'Choose the package you discussed with the firm. If you have not spoken to anyone yet, '
+          + 'choose "Not sure" and the firm will recommend the right one before any fee is due.',
       },
       {
         id: 'marital_status',

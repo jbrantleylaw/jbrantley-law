@@ -87,12 +87,28 @@ export function buildLetter(area, contact, answers, date = new Date()) {
 
   for (const p of LETTER_INTRO) blocks.push({ type: 'p', text: merge(p, ctx) });
 
+  let checkIndex = 0;
   for (const section of letterSectionsFor(area)) {
     if (section.heading) blocks.push({ type: 'h', text: merge(section.heading, ctx) });
     for (const line of section.body) {
       const text = merge(line, ctx);
-      if (line.startsWith('- ')) blocks.push({ type: 'li', text: text.slice(2) });
-      else blocks.push({ type: 'p', text });
+      const box = line.match(/^\[([ *])\]\s*/);
+      if (box) {
+        // "[ ] ..." is a checkbox the client ticks; "[*] ..." must be ticked
+        // before they can sign. The id is positional and stable for a given
+        // letter, so a tick made on screen lands on the right line in the PDF.
+        checkIndex += 1;
+        blocks.push({
+          type: 'check',
+          id: `c${checkIndex}`,
+          required: box[1] === '*',
+          text: text.replace(/^\[([ *])\]\s*/, ''),
+        });
+      } else if (line.startsWith('- ')) {
+        blocks.push({ type: 'li', text: text.slice(2) });
+      } else {
+        blocks.push({ type: 'p', text });
+      }
     }
   }
 
@@ -129,6 +145,11 @@ export function answerPairs(area, answers) {
  * one `paymentLink` or a list of named `paymentOptions`. Shared so the browser,
  * the function, and the config check all agree on what counts as "payable".
  */
+/** Every checkbox in a letter, in order — used to validate and to render. */
+export function letterChecks(area, contact = {}, answers = {}) {
+  return buildLetter(area, contact, answers).blocks.filter((b) => b.type === 'check');
+}
+
 export function paymentChoicesFor(area) {
   if (Array.isArray(area.paymentOptions) && area.paymentOptions.length) {
     return area.paymentOptions.filter((o) => o && o.url);

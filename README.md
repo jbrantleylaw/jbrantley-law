@@ -255,6 +255,18 @@ not your letters. To use yours, replace the `letter` array for that area and the
 Sections in `COMMON_CLOSING` are numbered automatically, continuing from the
 area's own sections.
 
+**Checkboxes.** A body line starting with `[ ] ` becomes a box the client can
+tick; `[*] ` makes it one they *must* tick before the letter can be signed:
+
+```js
+'[*] I have read this agreement in full, including the fee, and I agree to it.',
+'[ ] I would like the firm to mail me a printed copy of this agreement.',
+```
+
+Required boxes are enforced in the browser and again on the server, so a
+submission cannot arrive with one unticked. Every box is drawn into the signed
+PDF as a filled or empty square, matching exactly what the client did.
+
 Anywhere in the text you can drop in a merge field:
 
 | Field | Becomes |

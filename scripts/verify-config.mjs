@@ -82,6 +82,15 @@ for (const area of PRACTICE_AREAS) {
   const dupe = urls.find((u, i) => urls.indexOf(u) !== i);
   if (dupe) fail(`${where} uses the same payment link for two options — one of them is probably wrong.`);
 
+  // Checkbox lines: "[ ] text" is optional, "[*] text" must be ticked.
+  for (const section of letterSectionsFor(area)) {
+    for (const line of section.body) {
+      if (/^\s*\[/.test(line) && !/^\[[ *]\]\s*\S/.test(line)) {
+        fail(`${where} letter line starts with "[" but is not a valid checkbox — use "[ ] text" or "[*] text": ${line.slice(0, 50)}…`);
+      }
+    }
+  }
+
   // Every {{merge}} field in the letter must resolve against a real key.
   const sampleContact = Object.fromEntries(CONTACT_FIELDS.map((f) => [f.id, 'x']));
   const known = new Set(Object.keys(buildContext(area, sampleContact, {})));

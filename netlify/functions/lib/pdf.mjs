@@ -153,6 +153,42 @@ class Doc {
     this.text(raw, { ...opts, indent: 26, after: opts.after ?? 5 });
   }
 
+  /**
+   * A ticked or empty box with its text beside it. The box is drawn rather
+   * than typed because WinAnsi has no ballot-box glyph, and a drawn tick
+   * reproduces at any zoom.
+   */
+  checkItem(raw, checked, opts = {}) {
+    const size = opts.size ?? 10.5;
+    const boxSize = 9.5;
+    const gutter = 20;
+    this.need(size * 1.42 + 4);
+
+    const boxX = MARGIN + 3;
+    const boxY = this.y - size + 1.5;
+
+    this.page.drawRectangle({
+      x: boxX, y: boxY, width: boxSize, height: boxSize,
+      borderColor: INK, borderWidth: 0.9,
+      color: checked ? rgb(0.98, 0.96, 0.91) : undefined,
+    });
+
+    if (checked) {
+      const tick = [
+        [boxX + 2.0, boxY + 4.9, boxX + 3.9, boxY + 2.4],
+        [boxX + 3.9, boxY + 2.4, boxX + 7.6, boxY + 7.2],
+      ];
+      for (const [x1, y1, x2, y2] of tick) {
+        this.page.drawLine({
+          start: { x: x1, y: y1 }, end: { x: x2, y: y2 },
+          thickness: 1.5, color: INK,
+        });
+      }
+    }
+
+    this.text(raw, { ...opts, size, indent: gutter, after: opts.after ?? 7 });
+  }
+
   rule(opts = {}) {
     const { color = RULE, thickness = 0.75, width = CONTENT_W, x = MARGIN, after = 12 } = opts;
     this.need(thickness + after);
@@ -321,7 +357,7 @@ function intakePage(doc, { area, contact, answers, docId }) {
 /**
  * @returns {Promise<Uint8Array>} the finished PDF
  */
-export async function buildEngagementPdf({ area, contact, answers, signature, docId, ip, signedAt }) {
+export async function buildEngagementPdf({ area, contact, answers, signature, docId, ip, signedAt, checks = {} }) {
   const pdf = await PDFDocument.create();
   const fonts = {
     body: await pdf.embedFont(StandardFonts.TimesRoman),
@@ -349,6 +385,8 @@ export async function buildEngagementPdf({ area, contact, answers, signature, do
       doc.text(b.text, { font: fonts.bodyBold, size: 11, after: 7 });
     } else if (b.type === 'li') {
       doc.bullet(b.text);
+    } else if (b.type === 'check') {
+      doc.checkItem(b.text, Boolean(checks[b.id]));
     } else {
       doc.text(b.text, { after: 10 });
     }
