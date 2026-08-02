@@ -247,8 +247,9 @@ before launch — the amount is what the client is agreeing to pay.
 ### After any edit
 
 ```bash
-npm run check      # catches typos, duplicate ids, broken merge fields, bad links
-npm run preview    # writes a sample signed PDF per area into ./preview
+npm run check        # catches typos, duplicate ids, broken merge fields, bad links
+npm run preview      # writes a sample signed PDF per area into ./preview
+npm run check:email  # checks the Resend request shape (no key or network needed)
 ```
 
 `npm run preview trademark` does just one. Open the PDFs to proof the letters
@@ -293,6 +294,7 @@ netlify/functions/
 
 scripts/
   verify-config.mjs             npm run check
+  verify-email.mjs              npm run check:email
   preview-pdf.mjs               npm run preview
   dev-server.mjs                npm run dev:local
   build-drop.mjs                npm run build:drop
