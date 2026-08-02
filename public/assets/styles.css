@@ -318,6 +318,22 @@ input:focus, select:focus, textarea:focus {
   .pay-option .btn { width: 100%; text-align: center; }
 }
 
+.plan-box { margin-top: 18px; }
+.plan-prompt {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline;
+  font-size: .91rem; color: var(--ink-soft);
+}
+.plan-form {
+  margin-top: 14px; padding: 16px 18px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--card);
+}
+.plan-form label { display: block; font-weight: 600; font-size: .9rem; margin: 6px 0 6px; }
+.plan-form textarea { min-height: 74px; }
+.plan-form .btn { margin-top: 12px; }
+.plan-status { font-size: .89rem; margin: 14px 0 0; }
+.plan-status.ok { color: var(--ok); }
+.plan-status.err { color: var(--danger); }
+
 /* ---------- misc ---------- */
 .spinner {
   width: 17px; height: 17px; border: 2px solid rgba(255,255,255,.35);

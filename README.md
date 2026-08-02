@@ -22,7 +22,7 @@ no database, and no monthly e-signature subscription.
 | 1 | Contact information |
 | 2 | Intake questions for that practice area, plus the conflict-check questions |
 | 3 | The full engagement letter, merged with their answers, with a signature box below it |
-| 4 | Signed PDF downloads automatically, then the payment button |
+| 4 | Signed PDF downloads automatically, then the payment button and a payment-plan request line |
 
 The signature box stays locked until they have scrolled to the end of the
 letter, and the submit button stays disabled until they have signed, typed their
@@ -141,6 +141,22 @@ break a signed or tokenised URL.
 
 While a `paymentLink` is empty, that practice area tells the client an invoice
 will follow by email — so you can launch before every link exists.
+
+### Payment plan requests
+
+Under the payment buttons, every client sees *"Need to discuss a payment plan?"*
+Opening it reveals an optional note and a **Send request** button. It takes no
+money and changes nothing about the agreement they signed — it emails you
+`Payment plan request — Client Name — Practice Area`, with the client as
+reply-to and their signed document ID, so you can arrange instalments by hand
+and put them in writing.
+
+This is deliberately not a "type your own amount" box: a client paying an
+arbitrary part of a fee, against a letter that says *payable in full before work
+begins*, leaves the engagement in an ambiguous state. If you want to offer
+instalments as a standing option instead, add them as ordinary
+`paymentOptions` with fixed amounts ("First of two payments — $875") and update
+that area's `feeSummary` to describe the schedule.
 
 ### 4. Link it from the marketing site
 
@@ -269,9 +285,11 @@ public/
 
 netlify/functions/
   submit-intake.mjs             validates, builds the PDF, sends the email
+  request-payment-plan.mjs      "ask about instalments" — emails you, takes no money
   lib/pdf.mjs                   PDF layout
   lib/mailer.mjs                Resend / SMTP delivery
-  lib/email-body.mjs            the email you receive
+  lib/email-body.mjs            the emails you receive
+  lib/http.mjs                  size caps, rate limiting, JSON responses
 
 scripts/
   verify-config.mjs             npm run check

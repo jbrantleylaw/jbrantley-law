@@ -14,31 +14,19 @@ import { clientOfRecord, paymentChoicesFor } from '../../public/data/letter.mjs'
 import { buildEngagementPdf } from './lib/pdf.mjs';
 import { sendMail, mailConfig } from './lib/mailer.mjs';
 import { buildEmail, buildClientCopy } from './lib/email-body.mjs';
+import { json, fail, clientIp, rateLimited, readJson, plainObject } from './lib/http.mjs';
 
 const MAX_BODY_BYTES = 3_000_000; // a drawn signature is tens of KB; 3 MB is generous
-const RATE_LIMIT = { max: 6, windowMs: 10 * 60 * 1000 };
-
-// Best-effort only: serverless instances are ephemeral and not shared, so this
-// slows a burst from one source rather than enforcing a global quota.
-const recentByIp = new Map();
 
 export default async (req, context) => {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204 });
   if (req.method !== 'POST') return fail(405, 'Use POST.');
 
-  const ip = req.headers.get('x-nf-client-connection-ip') || context?.ip || '';
+  const ip = clientIp(req, context);
 
-  const declared = Number(req.headers.get('content-length') || 0);
-  if (declared > MAX_BODY_BYTES) return fail(413, 'That submission is too large.');
-
-  let payload;
-  try {
-    const raw = await req.text();
-    if (raw.length > MAX_BODY_BYTES) return fail(413, 'That submission is too large.');
-    payload = JSON.parse(raw);
-  } catch {
-    return fail(400, 'We could not read that submission.');
-  }
+  const body = await readJson(req, MAX_BODY_BYTES);
+  if (body.response) return body.response;
+  const payload = body.payload;
 
   // Honeypot — the field is hidden from people and empty for every real client.
   if (payload.website) return fail(400, 'Submission rejected.');
@@ -158,19 +146,6 @@ function isEmpty(v) {
   return v === undefined || v === null || String(v).trim() === '';
 }
 
-/** Strips prototype pollution vectors and non-serialisable values. */
-function plainObject(v, maxString = 20_000) {
-  if (!v || typeof v !== 'object' || Array.isArray(v)) return {};
-  const out = Object.create(null);
-  for (const [k, val] of Object.entries(v)) {
-    if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
-    if (typeof val === 'string') out[k] = val.slice(0, maxString);
-    else if (Array.isArray(val)) out[k] = val.filter((x) => typeof x === 'string').map((x) => x.slice(0, 2_000));
-    else if (typeof val === 'boolean' || typeof val === 'number') out[k] = val;
-  }
-  return out;
-}
-
 function parseDate(value) {
   const d = new Date(value);
   // Never trust a clock we do not control for the record of when this was signed.
@@ -193,25 +168,4 @@ function buildFilename(area, contact, signedAt) {
   const safe = (s) => String(s || '').replace(/[^\w\s.-]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
   const date = signedAt.toISOString().slice(0, 10);
   return `Signed Engagement Letter - ${safe(clientOfRecord(contact))} - ${safe(area.short)} - ${date}.pdf`;
-}
-
-function rateLimited(ip) {
-  if (!ip) return false;
-  const now = Date.now();
-  const hits = (recentByIp.get(ip) || []).filter((t) => now - t < RATE_LIMIT.windowMs);
-  hits.push(now);
-  recentByIp.set(ip, hits);
-  if (recentByIp.size > 500) recentByIp.clear(); // bound memory on a warm instance
-  return hits.length > RATE_LIMIT.max;
-}
-
-function json(status, body) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-  });
-}
-
-function fail(status, error) {
-  return json(status, { ok: false, error });
 }

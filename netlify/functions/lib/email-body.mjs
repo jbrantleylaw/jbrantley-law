@@ -90,6 +90,67 @@ export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymen
   return { subject, html, text };
 }
 
+/**
+ * A signed client asking to pay in instalments. Deliberately plain and short —
+ * it is a prompt to pick up the phone, not a record of anything agreed.
+ */
+export function buildPaymentPlanEmail({ area, contact, docId, message, ip }) {
+  const name = clientOfRecord(contact);
+  const subject = `Payment plan request — ${name} — ${area.name}`;
+
+  const rows = [
+    ['Client', name],
+    ['Email', contact.email],
+    ['Phone', contact.phone],
+    ['Matter', area.name],
+    ['Signed agreement', docId || 'not supplied'],
+    ['Client IP', ip || 'not recorded'],
+  ].filter(([, v]) => v && String(v).trim());
+
+  const html = `
+<div style="background:#faf9f6;padding:26px 0;">
+  <div style="max-width:620px;margin:0 auto;background:#fff;border:1px solid #e2ddd3;border-radius:10px;overflow:hidden;">
+    <div style="background:#9d7a37;padding:18px 26px;">
+      <div style="font:600 16px/1.3 Georgia,serif;color:#fff;">Payment plan request</div>
+    </div>
+    <div style="padding:22px 26px 28px;">
+      <p style="margin:0 0 18px;font:15px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
+        <strong style="color:#16263c;">${escapeHtml(name)}</strong> has signed the
+        ${escapeHtml(area.name)} engagement letter and is asking about paying in
+        instalments. <strong>No payment has been made</strong>, and the signed agreement
+        is unchanged — it still reads payable in full.
+      </p>
+      <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border-top:1px solid #e2ddd3;">
+        ${rows.map(([l, v]) => `
+        <tr>
+          <td style="padding:7px 14px 7px 0;vertical-align:top;width:150px;font:600 12px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:#7b8798;">${escapeHtml(l)}</td>
+          <td style="padding:7px 0;vertical-align:top;font:14px/1.55 -apple-system,Segoe UI,Roboto,sans-serif;color:#16263c;">${escapeHtml(v)}</td>
+        </tr>`).join('')}
+      </table>
+      ${message ? `
+      <p style="margin:24px 0 6px;font:600 11px/1 -apple-system,Segoe UI,Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#9d7a37;">What they said</p>
+      <p style="margin:0;padding:14px 16px;background:#faf9f6;border-radius:8px;font:14px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#16263c;">${escapeHtml(message).replace(/\n/g, '<br>')}</p>` : ''}
+      <p style="margin:24px 0 0;padding-top:16px;border-top:1px solid #e2ddd3;font:12px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#7b8798;">
+        Reply to this email to reach the client directly. Any payment plan should be
+        confirmed in a signed writing before work begins.
+      </p>
+    </div>
+  </div>
+</div>`;
+
+  const text = [
+    `Payment plan request — ${area.name}`,
+    '',
+    `${name} has signed the engagement letter and is asking about paying in instalments.`,
+    'No payment has been made, and the signed agreement is unchanged.',
+    '',
+    ...rows.map(([l, v]) => `${l}: ${v}`),
+    ...(message ? ['', 'WHAT THEY SAID', message] : []),
+  ].join('\n');
+
+  return { subject, html, text };
+}
+
 /** Optional confirmation to the client — off unless SEND_CLIENT_COPY=true. */
 export function buildClientCopy({ area, contact }) {
   const first = escapeHtml(contact.first_name || 'there');

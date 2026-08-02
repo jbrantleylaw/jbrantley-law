@@ -6,6 +6,7 @@ import { buildLetter, formatDate, signerName } from '/data/letter.mjs';
 import { SignaturePad } from '/assets/signature-pad.js';
 
 const ENDPOINT = '/.netlify/functions/submit-intake';
+const PLAN_ENDPOINT = '/.netlify/functions/request-payment-plan';
 
 /* ---------------------------------------------------------------- area ---- */
 
@@ -406,6 +407,101 @@ function init(area) {
     }
 
     renderPayBox(data);
+    renderPlanRequest(data);
+  }
+
+  /**
+   * "Need to discuss a payment plan?" — takes no money and changes nothing
+   * about the agreement just signed. It only tells the firm to get in touch,
+   * so instalments stay a deliberate, written arrangement rather than
+   * something a client improvises at the payment screen.
+   */
+  function renderPlanRequest(data) {
+    const box = document.getElementById('planBox');
+    box.replaceChildren();
+    box.className = 'plan-box';
+
+    const prompt = el('div', 'plan-prompt');
+    prompt.appendChild(el('span', '', 'Need to discuss a payment plan?'));
+    const openBtn = document.createElement('button');
+    openBtn.type = 'button';
+    openBtn.className = 'link-btn';
+    openBtn.textContent = 'Ask the firm about instalments';
+    prompt.appendChild(openBtn);
+    box.appendChild(prompt);
+
+    const form = el('div', 'plan-form hidden');
+    form.appendChild(el('p', 'help',
+      'The firm will contact you to arrange it. Nothing is charged now, and this ' +
+      'does not change the agreement you just signed — any payment plan has to be ' +
+      'put in writing and signed before it takes effect.'));
+
+    const label = document.createElement('label');
+    label.setAttribute('for', 'planNote');
+    label.textContent = 'Anything you want the firm to know? (optional)';
+    form.appendChild(label);
+
+    const note = document.createElement('textarea');
+    note.id = 'planNote';
+    note.rows = 3;
+    note.placeholder = 'For example: I can pay half now and half in 30 days.';
+    form.appendChild(note);
+
+    const send = document.createElement('button');
+    send.type = 'button';
+    send.className = 'btn btn-ghost';
+    send.textContent = 'Send request';
+    form.appendChild(send);
+
+    const status = el('p', 'plan-status hidden');
+    form.appendChild(status);
+    box.appendChild(form);
+
+    openBtn.addEventListener('click', () => {
+      form.classList.toggle('hidden');
+      if (!form.classList.contains('hidden')) note.focus();
+    });
+
+    send.addEventListener('click', async () => {
+      send.disabled = true;
+      send.textContent = 'Sending…';
+      status.classList.add('hidden');
+      try {
+        const res = await fetch(PLAN_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            docId: data.id,
+            areaSlug: area.slug,
+            contact: {
+              first_name: state.contact.first_name,
+              last_name: state.contact.last_name,
+              entity_name: state.contact.entity_name,
+              client_type: state.contact.client_type,
+              email: state.contact.email,
+              phone: state.contact.phone,
+            },
+            message: note.value.trim(),
+            website: '',
+          }),
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || !body.ok) throw new Error(body.error || `The server returned ${res.status}.`);
+
+        note.disabled = true;
+        send.remove();
+        status.className = 'plan-status ok';
+        status.textContent = body.emailed
+          ? `Sent. The firm will contact you about a payment plan — quote ${data.id} if you reach out first.`
+          : `We could not send that automatically. Please email ${body.mailTo || FIRM.email} quoting ${data.id}, and the firm will set up a plan.`;
+      } catch (err) {
+        status.className = 'plan-status err';
+        status.textContent = `We could not send that: ${err.message} Please email ${FIRM.email} quoting ${data.id}.`;
+        send.disabled = false;
+        send.textContent = 'Try again';
+      }
+      status.classList.remove('hidden');
+    });
   }
 
   function renderPayBox(data) {

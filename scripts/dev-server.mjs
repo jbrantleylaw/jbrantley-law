@@ -22,7 +22,13 @@ if (existsSync('.env')) {
   }
 }
 
-const { default: submitIntake } = await import('../netlify/functions/submit-intake.mjs');
+// Every function in netlify/functions is served at its own endpoint, exactly
+// as Netlify does, so a new function needs no change here.
+const FUNCTIONS = Object.fromEntries(await Promise.all(
+  ['submit-intake', 'request-payment-plan'].map(async (name) => [
+    name, (await import(`../netlify/functions/${name}.mjs`)).default,
+  ]),
+));
 
 const PORT = Number(process.env.PORT || 8888);
 const ROOT = new URL('../public/', import.meta.url).pathname;
@@ -41,7 +47,10 @@ const TYPES = {
 createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
 
-  if (url.pathname === '/.netlify/functions/submit-intake') {
+  const fnMatch = url.pathname.match(/^\/\.netlify\/functions\/([\w-]+)$/);
+  if (fnMatch) {
+    const handler = FUNCTIONS[fnMatch[1]];
+    if (!handler) { res.writeHead(404); res.end('No such function'); return; }
     const chunks = [];
     for await (const c of req) chunks.push(c);
     const request = new Request(`http://localhost:${PORT}${req.url}`, {
@@ -49,7 +58,7 @@ createServer(async (req, res) => {
       headers: req.headers,
       body: chunks.length ? Buffer.concat(chunks) : undefined,
     });
-    const response = await submitIntake(request, { ip: '127.0.0.1' });
+    const response = await handler(request, { ip: '127.0.0.1' });
     res.writeHead(response.status, Object.fromEntries(response.headers));
     res.end(Buffer.from(await response.arrayBuffer()));
     return;
