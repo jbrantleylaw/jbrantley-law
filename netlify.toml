@@ -1,0 +1,37 @@
+[build]
+  publish = "public"
+  command = "npm run build"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[dev]
+  publish = "public"
+  port = 8888
+
+# Friendly URLs: /intake/trademark  ->  /intake.html?area=trademark
+[[redirects]]
+  from = "/intake/:area"
+  to = "/intake.html"
+  status = 200
+
+[[redirects]]
+  from = "/start"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    # Allows the portal to be embedded in an <iframe> on the main marketing site.
+    # Add or remove hosts here if the firm's site moves.
+    Content-Security-Policy = "frame-ancestors 'self' https://fineprintlawyer.com https://*.fineprintlawyer.com https://jenniferbrantleylaw.com https://*.jenniferbrantleylaw.com https://*.netlify.app"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"

@@ -1,0 +1,21 @@
+{
+  "name": "jbrantley-client-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Client intake, engagement letter e-signature, and payment portal for J. Brantley Law, PLLC",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'Static site — no build step required.'",
+    "check": "node --check netlify/functions/submit-intake.mjs && node --check public/data/practice-areas.mjs && node scripts/verify-config.mjs",
+    "dev:local": "node scripts/dev-server.mjs",
+    "preview": "node scripts/preview-pdf.mjs"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.14",
+    "pdf-lib": "^1.17.1"
+  }
+}

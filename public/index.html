@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Become a Client — J. Brantley Law, PLLC</title>
+  <meta name="description" content="Complete your intake, sign your engagement letter, and pay for services — all in one place." />
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia,serif'>%C2%A7</text></svg>" />
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap-wide">
+      <span class="masthead-name">J. Brantley Law, PLLC</span>
+      <span class="masthead-tag">The Fine Print Lawyer</span>
+    </div>
+  </header>
+
+  <main class="wrap-wide">
+    <section class="hero">
+      <p class="eyebrow">New client intake</p>
+      <h1>Let&rsquo;s get your matter opened.</h1>
+      <p class="lede">
+        Choose the service you need below. You&rsquo;ll answer a few questions, review and sign your
+        engagement letter, and pay &mdash; in about ten minutes, without leaving this page.
+      </p>
+    </section>
+
+    <nav class="area-grid" id="areaGrid" aria-label="Practice areas"></nav>
+
+    <section class="steps-explainer">
+      <div>
+        <div class="n">1</div>
+        <h4>Tell us about you</h4>
+        <p>Your contact information, then a short set of questions specific to your matter.</p>
+      </div>
+      <div>
+        <div class="n">2</div>
+        <h4>Review and sign</h4>
+        <p>Read your engagement letter and sign it with your finger, mouse, or trackpad.</p>
+      </div>
+      <div>
+        <div class="n">3</div>
+        <h4>Pay securely</h4>
+        <p>Pay through Stripe. Your signed letter downloads immediately and is emailed to the firm.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap-wide">
+      <p>
+        Submitting this form does not create an attorney-client relationship. No relationship is formed
+        until the firm has run a conflicts check, countersigned an engagement agreement, and received
+        any required payment. Please do not send confidential or time-sensitive information about a
+        matter with an imminent deadline through this form &mdash; call the firm instead.
+      </p>
+      <p id="footerContact"></p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { PRACTICE_AREAS, FIRM } from '/data/practice-areas.mjs';
+
+    const grid = document.getElementById('areaGrid');
+    grid.innerHTML = PRACTICE_AREAS.map((a) => `
+      <a class="area-card" href="/intake.html?area=${encodeURIComponent(a.slug)}">
+        <span class="glyph" aria-hidden="true">${a.icon || '§'}</span>
+        <h3>${a.name}</h3>
+        <p>${a.blurb}</p>
+        <span class="go">Start intake &rarr;</span>
+      </a>`).join('');
+
+    const contact = [
+      FIRM.name,
+      FIRM.address.join(', '),
+      FIRM.phone,
+      FIRM.email,
+      FIRM.licenses,
+    ].filter(Boolean).join(' &nbsp;&middot;&nbsp; ');
+    document.getElementById('footerContact').innerHTML = contact;
+  </script>
+</body>
+</html>

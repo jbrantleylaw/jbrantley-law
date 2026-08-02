@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Client Intake — J. Brantley Law, PLLC</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia,serif'>%C2%A7</text></svg>" />
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <a href="/"><span class="masthead-name">J. Brantley Law, PLLC</span></a>
+      <span class="masthead-tag" id="areaTag"></span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="progress" aria-label="Progress">
+      <ol id="progress">
+        <li data-step="0">Your information</li>
+        <li data-step="1">About your matter</li>
+        <li data-step="2">Engagement letter</li>
+        <li data-step="3">Payment</li>
+      </ol>
+    </div>
+
+    <!-- Step 1 — contact -->
+    <section class="panel hidden" id="step-0">
+      <p class="eyebrow">Step 1 of 4</p>
+      <h1>Your contact information</h1>
+      <p class="intro">Start with how to reach you. Everything here stays between you and the firm.</p>
+      <form class="fields" id="contactFields" novalidate autocomplete="on"></form>
+      <div class="alert alert-error hidden" id="err-0"></div>
+      <div class="actions">
+        <a class="btn btn-ghost" href="/">Back</a>
+        <span class="spacer"></span>
+        <button class="btn btn-primary" type="button" data-next="0">Continue</button>
+      </div>
+    </section>
+
+    <!-- Step 2 — matter questions -->
+    <section class="panel hidden" id="step-1">
+      <p class="eyebrow">Step 2 of 4</p>
+      <h1 id="matterHeading">About your matter</h1>
+      <p class="intro">
+        These answers go straight into your file and let the firm run a conflicts check before your
+        consultation. Answer as best you can &mdash; an estimate is better than a blank.
+      </p>
+      <form class="fields" id="matterFields" novalidate></form>
+      <div class="alert alert-error hidden" id="err-1"></div>
+      <div class="actions">
+        <button class="btn btn-ghost" type="button" data-back="1">Back</button>
+        <span class="spacer"></span>
+        <button class="btn btn-primary" type="button" data-next="1">Continue to engagement letter</button>
+      </div>
+    </section>
+
+    <!-- Step 3 — letter + signature -->
+    <section class="panel hidden" id="step-2">
+      <p class="eyebrow">Step 3 of 4</p>
+      <h1>Your engagement letter</h1>
+      <p class="intro">
+        Please read this in full. It is the agreement between you and the firm. Scroll to the bottom
+        to enable the signature box.
+      </p>
+
+      <div class="letter-scroll" id="letterScroll" tabindex="0" aria-label="Engagement letter">
+        <article class="letter" id="letterBody"></article>
+      </div>
+      <p class="scroll-nudge" id="scrollNudge">&darr; Scroll to the end of the letter to sign</p>
+
+      <div class="sign-block">
+        <h2>Sign here</h2>
+        <div class="fields" style="margin-top:14px">
+          <div class="field half">
+            <label for="typedName">Type your full legal name<span class="req">*</span></label>
+            <input type="text" id="typedName" autocomplete="name" />
+            <div class="field-error">Please type your full legal name.</div>
+          </div>
+          <div class="field half">
+            <span class="label">Date</span>
+            <input type="text" id="signDate" readonly />
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:16px">
+          <span class="label" id="sigLabel">Draw your signature<span class="req">*</span></span>
+          <p class="help">Use your finger on a phone or tablet, or your mouse or trackpad on a computer.</p>
+          <div class="sig-wrap" id="sigWrap">
+            <canvas id="sigCanvas" aria-labelledby="sigLabel" role="img"></canvas>
+            <div class="sig-baseline"></div>
+            <span class="sig-hint">Sign above the line</span>
+          </div>
+          <div class="sig-tools">
+            <span class="help" style="margin:0" id="sigStatus">&nbsp;</span>
+            <span>
+              <button type="button" class="link-btn" id="sigUndo">Undo</button>
+              &nbsp;&middot;&nbsp;
+              <button type="button" class="link-btn" id="sigClear">Clear</button>
+            </span>
+          </div>
+          <div class="field-error" id="sigError">Please sign in the box above.</div>
+        </div>
+
+        <div class="consent">
+          <label class="choice">
+            <input type="checkbox" id="consent" />
+            <span id="consentText"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="alert alert-error hidden" id="err-2"></div>
+      <div class="actions">
+        <button class="btn btn-ghost" type="button" data-back="2">Back</button>
+        <span class="spacer"></span>
+        <button class="btn btn-gold btn-lg" type="button" id="submitBtn" disabled>Sign &amp; submit</button>
+      </div>
+    </section>
+
+    <!-- Step 4 — done + pay -->
+    <section class="panel hidden" id="step-3">
+      <div class="done-mark" aria-hidden="true">&#10003;</div>
+      <p class="eyebrow">Step 4 of 4</p>
+      <h1 id="doneHeading">You&rsquo;re signed.</h1>
+      <p class="intro" id="doneIntro"></p>
+
+      <div class="pay-box" id="payBox"></div>
+
+      <ol class="next-list">
+        <li>
+          <span class="n">1</span>
+          <div>
+            <h4>Your signed letter is downloading</h4>
+            <p>
+              Keep a copy for your records. If the download didn&rsquo;t start,
+              <button type="button" class="link-btn" id="redownload">click here to download it again</button>.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span class="n">2</span>
+          <div>
+            <h4>The firm has your file</h4>
+            <p id="emailedNote"></p>
+          </div>
+        </li>
+        <li>
+          <span class="n">3</span>
+          <div>
+            <h4>You&rsquo;ll hear back within one business day</h4>
+            <p>
+              The firm runs a conflicts check and confirms the engagement before work begins. If
+              anything looks off, you&rsquo;ll hear about it right away.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- shown when ?area= is missing or wrong -->
+    <section class="panel hidden" id="step-error">
+      <h1>Let&rsquo;s find your service</h1>
+      <p class="intro">We couldn&rsquo;t tell which service you need. Pick one to get started.</p>
+      <div class="actions"><a class="btn btn-primary" href="/">Choose a service</a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p id="footerDisclaimer">
+        Submitting this form does not by itself create an attorney-client relationship. The
+        relationship begins when the firm has completed a conflicts check, countersigned your
+        engagement agreement, and received any required payment.
+      </p>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>
