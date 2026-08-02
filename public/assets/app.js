@@ -412,7 +412,10 @@ function init(area) {
     const box = document.getElementById('payBox');
     box.replaceChildren();
 
-    const options = paymentChoices(area);
+    // An option tied to an answer is offered only to the clients it applies to.
+    // Options with no `whenAnswer` are offered to everyone.
+    const all = paymentChoices(area);
+    const options = all.filter((o) => !o.whenAnswer || matchesAnswers(o, state.answers));
 
     if (!options.length) {
       box.appendChild(el('h3', '', 'Payment'));
@@ -428,10 +431,15 @@ function init(area) {
       'The firm never sees or stores your card number. ' +
       'Your representation begins once payment is received.';
 
-    /* --- one fee for this service: a single button ------------------- */
+    /* --- one fee applies: a single button ---------------------------- */
     if (options.length === 1) {
-      const { url } = paymentUrl(options[0].url, state.contact.email, data.id);
+      const only = options[0];
+      const { url } = paymentUrl(only.url, state.contact.email, data.id);
       box.appendChild(el('h3', '', 'Pay for your services'));
+      if (only.label) {
+        box.appendChild(el('p', 'pay-single-label',
+          [only.label, only.amount].filter(Boolean).join(' — ')));
+      }
       box.appendChild(el('p', '', reassurance));
 
       const a = document.createElement('a');
@@ -446,7 +454,7 @@ function init(area) {
     }
 
     /* --- several fees: list them, highlighting the likely one -------- */
-    const suggested = options.filter((o) => matchesAnswers(o, state.answers));
+    const suggested = options.filter((o) => o.whenAnswer);
 
     box.appendChild(el('h3', '', 'Pay for your services'));
     box.appendChild(el('p', '',

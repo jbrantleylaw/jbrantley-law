@@ -227,6 +227,11 @@ const COMMON_CLOSING = [
  *     ]
  *   `equals` also accepts an array if one fee covers several answers.
  *
+ *   IMPORTANT: an option WITH `whenAnswer` is shown only to clients whose
+ *   answer matches it — so a divorce client is never offered the name-change
+ *   fee. An option WITHOUT `whenAnswer` is shown to everyone. If nothing
+ *   applies to a given client, they are told an invoice will follow.
+ *
  * Any hosted payment page works — PracticePanther OneLink, Stripe, LawPay,
  * Clio, Square, PayPal. While an area has no link at all, the client is shown
  * an invoice-will-follow message instead of a button, so the portal is safe to
@@ -721,7 +726,16 @@ export const PRACTICE_AREAS = [
     short: 'Family Law',
     blurb: 'Low-conflict, forward-looking representation in select family matters.',
     icon: '♡',
-    paymentLink: '',
+    paymentOptions: [
+      // Only offered to clients who chose this matter type — a divorce client
+      // must never be shown the name-change fee.
+      {
+        label: 'Adult name change',
+        amount: '',   // TODO: confirm the flat fee
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/8169a29d-ebab-4c80-ac73-c26e0dfd8f91',
+        whenAnswer: { field: 'family_matter', equals: 'Adult name change' },
+      },
+    ],
     feeSummary:
       'This matter is billed at the firm\'s hourly rate of $__________ per hour in one-tenth-hour increments, against an advance fee deposit of $__________ paid before work begins. The deposit is held in the firm\'s trust account and applied to fees and costs as they are earned or incurred. When the balance falls below $__________ you agree to replenish it to the original amount within ten (10) days of the firm\'s request. Any unearned balance is refunded when the matter closes. The total cost of a family law matter depends heavily on how much the other side contests, which no attorney can predict or control.',
     questions: [
@@ -739,6 +753,7 @@ export const PRACTICE_AREAS = [
           'Enforcement of an existing order',
           'Prenuptial or postnuptial agreement',
           'Adoption',
+          'Adult name change',
           'Other',
         ],
       },
