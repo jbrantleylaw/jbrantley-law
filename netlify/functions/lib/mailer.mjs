@@ -23,7 +23,9 @@ export function mailConfig() {
       pass: env.SMTP_PASS || '',
       secure: String(env.SMTP_SECURE || '').toLowerCase() === 'true' || Number(env.SMTP_PORT) === 465,
     },
-    sendClientCopy: String(env.SEND_CLIENT_COPY || '').toLowerCase() === 'true',
+    // On by default: the client should hold their own copy of what they signed.
+    // Set SEND_CLIENT_COPY=false to turn it off.
+    sendClientCopy: String(env.SEND_CLIENT_COPY ?? 'true').toLowerCase() !== 'false',
   };
 }
 

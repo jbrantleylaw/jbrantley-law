@@ -151,33 +151,65 @@ export function buildPaymentPlanEmail({ area, contact, docId, message, ip }) {
   return { subject, html, text };
 }
 
-/** Optional confirmation to the client — off unless SEND_CLIENT_COPY=true. */
-export function buildClientCopy({ area, contact }) {
+/** The client's own copy of what they signed. On unless SEND_CLIENT_COPY=false. */
+export function buildClientCopy({ area, contact, docId }) {
   const first = escapeHtml(contact.first_name || 'there');
+  const ref = docId ? `<br><span style="color:#7b8798;">Reference ${escapeHtml(docId)}</span>` : '';
+
   const html = `
 <div style="background:#faf9f6;padding:26px 0;">
-  <div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #e2ddd3;border-radius:10px;padding:30px;">
-    <div style="font:600 18px/1.3 Georgia,serif;color:#16263c;">${escapeHtml(FIRM.name)}</div>
-    <p style="font:15px/1.65 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
-      ${first}, attached is the ${escapeHtml(area.name)} engagement letter you signed, along with a
-      copy of the intake answers you provided. Please keep it for your records.
-    </p>
-    <p style="font:15px/1.65 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
-      The firm will confirm the engagement after completing a conflicts check. Until then, no
-      attorney-client relationship has been formed. If anything in the letter is not what you
-      expected, reply to this email before making any payment.
-    </p>
-    <p style="font:13px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#7b8798;margin-top:26px;">
-      ${escapeHtml(FIRM.attorneyName)} &middot; ${escapeHtml(FIRM.email)}
-    </p>
+  <div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #e2ddd3;border-radius:10px;overflow:hidden;">
+    <div style="background:#16263c;border-bottom:3px solid #9d7a37;padding:20px 26px;">
+      <div style="font:600 17px/1.3 Georgia,serif;color:#fff;">${escapeHtml(FIRM.name)}</div>
+      <div style="font:12px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:#f3ecdd;opacity:.85;margin-top:3px;">
+        ${escapeHtml(FIRM.tagline || 'Engagement agreement')}
+      </div>
+    </div>
+    <div style="padding:26px;">
+      <p style="margin:0 0 16px;font:15px/1.65 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
+        ${first}, attached is the <strong style="color:#16263c;">${escapeHtml(area.name)}</strong>
+        engagement agreement you just signed, with the intake answers you gave on the last page.
+        Please keep it for your records.${ref}
+      </p>
+      <p style="margin:0 0 8px;font:600 11px/1 -apple-system,Segoe UI,Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#9d7a37;">What happens next</p>
+      <p style="margin:0 0 16px;font:15px/1.65 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
+        The firm runs a conflicts check and confirms the engagement before any work begins.
+        <strong style="color:#16263c;">Signing alone does not create an attorney-client
+        relationship</strong> — it begins when the firm confirms it in writing and any required
+        payment has been received. You should hear back within one business day.
+      </p>
+      <p style="margin:0;font:15px/1.65 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
+        If anything in the agreement is not what you expected, reply to this email before making
+        any payment.
+      </p>
+      <p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #e2ddd3;font:13px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#7b8798;">
+        ${escapeHtml(FIRM.attorneyName)}${FIRM.attorneyTitle ? `, ${escapeHtml(FIRM.attorneyTitle)}` : ''}<br>
+        ${escapeHtml(FIRM.name)}${FIRM.phone ? ` &middot; ${escapeHtml(FIRM.phone)}` : ''} &middot; ${escapeHtml(FIRM.email)}
+      </p>
+      <p style="margin:14px 0 0;font:12px/1.55 -apple-system,Segoe UI,Roboto,sans-serif;color:#a3adba;">
+        This email and its attachment are confidential. If it reached you in error, please delete
+        it and let the firm know at ${escapeHtml(FIRM.email)}.
+      </p>
+    </div>
   </div>
 </div>`;
 
-  return {
-    subject: `Your signed engagement letter — ${area.name}`,
-    html,
-    text: `Attached is the ${area.name} engagement letter you signed with ${FIRM.name}, along with your intake answers. `
-      + 'The firm will confirm the engagement after completing a conflicts check; until then no attorney-client relationship has been formed. '
-      + `Questions: ${FIRM.email}`,
-  };
+  const text = [
+    `${contact.first_name || 'Hello'},`,
+    '',
+    `Attached is the ${area.name} engagement agreement you just signed with ${FIRM.name}, with your intake answers on the last page. Please keep it for your records.`,
+    ...(docId ? ['', `Reference ${docId}`] : []),
+    '',
+    'WHAT HAPPENS NEXT',
+    'The firm runs a conflicts check and confirms the engagement before any work begins. Signing alone does not create an attorney-client relationship — it begins when the firm confirms it in writing and any required payment has been received. You should hear back within one business day.',
+    '',
+    'If anything in the agreement is not what you expected, reply to this email before making any payment.',
+    '',
+    [FIRM.attorneyName, FIRM.attorneyTitle].filter(Boolean).join(', '),
+    [FIRM.name, FIRM.phone, FIRM.email].filter(Boolean).join(' · '),
+    '',
+    `This email and its attachment are confidential. If it reached you in error, please delete it and let the firm know at ${FIRM.email}.`,
+  ].join('\n');
+
+  return { subject: `Your signed engagement agreement — ${area.name}`, html, text };
 }

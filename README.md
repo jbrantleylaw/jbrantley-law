@@ -42,6 +42,16 @@ the signature line, an electronic signature record (document ID, timestamps,
 IP address, browser, consent), and a final page with the client's intake
 answers — so one file is the whole opening file.
 
+**The client is emailed the same PDF automatically**, with a short note saying
+what happens next and that signing alone does not create an attorney-client
+relationship. Set `SEND_CLIENT_COPY=false` to turn that off.
+
+Because that email carries their intake answers, the signing screen shows the
+address it will go to with a *Not right? Change it* link back to step 1 — a
+mistyped address would otherwise send the file to a stranger. The client copy is
+only attempted after the email to you succeeds, so a mail outage produces one
+failure to report rather than two.
+
 ---
 
 ## Going live

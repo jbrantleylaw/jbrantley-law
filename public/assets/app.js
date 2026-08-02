@@ -269,6 +269,22 @@ function init(area) {
     const typed = document.getElementById('typedName');
     if (!typed.value) typed.value = signerName(state.contact);
 
+    // The signed agreement and the intake answers are emailed to this address,
+    // so show it before they sign — a typo would send their file to a stranger.
+    const copyNote = document.getElementById('copyNote');
+    copyNote.replaceChildren();
+    copyNote.append('A copy of the signed agreement will be emailed to ');
+    const shown = document.createElement('strong');
+    shown.textContent = state.contact.email || 'the address you gave';
+    copyNote.appendChild(shown);
+    copyNote.append('. ');
+    const fix = document.createElement('button');
+    fix.type = 'button';
+    fix.className = 'link-btn';
+    fix.textContent = 'Not right? Change it';
+    fix.addEventListener('click', () => show(0));
+    copyNote.appendChild(fix);
+
     document.getElementById('consentText').textContent =
       `I have read this engagement letter in full and I agree to it. I intend my drawn signature ` +
       `and typed name to be my legal signature, with the same effect as signing on paper, and I agree ` +

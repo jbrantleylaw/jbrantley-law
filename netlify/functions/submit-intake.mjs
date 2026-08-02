@@ -88,7 +88,7 @@ export default async (req, context) => {
   }
 
   if (cfg.sendClientCopy && delivery.ok && contact.email) {
-    const copy = buildClientCopy({ area, contact });
+    const copy = buildClientCopy({ area, contact, docId });
     const clientDelivery = await sendMail({
       to: [contact.email],
       replyTo: cfg.to,

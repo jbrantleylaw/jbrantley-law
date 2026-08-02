@@ -318,6 +318,9 @@ input:focus, select:focus, textarea:focus {
   .pay-option .btn { width: 100%; text-align: center; }
 }
 
+.copy-note { margin: 12px 2px 0; }
+.copy-note strong { color: var(--ink); }
+
 .plan-box { margin-top: 18px; }
 .plan-prompt {
   display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline;
