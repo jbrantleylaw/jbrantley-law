@@ -1429,7 +1429,7 @@ export const LETTERS = {
       ]
     }
   ],
-  "estate-planning:Durable Power of Attorney": [
+  "estate-planning:Durable Power of Attorney — one person": [
     {
       "heading": "",
       "body": [
@@ -1527,5 +1527,5 @@ export const SCOPES = {
   "estate-planning:Revocable Living Trust — married couple": "Attorney will prepare a joint Revocable Living Trust for both Clients, along with a related Certification of Trust and reciprocal pour-over Last Wills and Testaments. This engagement covers drafting of the trust instrument only. Funding of the trust, including preparation of deeds, retitling of financial accounts, or changes to beneficiary designations, is not included in this engagement and is available as a separately elected service.",
   "estate-planning:Lady Bird Deed (Texas only)": "Attorney will prepare an Enhanced Life Estate Deed (commonly known as a Ladybird Deed) conveying one parcel of Texas real property, reserving to Client a life estate with the power to sell, convey, mortgage, or otherwise dispose of the property during Client's lifetime without the consent of the remainder beneficiary. This engagement does not include a title search or title opinion unless separately elected in writing.",
   "estate-planning:Transfer on Death Deed (Texas only)": "Attorney will prepare a Transfer on Death Deed under Texas Estates Code Chapter 114, conveying one parcel of Texas real property to Client's designated beneficiary or beneficiaries effective upon Client's death, revocable by Client at any time during Client's lifetime. This engagement does not include a title search or title opinion unless separately elected in writing, and does not include recording of the deed unless separately elected.",
-  "estate-planning:Durable Power of Attorney": "Attorney will prepare a Statutory Durable Power of Attorney for financial and property matters for one individual Client, prepared for execution with the formalities required under Client's state of residence."
+  "estate-planning:Durable Power of Attorney — one person": "Attorney will prepare a Statutory Durable Power of Attorney for financial and property matters for one individual Client, prepared for execution with the formalities required under Client's state of residence."
 };

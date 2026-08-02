@@ -208,9 +208,11 @@ cannot creep into a legal document. The importer:
 Estate planning and trademark use a different agreement per package, chosen by
 the client's answer (`letterKeyField` on the area).
 
-**Adult name change has no signed agreement on file yet** and is running on a
-draft. Drop the .docx into `letters/`, add it to `MAP` in
-`scripts/import-letters.mjs`, and run `npm run letters`.
+**Two selections have no signed agreement on file yet** and run on a draft:
+Adult Name Change, and Estate Planning's Durable Power of Attorney — married
+couple (the firm supplied a Single POA agreement only). Drop the .docx into
+`letters/`, add it to `MAP` in `scripts/import-letters.mjs`, and run
+`npm run letters`.
 
 ### Matters that are not on the portal
 

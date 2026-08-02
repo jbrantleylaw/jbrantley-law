@@ -332,27 +332,26 @@ export const PRACTICE_AREAS = [
     letterKeyField: 'service_requested', // a different agreement per tier
     blurb: 'Clearance search and opinion, federal filing, and full brand protection — three tiers, available nationwide.',
     icon: '®',
-    // TODO: paste the matching OneLink URL into each `url` below.
     paymentOptions: [
       {
         label: 'Search and Clear',
         amount: '$350',
         note: 'Clearance search and opinion',
-        url: '',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/6f395e60-ba66-492f-94d9-37c9ee7355b3',
         whenAnswer: { field: 'service_requested', equals: 'Search and Clear' },
       },
       {
         label: 'File and Protect',
         amount: '$1,100',
         note: 'Plus USPTO filing fees, paid directly to the government',
-        url: '',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/089ccccc-01ec-4a47-ad5e-e39f6c2204ca',
         whenAnswer: { field: 'service_requested', equals: 'File and Protect' },
       },
       {
         label: 'Full Shield',
         amount: '$2,100',
         note: 'Plus USPTO filing fees, paid directly to the government',
-        url: '',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/c4436a1d-2089-436b-a739-207a0ee8b41f',
         whenAnswer: { field: 'service_requested', equals: 'Full Shield' },
       },
     ],
@@ -444,8 +443,11 @@ export const PRACTICE_AREAS = [
     icon: '©',
     federal: true, // open to clients in any state
     paymentOptions: [
-      // TODO: paste the Copyright OneLink URL and confirm the fee.
-      { label: 'Copyright registration — single work, single author', amount: '', url: '' },
+      {
+        label: 'Copyright registration — single work, single author',
+        amount: '', // TODO: confirm this fee — not stated in the links you sent.
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/fa12a323-c6a4-4acf-a3a1-41ebce0d7a27',
+      },
     ],
     feeSummary:
       'The flat fee for this matter is stated in the agreement below and is payable in full before '
@@ -602,12 +604,25 @@ export const PRACTICE_AREAS = [
     short: 'Business Formation',
     blurb: 'Entity formation in Texas or Georgia, from filing and EIN support up to full governance documents.',
     icon: '◆',
-    // TODO: paste the matching OneLink URL into each `url` below, and describe
-    // what each tier includes in its `note` so the client can choose correctly.
     paymentOptions: [
-      { label: 'Launch Ready', amount: '$750', note: 'State filing, formation certificate, registered agent guidance, EIN support, onboarding call', url: '' },
-      { label: 'Formation Plus', amount: '$1,500', note: 'Tier 1 plus governance documents', url: '' },
-      { label: 'Business Built', amount: '$2,750', note: 'The full formation package', url: '' },
+      {
+        label: 'Launch Ready',
+        amount: '$750',
+        note: 'State filing, formation certificate, registered agent guidance, EIN support, onboarding call',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/f99a1117-589f-4c40-a9dc-c31404287089',
+      },
+      {
+        label: 'Formation Plus',
+        amount: '$1,500',
+        note: 'Everything in Launch Ready, plus an operating agreement, S-Corp election, and initial resolutions',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/c6b8cb41-c69d-4eab-a703-70761cae25cd',
+      },
+      {
+        label: 'Business Built',
+        amount: '$2,750',
+        note: 'Everything in Formation Plus, plus a custom operating agreement, founders/buy-sell provisions, and a contractor or employment agreement',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/6a2d1dc2-553e-463d-a8ff-610ae405ae0f',
+      },
     ],
     feeSummary:
       'The flat fee for this matter is set by the tier you elect in the agreement: Launch Ready, $750.00; '
@@ -767,35 +782,44 @@ export const PRACTICE_AREAS = [
     icon: '⌂',
     // TODO: paste the matching OneLink URL into each `url` below.
     paymentOptions: [
-      { label: 'Simple Will — one person', amount: '$1,250', url: '',
+      { label: 'Simple Will — one person', amount: '$1,250', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/d8286827-18d0-4412-8ba5-b24eaeca65ab',
         whenAnswer: { field: 'planning_need', equals: 'Simple Will — one person' } },
-      { label: 'Simple Wills — married couple', amount: '$1,995', url: '',
+      { label: 'Simple Wills — married couple', amount: '$1,995', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/ea03ff08-1f6d-4665-b66d-71c56abdae51',
         whenAnswer: { field: 'planning_need', equals: 'Simple Wills — married couple' } },
-      { label: 'Will Package with POA — one person', amount: '$1,750', url: '',
+      { label: 'Will Package with POA — one person', amount: '$1,750', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/4251556f-ab4c-41a2-af4a-82cd8a7de4d7',
         whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — one person' } },
-      { label: 'Will Package with POA — married couple', amount: '$2,995', url: '',
+      { label: 'Will Package with POA — married couple', amount: '$2,995', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/81f101d8-341a-40fb-a64c-7fa3b1125713',
         whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — married couple' } },
-      { label: 'Healthcare Directive — one person', amount: '$275', url: '',
+      { label: 'Healthcare Directive — one person', amount: '$275', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/a597dddf-3bb1-458c-8011-12d9f6ff46d0',
         whenAnswer: { field: 'planning_need', equals: 'Healthcare Directive — one person' } },
-      { label: 'Healthcare Directive — married couple', amount: '$450', url: '',
+      { label: 'Healthcare Directive — married couple', amount: '$450', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/64ba1bdb-e413-43ea-81b3-ebd8e8524646',
         whenAnswer: { field: 'planning_need', equals: 'Healthcare Directive — married couple' } },
-      { label: 'Revocable Living Trust — one person', amount: '$2,500', url: '',
+      { label: 'Revocable Living Trust — one person', amount: '$2,500', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/781d4f5f-bd3a-4288-b5fb-51efe5fae8eb',
         whenAnswer: { field: 'planning_need', equals: 'Revocable Living Trust — one person' } },
-      { label: 'Revocable Living Trust — married couple', amount: '$3,995', url: '',
+      { label: 'Revocable Living Trust — married couple', amount: '$3,995', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/15464e3d-7346-4a26-b1fb-05d77140d4ea',
         whenAnswer: { field: 'planning_need', equals: 'Revocable Living Trust — married couple' } },
-      { label: 'Lady Bird Deed (Texas only)', amount: '$750', url: '',
+      { label: 'Lady Bird Deed (Texas only)', amount: '$750', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/d580f4ea-0224-4761-8792-c28906d1678c',
         whenAnswer: { field: 'planning_need', equals: 'Lady Bird Deed (Texas only)' } },
-      { label: 'Transfer on Death Deed (Texas only)', amount: '$550', url: '',
+      { label: 'Transfer on Death Deed (Texas only)', amount: '$550', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/aacbf595-4819-4f82-a7fe-ef52b26d05cc',
         whenAnswer: { field: 'planning_need', equals: 'Transfer on Death Deed (Texas only)' } },
-      { label: 'Durable Power of Attorney', amount: '$275', url: '',
-        whenAnswer: { field: 'planning_need', equals: 'Durable Power of Attorney' } },
+      { label: 'Durable Power of Attorney — one person', amount: '$275',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/6d8d3ed5-8a83-4afc-b38e-7772cf0e3ae0',
+        whenAnswer: { field: 'planning_need', equals: 'Durable Power of Attorney — one person' } },
+      // TODO: no signed agreement on file for the joint/married POA yet — see
+      // the note next to '11_Durable_POA_Engagement_Agreement.docx' in
+      // scripts/import-letters.mjs. This option is live and priced by inference
+      // from the single fee; confirm the real amount before launch.
+      { label: 'Durable Power of Attorney — married couple', amount: '$450',
+        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/86fd5236-06fe-487e-9300-7b841a3ae408',
+        whenAnswer: { field: 'planning_need', equals: 'Durable Power of Attorney — married couple' } },
     ],
     feeSummary:
       'The flat fee for this matter is set by the package you selected: Simple Will, $1,250.00 for one '
       + 'person or $1,995.00 for a married couple; Will Package with POA, $1,750.00 for one person or '
       + '$2,995.00 for a married couple; Revocable Living Trust, $2,500.00 for one person or $3,995.00 for a '
       + 'married couple; Healthcare Directive, $275.00 for one person or $450.00 for a married couple; Lady '
-      + 'Bird Deed, $750.00; Transfer on Death Deed, $550.00; Durable Power of Attorney, $275.00. The fee is '
+      + 'Bird Deed, $750.00; Transfer on Death Deed, $550.00; Durable Power of Attorney, $275.00 for one person '
+      + 'or $450.00 for a married couple. The fee is '
       + 'payable in full before drafting begins and covers the documents in that package, one round of '
       + 'revisions after your review, and the signing ceremony. It does not include funding a trust '
       + '(retitling accounts and property), recording fees charged by the county, beneficiary designation '
@@ -817,7 +841,8 @@ export const PRACTICE_AREAS = [
           'Revocable Living Trust — married couple',
           'Lady Bird Deed (Texas only)',
           'Transfer on Death Deed (Texas only)',
-          'Durable Power of Attorney',
+          'Durable Power of Attorney — one person',
+          'Durable Power of Attorney — married couple',
           'Not sure — I would like a recommendation',
         ],
         help: 'Choose the package you discussed with the firm. If you have not spoken to anyone yet, '

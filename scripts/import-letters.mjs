@@ -44,7 +44,9 @@ const MAP = {
   'estate-planning:Revocable Living Trust — married couple': '08_Revocable_Living_Trust_Engagement_Agreement_Joint.docx',
   'estate-planning:Lady Bird Deed (Texas only)': '09_Ladybird_Deed_Engagement_Agreement.docx',
   'estate-planning:Transfer on Death Deed (Texas only)': '10_TODD_Engagement_Agreement.docx',
-  'estate-planning:Durable Power of Attorney': '11_Durable_POA_Engagement_Agreement.docx',
+  'estate-planning:Durable Power of Attorney — one person': '11_Durable_POA_Engagement_Agreement.docx',
+  // No joint/married POA agreement supplied yet — 'Durable Power of Attorney — married couple' has no
+  // entry here, so practice-areas.mjs falls back to its draft `letter` for that selection until one is added.
 };
 
 /** Areas where the client's state is elected in the letter (TX/GA only). */
