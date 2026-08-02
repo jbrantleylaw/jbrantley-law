@@ -116,7 +116,7 @@ export function buildEmail({ area, contact, answers, docId, signedAt, ip, paymen
 }
 
 /**
- * A signed client asking to pay in instalments. Deliberately plain and short —
+ * A signed client asking to pay in installments. Deliberately plain and short —
  * it is a prompt to pick up the phone, not a record of anything agreed.
  */
 export function buildPaymentPlanEmail({ area, contact, docId, message, ip }) {
@@ -142,7 +142,7 @@ export function buildPaymentPlanEmail({ area, contact, docId, message, ip }) {
       <p style="margin:0 0 18px;font:15px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;color:#47586e;">
         <strong style="color:#16263c;">${escapeHtml(name)}</strong> has signed the
         ${escapeHtml(area.name)} engagement letter and is asking about paying in
-        instalments. <strong>No payment has been made</strong>, and the signed agreement
+        installments. <strong>No payment has been made</strong>, and the signed agreement
         is unchanged — it still reads payable in full.
       </p>
       <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border-top:1px solid #e2ddd3;">
@@ -166,7 +166,7 @@ export function buildPaymentPlanEmail({ area, contact, docId, message, ip }) {
   const text = [
     `Payment plan request — ${area.name}`,
     '',
-    `${name} has signed the engagement letter and is asking about paying in instalments.`,
+    `${name} has signed the engagement letter and is asking about paying in installments.`,
     'No payment has been made, and the signed agreement is unchanged.',
     '',
     ...rows.map(([l, v]) => `${l}: ${v}`),

@@ -242,13 +242,13 @@ Under the payment buttons, every client sees *"Need to discuss a payment plan?"*
 Opening it reveals an optional note and a **Send request** button. It takes no
 money and changes nothing about the agreement they signed — it emails you
 `Payment plan request — Client Name — Practice Area`, with the client as
-reply-to and their signed document ID, so you can arrange instalments by hand
+reply-to and their signed document ID, so you can arrange installments by hand
 and put them in writing.
 
 This is deliberately not a "type your own amount" box: a client paying an
 arbitrary part of a fee, against a letter that says *payable in full before work
 begins*, leaves the engagement in an ambiguous state. If you want to offer
-instalments as a standing option instead, add them as ordinary
+installments as a standing option instead, add them as ordinary
 `paymentOptions` with fixed amounts ("First of two payments — $875") and update
 that area's `feeSummary` to describe the schedule.
 
@@ -392,7 +392,7 @@ public/
 
 netlify/functions/
   submit-intake.mjs             validates, builds the PDF, sends the email
-  request-payment-plan.mjs      "ask about instalments" — emails you, takes no money
+  request-payment-plan.mjs      "ask about installments" — emails you, takes no money
   lib/pdf.mjs                   PDF layout
   lib/mailer.mjs                Resend / SMTP delivery
   lib/email-body.mjs            the emails you receive

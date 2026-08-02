@@ -178,7 +178,12 @@ function init(area) {
       if (!wrap || !isVisible(f, values)) continue;
       const v = values[f.id];
       const empty = f.type === 'checkboxes' ? !(v && v.length) : !(v && String(v).trim());
-      let bad = f.required && empty;
+      // Boolean(...) matters here, not just style: f.required is `undefined` on every
+      // optional field (never explicitly set to false), so without coercion `bad` would
+      // be `undefined` rather than `false`. classList.toggle(class, undefined) does not
+      // force-remove — it TOGGLES, so an optional field's error state would flip on every
+      // validate() call instead of staying correctly cleared.
+      let bad = Boolean(f.required && empty);
       let msg = 'This one is required.';
 
       if (!bad && !empty && f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
@@ -519,7 +524,7 @@ function init(area) {
   /**
    * "Need to discuss a payment plan?" — takes no money and changes nothing
    * about the agreement just signed. It only tells the firm to get in touch,
-   * so instalments stay a deliberate, written arrangement rather than
+   * so installments stay a deliberate, written arrangement rather than
    * something a client improvises at the payment screen.
    */
   function renderPlanRequest(data) {
@@ -532,7 +537,7 @@ function init(area) {
     const openBtn = document.createElement('button');
     openBtn.type = 'button';
     openBtn.className = 'link-btn';
-    openBtn.textContent = 'Ask the firm about instalments';
+    openBtn.textContent = 'Ask the firm about installments';
     prompt.appendChild(openBtn);
     box.appendChild(prompt);
 

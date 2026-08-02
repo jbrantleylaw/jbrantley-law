@@ -1,7 +1,7 @@
 /**
  * POST /.netlify/functions/request-payment-plan
  *
- * A client who has already signed asks the firm about paying in instalments.
+ * A client who has already signed asks the firm about paying in installments.
  * This takes no money and changes nothing about the agreement they signed — it
  * simply emails the firm so a plan can be arranged by hand, in writing.
  *
