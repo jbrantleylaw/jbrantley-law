@@ -34,21 +34,57 @@
  *  Omit `heading` for an unheaded block (used for the salutation).
  */
 
+import { LETTERS, SCOPES } from './letters.generated.mjs';
+
 /* ---------------------------------------------------------------------------
  * Firm details. Blank values are skipped everywhere, so leave a field as ""
  * until you have it rather than putting a placeholder in.
  * ------------------------------------------------------------------------- */
 export const FIRM = {
-  name: 'J. Brantley Law, PLLC',
+  name: 'J Brantley Law, PLLC',
   tagline: 'The Fine Print Lawyer',
-  attorneyName: 'Jennifer N. Brantley',
+  attorneyName: 'Jennifer N. Brantley, Esq.',
   attorneyTitle: 'Attorney & Counselor at Law',
   email: 'jbrantley@jenniferbrantleylaw.com',
-  phone: '', // e.g. '(210) 555-0142' — leave "" to hide
-  address: ['San Antonio, Texas'],
+  phone: '(210) 742-2435',
+  address: ['5900 Balcones Dr., #9008, Austin, TX 78731'],
   website: 'fineprintlawyer.com',
   licenses: 'Licensed in Texas and Georgia',
+  // Where an out-of-state client is sent to book a call. Leave '' to send them
+  // to the firm's email instead.
+  consultUrl: '',
 };
+
+/* ---------------------------------------------------------------------------
+ * Where the firm can take a matter.
+ *
+ * Trademark and copyright are federal and open to clients anywhere. Every
+ * other practice area requires the client to reside in Texas or Georgia; the
+ * portal stops them at the contact screen and points them to a consultation
+ * rather than letting them sign an agreement the firm cannot accept.
+ * ------------------------------------------------------------------------- */
+export const RESIDENT_STATES = {
+  TX: 'Texas',
+  GA: 'Georgia',
+};
+
+export function isEligibleState(raw) {
+  const v = String(raw || '').trim().toUpperCase();
+  if (RESIDENT_STATES[v]) return true;
+  return Object.values(RESIDENT_STATES).some((n) => n.toUpperCase() === v);
+}
+
+/** The message shown when someone outside Texas or Georgia picks a state matter. */
+export function outOfStateMessage(area) {
+  const where = FIRM.consultUrl
+    ? `schedule a consultation at ${FIRM.consultUrl}`
+    : `email ${FIRM.email} to schedule a consultation`;
+  return `${FIRM.name} can only take ${area.short.toLowerCase()} matters for clients who reside in `
+    + `Texas or Georgia, because the work is governed by the law of the client's state. Your address `
+    + `is outside both, so this intake cannot go forward. Please ${where} — the firm can talk through `
+    + `your options, including a referral. Trademark and copyright matters are federal, and those the `
+    + `firm can handle for clients in any state.`;
+}
 
 /* ---------------------------------------------------------------------------
  * Screen 1 — contact information. Shared by every practice area.
@@ -175,10 +211,9 @@ export const MILITARY_NOTE = {
 /* ---------------------------------------------------------------------------
  * The opening of every engagement letter, above the numbered sections.
  * ------------------------------------------------------------------------- */
-export const LETTER_INTRO = [
-  'Thank you for asking {{firmName}} to represent you. This letter sets out the terms on which the firm will do that work. Please read all of it — including the sections about fees and about what the representation does not cover — and ask about anything that is not clear before you sign.',
-  'The firm wants you to know exactly what you are agreeing to. That is the whole point of the fine print.',
-];
+// The firm's imported agreements open themselves, so this is left empty. It
+// still prefixes the draft letters used by areas with no agreement on file.
+export const LETTER_INTRO = [];
 
 /* ---------------------------------------------------------------------------
  * Boilerplate shared by every engagement letter. Edit once, applies to all.
@@ -282,7 +317,9 @@ export const PRACTICE_AREAS = [
     slug: 'trademark',
     name: 'Trademark & Brand Protection',
     short: 'Trademark',
-    blurb: 'Federal trademark searching, registration, monitoring, and enforcement — available nationwide.',
+    federal: true,                       // open to clients in any state
+    letterKeyField: 'service_requested', // a different agreement per tier
+    blurb: 'Clearance search and opinion, federal filing, and full brand protection — three tiers, available nationwide.',
     icon: '®',
     // TODO: paste the matching OneLink URL into each `url` below.
     paymentOptions: [
@@ -389,21 +426,94 @@ export const PRACTICE_AREAS = [
 
   /* ======================================================================= */
   {
+    slug: 'copyright',
+    name: 'Copyright Registration',
+    short: 'Copyright',
+    blurb: 'A done-with-you federal copyright registration: the firm prepares and files the application and delivers your certificate.',
+    icon: '©',
+    federal: true, // open to clients in any state
+    paymentOptions: [
+      // TODO: paste the Copyright OneLink URL and confirm the fee.
+      { label: 'Copyright registration — single work, single author', amount: '', url: '' },
+    ],
+    feeSummary:
+      'The flat fee for this matter is stated in the agreement below and is payable in full before '
+      + 'work begins. It does not include the U.S. Copyright Office filing fee, which is a separate '
+      + 'government cost paid at the time of filing.',
+    questions: [
+      { id: 'work_title', label: 'Title of the work you want to register', type: 'text', required: true },
+      {
+        id: 'work_type',
+        label: 'What kind of work is it?',
+        type: 'select',
+        required: true,
+        options: [
+          'Literary work (book, article, blog, course)',
+          'Visual art (photograph, illustration, design)',
+          'Musical work or sound recording',
+          'Motion picture or video',
+          'Website or software',
+          'Choreography or dramatic work',
+          'Other',
+        ],
+      },
+      { id: 'work_type_other', label: 'Describe the work', type: 'text', required: true, showIf: { field: 'work_type', equals: 'Other' } },
+      {
+        id: 'authorship',
+        label: 'Who created the work?',
+        type: 'radio',
+        required: true,
+        options: [
+          'I created it, by myself',
+          'I created it with someone else',
+          'It was created for me as a work made for hire',
+          'Someone assigned the rights to me',
+        ],
+        help: 'This engagement covers a single work by a single author. If more than one author or '
+          + 'work is involved, the firm will quote that separately before any fee is due.',
+      },
+      { id: 'authorship_detail', label: 'Who else was involved, and what did they contribute?', type: 'textarea', required: true, showIf: { field: 'authorship', equals: 'I created it with someone else' } },
+      { id: 'creation_date', label: 'Approximately when was the work completed?', type: 'text', required: true, placeholder: 'March 2024 — an estimate is fine' },
+      {
+        id: 'published',
+        label: 'Has the work been published?',
+        type: 'radio',
+        required: true,
+        options: ['Yes, it is publicly available', 'No, it has not been published', 'I am not sure what counts as published'],
+        help: 'Publication has a specific meaning in copyright law. If you are unsure, say so — the firm will work it out.',
+      },
+      { id: 'publication_date', label: 'Approximate date of first publication', type: 'text', showIf: { field: 'published', equals: 'Yes, it is publicly available' } },
+      { id: 'prior_registration', label: 'Has this work been registered before, in whole or in part?', type: 'radio', required: true, options: ['No', 'Yes', 'I do not know'] },
+      { id: 'infringement', label: 'Is anyone using the work without permission?', type: 'textarea', help: 'Registration is a prerequisite to suing for infringement, so tell the firm if this is urgent.' },
+    ],
+    // The firm's own agreement is used; this draft is only a fallback.
+    letter: [
+      {
+        heading: '1. Scope of Representation',
+        body: [
+          'You have asked the firm to prepare and file a federal copyright application for {{answers.work_title}}.',
+        ],
+      },
+    ],
+  },
+
+  /* ======================================================================= */
+  {
     slug: 'contracts',
     name: 'Contract Drafting & Review',
     short: 'Contracts',
-    blurb: 'Agreements drafted or reviewed line by line, so you know exactly what you are signing.',
+    blurb: 'Review, drafting, or negotiation of the contracts you provide — three tiers, from a single review to full negotiation.',
     icon: '§',
     // TODO: create the Contract Review OneLinks and paste them into `url`, and
     // describe what each tier covers in its `note`.
     paymentOptions: [
-      { label: 'Contract Review — Tier 1', amount: '$500', note: '', url: '' },
-      { label: 'Contract Review — Tier 2', amount: '$1,200', note: '', url: '' },
-      { label: 'Contract Review — Tier 3', amount: '$2,000', note: '', url: '' },
+      { label: 'Review & Advise', amount: '$500', note: 'Review and written advice on the contract you provide', url: '' },
+      { label: 'Draft & Deliver', amount: '$1,200', note: 'Drafting or redrafting, delivered ready to sign', url: '' },
+      { label: 'Contract Command', amount: '$2,000', note: 'Drafting plus negotiation with the other side', url: '' },
     ],
     feeSummary:
-      'The flat fee for this matter is set by the tier you selected: Tier 1, $500.00; Tier 2, $1,200.00; '
-      + 'Tier 3, $2,000.00. The fee is payable in full before work begins and covers one drafting or review '
+      'The flat fee for this matter is set by the tier you elect in the agreement: Review & Advise, $500.00; '
+      + 'Draft & Deliver, $1,200.00; Contract Command, $2,000.00. The fee is payable in full before work begins and covers one drafting or review '
       + 'pass and one round of revisions after your comments. Additional rounds of negotiation, or a redraft '
       + 'after the other side proposes material changes, are quoted before that work begins.',
     questions: [
@@ -479,18 +589,18 @@ export const PRACTICE_AREAS = [
     slug: 'business-formation',
     name: 'Business Formation & Governance',
     short: 'Business Formation',
-    blurb: 'Entity setup and governance documents that actually protect the owners behind them.',
+    blurb: 'Entity formation in Texas or Georgia, from filing and EIN support up to full governance documents.',
     icon: '◆',
     // TODO: paste the matching OneLink URL into each `url` below, and describe
     // what each tier includes in its `note` so the client can choose correctly.
     paymentOptions: [
-      { label: 'Business Formation — Tier 1', amount: '$750', note: '', url: '' },
-      { label: 'Business Formation — Tier 2', amount: '$1,500', note: '', url: '' },
-      { label: 'Business Formation — Tier 3', amount: '$2,750', note: '', url: '' },
+      { label: 'Launch Ready', amount: '$750', note: 'State filing, formation certificate, registered agent guidance, EIN support, onboarding call', url: '' },
+      { label: 'Formation Plus', amount: '$1,500', note: 'Tier 1 plus governance documents', url: '' },
+      { label: 'Business Built', amount: '$2,750', note: 'The full formation package', url: '' },
     ],
     feeSummary:
-      'The flat fee for this matter is set by the tier you selected: Tier 1, $750.00; Tier 2, $1,500.00; '
-      + 'Tier 3, $2,750.00. The fee is payable in full before work begins and covers the attorney services '
+      'The flat fee for this matter is set by the tier you elect in the agreement: Launch Ready, $750.00; '
+      + 'Formation Plus, $1,500.00; Business Built, $2,750.00. The fee is payable in full before work begins and covers the attorney services '
       + 'described above. It does not include the Secretary of State filing fee, registered agent fees, '
       + 'franchise tax, publication costs, or federal or state tax filings, all of which are your responsibility.',
     questions: [
@@ -724,7 +834,8 @@ export const PRACTICE_AREAS = [
     slug: 'estate-planning',
     name: 'Estate Planning',
     short: 'Estate Planning',
-    blurb: 'Wills, powers of attorney, and directives — so your family is not left guessing.',
+    letterKeyField: 'planning_need',
+    blurb: 'Wills, powers of attorney, healthcare directives, trusts, and Texas deeds — priced per package.',
     icon: '⌂',
     // TODO: paste the matching OneLink URL into each `url` below.
     paymentOptions: [
@@ -960,15 +1071,36 @@ export function questionsFor(area) {
   return [...area.questions, ...COMMON_QUESTIONS];
 }
 
-/** The complete letter: the area's sections followed by shared boilerplate. */
-export function letterSectionsFor(area) {
-  const areaSections = area.letter.map((s) => ({ ...s }));
+/**
+ * The sections of the agreement this client is signing.
+ *
+ * Where the firm's own Word agreement has been imported (see
+ * scripts/import-letters.mjs) that is used verbatim — it is already complete
+ * and numbered. An area whose letter varies by package names the question that
+ * selects it in `letterKeyField`. Areas with no imported agreement fall back to
+ * the draft in `area.letter` plus the shared boilerplate.
+ */
+export function letterSectionsFor(area, answers = {}) {
+  const key = area.letterKeyField ? `${area.slug}:${answers[area.letterKeyField] ?? ''}` : `${area.slug}:default`;
+  const imported = LETTERS[key] || (area.letterKeyField ? null : LETTERS[`${area.slug}:default`]);
+  if (imported) return imported.map((sec) => ({ ...sec }));
+
+  // No agreement on file for this selection: fall back to the draft so the
+  // client is never shown an empty letter.
+  const fallback = area.letter || [];
+  const areaSections = fallback.map((sec) => ({ ...sec }));
   const offset = areaSections.length;
-  const closing = COMMON_CLOSING.map((s, i) => ({
-    ...s,
-    heading: `${offset + i + 1}. ${s.heading}`,
+  const closing = COMMON_CLOSING.map((sec, i) => ({
+    ...sec,
+    heading: `${offset + i + 1}. ${sec.heading}`,
   }));
   return [...areaSections, ...closing];
+}
+
+/** True when the firm's own signed agreement backs this exact selection. */
+export function hasImportedLetter(area, answers = {}) {
+  const key = area.letterKeyField ? `${area.slug}:${answers[area.letterKeyField] ?? ''}` : `${area.slug}:default`;
+  return Boolean(LETTERS[key]);
 }
 
 /** Should a field be shown, given the answers collected so far? */

@@ -1,7 +1,10 @@
 /**
  * Intake wizard: contact -> matter questions -> read & sign -> pay.
  */
-import { FIRM, MILITARY_NOTE, getArea, questionsFor, CONTACT_FIELDS, isVisible } from '/data/practice-areas.mjs';
+import {
+  FIRM, MILITARY_NOTE, getArea, questionsFor, CONTACT_FIELDS, isVisible,
+  isEligibleState, outOfStateMessage,
+} from '/data/practice-areas.mjs';
 import { buildLetter, formatDate, signerName } from '/data/letter.mjs';
 import { SignaturePad } from '/assets/signature-pad.js';
 
@@ -99,7 +102,10 @@ function init(area) {
       };
 
       inputs.forEach((el) => {
-        el.addEventListener('input', () => { values[f.id] = read(); wrap.classList.remove('invalid'); onChange(); syncVisibility(form, fields, values); });
+        el.addEventListener('input', () => {
+          values[f.id] = read(); wrap.classList.remove('invalid'); onChange(); syncVisibility(form, fields, values);
+          if (f.id === 'state') document.getElementById('err-0')?.classList.add('hidden');
+        });
         el.addEventListener('change', () => { values[f.id] = read(); wrap.classList.remove('invalid'); onChange(); syncVisibility(form, fields, values); markChoices(wrap); });
       });
       markChoices(wrap);
@@ -218,9 +224,53 @@ function init(area) {
       const ok = from === 0
         ? validate(contactForm, CONTACT_FIELDS, state.contact)
         : validate(matterForm, questionsFor(area), state.answers);
-      if (ok) show(from + 1);
+      if (!ok) return;
+
+      // The firm can only take a state-law matter for a Texas or Georgia
+      // resident. Stop here rather than letting them sign something the firm
+      // would have to decline afterwards.
+      if (from === 0 && !area.federal && !isEligibleState(state.contact.state)) {
+        showOutOfState();
+        return;
+      }
+
+      show(from + 1);
     });
   });
+
+  function showOutOfState() {
+    const box = document.getElementById('err-0');
+    box.className = 'alert alert-decline';
+    box.replaceChildren();
+    box.appendChild(el('h3', '', 'The firm cannot take this matter'));
+    box.appendChild(el('p', '', outOfStateMessage(area)));
+
+    const row = el('p', 'decline-actions');
+    if (FIRM.consultUrl) {
+      const a = document.createElement('a');
+      a.className = 'btn btn-primary';
+      a.href = FIRM.consultUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = 'Schedule a consultation';
+      row.appendChild(a);
+    } else {
+      const a = document.createElement('a');
+      a.className = 'btn btn-primary';
+      a.href = `mailto:${FIRM.email}?subject=${encodeURIComponent(`Consultation request — ${area.name}`)}`;
+      a.textContent = `Email ${FIRM.email}`;
+      row.appendChild(a);
+    }
+    const federal = document.createElement('a');
+    federal.className = 'btn btn-ghost';
+    federal.href = '/';
+    federal.textContent = 'See trademark and copyright services';
+    row.appendChild(federal);
+    box.appendChild(row);
+
+    box.classList.remove('hidden');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
   document.querySelectorAll('[data-back]').forEach((btn) => {
     btn.addEventListener('click', () => show(Number(btn.dataset.back) - 1));
   });

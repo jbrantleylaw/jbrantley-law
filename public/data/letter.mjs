@@ -8,6 +8,17 @@
 
 import { FIRM, LETTER_INTRO, letterSectionsFor, questionsFor } from './practice-areas.mjs';
 
+const STATE_NAMES = { TX: 'Texas', GA: 'Georgia' };
+
+/** "TX" and "texas" both become "Texas" so the letter reads properly. */
+export function stateName(raw) {
+  const v = String(raw || '').trim();
+  if (!v) return '';
+  const code = STATE_NAMES[v.toUpperCase()];
+  if (code) return code;
+  return v.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 const BLANK = '__________';
 
 /** Value shown when a merge field has nothing behind it. */
@@ -56,6 +67,7 @@ export function buildContext(area, contact, answers, date = new Date()) {
     clientAddress: addressLines(contact).join(', '),
     clientEmail: contact.email || '',
     clientPhone: contact.phone || '',
+    clientState: stateName(contact.state),
     today: formatDate(date),
     areaName: area.name,
     feeSummary: area.feeSummary || '',
@@ -88,7 +100,7 @@ export function buildLetter(area, contact, answers, date = new Date()) {
   for (const p of LETTER_INTRO) blocks.push({ type: 'p', text: merge(p, ctx) });
 
   let checkIndex = 0;
-  for (const section of letterSectionsFor(area)) {
+  for (const section of letterSectionsFor(area, answers)) {
     if (section.heading) blocks.push({ type: 'h', text: merge(section.heading, ctx) });
     for (const line of section.body) {
       const text = merge(line, ctx);

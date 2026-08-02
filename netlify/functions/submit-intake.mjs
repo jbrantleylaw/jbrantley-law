@@ -9,7 +9,7 @@
  * 200:  { ok, id, filename, pdfBase64, emailed, paymentRequired }
  */
 import { createHash, randomUUID } from 'node:crypto';
-import { getArea, questionsFor, CONTACT_FIELDS, isVisible } from '../../public/data/practice-areas.mjs';
+import { getArea, questionsFor, CONTACT_FIELDS, isVisible, isEligibleState } from '../../public/data/practice-areas.mjs';
 import { clientOfRecord, paymentChoicesFor, letterChecks } from '../../public/data/letter.mjs';
 import { buildEngagementPdf } from './lib/pdf.mjs';
 import { sendMail, mailConfig } from './lib/mailer.mjs';
@@ -132,6 +132,11 @@ function validate({ area, contact, answers, signature, checks }) {
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(contact.email || ''))) {
     return 'That email address does not look right.';
+  }
+  // State-law matters are limited to Texas and Georgia residents. Checked here
+  // as well as in the browser, so the restriction cannot be clicked past.
+  if (!area.federal && !isEligibleState(contact.state)) {
+    return 'The firm can only take this type of matter for clients who reside in Texas or Georgia. Please contact the firm to schedule a consultation.';
   }
   if (!String(signature.typedName || '').trim()) return 'Please type your full legal name.';
   if (signature.consented !== true) return 'Please accept the electronic signature consent.';

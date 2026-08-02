@@ -171,6 +171,45 @@ permanently. Edit the wording in `MILITARY_NOTE` in
 It is asked during intake rather than at checkout on purpose: it affects the
 fee, so it needs to be on record before the fee is settled.
 
+### Where the firm can take a matter
+
+Trademark and copyright are federal, so those areas are open to clients in any
+state. **Every other area requires the client to reside in Texas or Georgia.**
+An out-of-state address is stopped at the contact screen with an explanation and
+a button to schedule a consultation — it never reaches the engagement letter.
+The rule is enforced again in the function, so it cannot be clicked past.
+
+Set `FIRM.consultUrl` in
+[`public/data/practice-areas.mjs`](public/data/practice-areas.mjs) to your
+scheduling link; while it is blank the button opens an email to the firm
+instead. Both `TX` and `Texas` are accepted in the address field.
+
+### The engagement agreements
+
+The Word agreements in [`letters/`](letters) are the source of truth. To change
+one, edit the .docx and run:
+
+```bash
+npm run letters
+```
+
+That regenerates `public/data/letters.generated.mjs`, which both the on-screen
+letter and the signed PDF read from — nothing is transcribed by hand, so a typo
+cannot creep into a legal document. The importer:
+
+- turns `Section N. Title` into a heading and Word tables into readable rows;
+- turns a `☐` line into a tickable checkbox;
+- replaces the paired *Georgia* / *Texas* elections with **one required box
+  naming the client's own state**, so it can never be left blank or ticked
+  twice;
+- drops the Word signature block, since the PDF draws its own with the captured
+  signature and the audit record.
+
+Estate planning and trademark use a different agreement per package, chosen by
+the client's answer (`letterKeyField` on the area). Areas with no agreement on
+file yet — personal injury, family law, government contracting — fall back to
+the draft letters and still need yours.
+
 ### Payment plan requests
 
 Under the payment buttons, every client sees *"Need to discuss a payment plan?"*
