@@ -1510,6 +1510,92 @@ export const LETTERS = {
       ]
     }
   ],
+  "estate-planning:Durable Power of Attorney — married couple": [
+    {
+      "heading": "",
+      "body": [
+        "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual(s) (\"Client\"), collectively the \"Parties.\""
+      ]
+    },
+    {
+      "heading": "Section 1. Scope of Engagement",
+      "body": [
+        "Attorney will prepare a separate Statutory Durable Power of Attorney for financial and property matters for each Client, prepared for execution with the formalities required under Client's state of residence.",
+        "This engagement is limited to the preparation of the specific document(s) identified above, based on the information Client provides. Attorney does not undertake to review Client's existing estate plan, financial accounts, insurance, or tax posture unless separately elected in writing. Attorney provides no opinion or guarantee regarding tax consequences, Medicaid or public benefits eligibility, or asset protection outcomes, and Client is encouraged to consult a qualified tax or financial professional as needed."
+      ]
+    },
+    {
+      "heading": "Section 2. Fee and Payment",
+      "body": [
+        "Service — Flat Fee",
+        "Durable Power of Attorney (Joint/Married) - financial and property matters for both spouses — $450",
+        "The above flat fee is due in full at the time Client signs this Agreement, payable through the Firm's online payment portal as part of the checkout process. Advance fees are deposited into the Firm's IOLTA trust account. Fifty percent (50%) of the fee is earned by Attorney and transferred from trust to Attorney's operating account upon delivery of the initial draft document(s) to Client for review. The remaining fifty percent (50%) is earned and transferred upon delivery of the final, execution-ready document(s) to Client, consistent with the Firm's standard trust accounting practice.",
+        "This flat fee does not include the recording fee, filing fee, or any other government or third-party cost associated with executing or recording the document(s) prepared under this engagement. Any such cost is Client's separate responsibility and is not included in or covered by the attorney fee stated above."
+      ]
+    },
+    {
+      "heading": "Section 3. Joint Representation Disclosure",
+      "body": [
+        "Attorney is engaged to represent both spouses jointly in connection with the estate planning documents described in this Agreement. Joint representation of spouses in estate planning is common and, absent a conflict of interest, permitted under Georgia Rule of Professional Conduct 1.7 and Texas Disciplinary Rule of Professional Conduct 1.06.",
+        "Each Client understands that information shared by either spouse with Attorney in connection with this engagement will not be treated as confidential from the other spouse, and that Attorney cannot maintain separate confidences between joint Clients regarding the subject matter of this engagement. If, at any point, Attorney determines that a conflict of interest exists between the Clients that cannot be waived, Attorney reserves the right to withdraw from representing either or both Clients."
+      ]
+    },
+    {
+      "heading": "Section 4. Deliverables and Acceptance",
+      "body": [
+        "Client has 5 business days from the date of delivery to review the deliverable and request revisions within the scope of this engagement. The deliverable is deemed accepted if Attorney receives no written objection within that period. Revisions requested outside the 5 business day window, or revisions that exceed the scope described in Section 1, will be billed as an out-of-scope service at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 5. Client Responsibilities",
+      "body": [
+        "Client agrees to provide complete and accurate information necessary for Attorney to prepare the document(s) described in this Agreement, and to respond to Attorney's requests in a timely manner. Delay in providing requested information or in reviewing and executing completed documents may delay delivery of the deliverable."
+      ]
+    },
+    {
+      "heading": "Section 6. Communication and Business Hours",
+      "body": [
+        "The Firm's business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Attorney has no obligation to respond to communications received outside of business hours, and after-hours voicemails may be deleted without response. Attorney reserves the right to bill any expedited or after-hours request at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 7. Confidentiality",
+      "body": [
+        "Attorney will maintain the confidentiality of information Client provides in connection with this engagement, consistent with Georgia Rule of Professional Conduct 1.6 and Texas Disciplinary Rule of Professional Conduct 1.05, subject to the Joint Representation Disclosure above where applicable."
+      ]
+    },
+    {
+      "heading": "Section 8. Termination",
+      "body": [
+        "Either Party may terminate this Agreement as provided under Georgia Rule of Professional Conduct 1.16 and Texas Disciplinary Rule of Professional Conduct 1.15. Fees for work performed prior to termination are earned and non-refundable. If this Agreement is terminated before the deliverable is complete, Attorney will refund any unearned portion of the flat fee based on the work completed as of the termination date."
+      ]
+    },
+    {
+      "heading": "Section 9. Malpractice Insurance Disclosure",
+      "body": [
+        "Attorney carries professional liability (malpractice) insurance."
+      ]
+    },
+    {
+      "heading": "Section 10. Dispute Resolution",
+      "body": [
+        "Any dispute regarding fees arising under this Agreement is subject to a seven (7) day written notice period as a good faith prerequisite to formal proceedings. If the dispute is not resolved within that period, it will be submitted to binding arbitration administered under the State Bar of Texas fee dispute and arbitration procedures, before a single arbitrator, with each Party bearing its own costs and fees. Both Parties waive the right to a jury trial."
+      ]
+    },
+    {
+      "heading": "Section 11. Governing Law",
+      "body": [
+        "This Agreement is governed by the laws of the state indicated by Client's election below, without regard to conflict of law principles."
+      ]
+    },
+    {
+      "heading": "Section 12. Entire Agreement",
+      "body": [
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement.",
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
+    }
+  ],
   "name-change:default": [
     {
       "heading": "",
@@ -1614,5 +1700,6 @@ export const SCOPES = {
   "estate-planning:Lady Bird Deed (Texas only)": "Attorney will prepare an Enhanced Life Estate Deed (commonly known as a Ladybird Deed) conveying one parcel of Texas real property, reserving to Client a life estate with the power to sell, convey, mortgage, or otherwise dispose of the property during Client's lifetime without the consent of the remainder beneficiary. This engagement does not include a title search or title opinion unless separately elected in writing.",
   "estate-planning:Transfer on Death Deed (Texas only)": "Attorney will prepare a Transfer on Death Deed under Texas Estates Code Chapter 114, conveying one parcel of Texas real property to Client's designated beneficiary or beneficiaries effective upon Client's death, revocable by Client at any time during Client's lifetime. This engagement does not include a title search or title opinion unless separately elected in writing, and does not include recording of the deed unless separately elected.",
   "estate-planning:Durable Power of Attorney — one person": "Attorney will prepare a Statutory Durable Power of Attorney for financial and property matters for one individual Client, prepared for execution with the formalities required under Client's state of residence.",
+  "estate-planning:Durable Power of Attorney — married couple": "Attorney will prepare a separate Statutory Durable Power of Attorney for financial and property matters for each Client, prepared for execution with the formalities required under Client's state of residence.",
   "name-change:default": "Attorney will handle a simple, uncontested adult name change matter for Client in the state Client elects below, including preparation of a Petition for Change of Name, a Proposed Order Granting Name Change, filing of the petition with the court, and either attendance at the prove-up hearing or arranging a waiver of the hearing where the court permits, along with a post-order agency notification checklist covering common agencies such as the Social Security Administration, the state driver's license or ID authority, and the U.S. passport office. Court filing fees, fingerprinting fees, and any publication costs are separate government or vendor costs and are Client's responsibility, not included in the attorney fee below."
 };

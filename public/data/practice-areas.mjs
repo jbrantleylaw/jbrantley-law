@@ -818,10 +818,6 @@ export const PRACTICE_AREAS = [
       { label: 'Durable Power of Attorney — one person', amount: '$275',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/6d8d3ed5-8a83-4afc-b38e-7772cf0e3ae0',
         whenAnswer: { field: 'planning_need', equals: 'Durable Power of Attorney — one person' } },
-      // TODO: no signed agreement on file for the joint/married POA yet — see
-      // the note next to '11_Durable_POA_Engagement_Agreement.docx' in
-      // scripts/import-letters.mjs. This option is live and priced by inference
-      // from the single fee; confirm the real amount before launch.
       { label: 'Durable Power of Attorney — married couple', amount: '$450',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/86fd5236-06fe-487e-9300-7b841a3ae408',
         whenAnswer: { field: 'planning_need', equals: 'Durable Power of Attorney — married couple' } },

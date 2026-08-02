@@ -219,13 +219,8 @@ cannot creep into a legal document. The importer:
 Estate planning and trademark use a different agreement per package, chosen by
 the client's answer (`letterKeyField` on the area).
 
-**One selection has no signed agreement on file** and runs on a draft: Estate
-Planning's Durable Power of Attorney — married couple (the firm supplied a
-Single POA agreement only). Drop the .docx into `letters/`, add it to `MAP` in
-`scripts/import-letters.mjs`, and run `npm run letters`.
-
-Every other selection — including Adult Name Change — now has a signed
-agreement on file.
+Every selection across every practice area now has a signed agreement on
+file — there is no draft fallback left in active use.
 
 ### Matters that are not on the portal
 
