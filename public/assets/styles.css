@@ -188,6 +188,12 @@ input:focus, select:focus, textarea:focus {
 .choice:hover { border-color: var(--gold); }
 .choice input { margin: 3px 0 0; accent-color: var(--gold); flex: none; width: 17px; height: 17px; }
 .choice.checked { border-color: var(--gold); background: var(--gold-soft); }
+.choice-body { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.choice-price {
+  font-family: var(--serif); font-weight: 600; font-size: .98rem; color: var(--ink);
+  margin-right: 8px;
+}
+.choice-desc { display: block; font-size: .84rem; color: var(--ink-faint); line-height: 1.5; font-weight: 400; }
 
 /* ---------- buttons ---------- */
 .actions { display: flex; gap: 12px; align-items: center; margin-top: 30px; flex-wrap: wrap; }
@@ -347,6 +353,14 @@ input:focus, select:focus, textarea:focus {
   .pay-option { align-items: stretch; }
   .pay-option .btn { width: 100%; text-align: center; }
 }
+
+/* "pay a deposit instead" — a secondary link under the full-fee option */
+.pay-installment {
+  flex-basis: 100%; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+  margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line-strong);
+}
+.pay-installment .help { margin: 0; flex: 1; min-width: 200px; }
+.btn-sm { padding: 6px 14px; font-size: .82rem; }
 
 .military-note {
   background: #fff; border: 1px solid var(--line-strong);

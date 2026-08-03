@@ -62,8 +62,10 @@ for (const area of PRACTICE_AREAS) {
     if (q.showIf) {
       const parent = all.find((p) => p.id === q.showIf.field);
       if (!parent) fail(`${where} question "${q.id}" depends on "${q.showIf.field}", which does not exist.`);
-      else if (parent.options && !parent.options.includes(q.showIf.equals)) {
-        fail(`${where} question "${q.id}" waits for "${parent.id}" to equal "${q.showIf.equals}", which is not one of its options.`);
+      else if (parent.options) {
+        const wanted = Array.isArray(q.showIf.equals) ? q.showIf.equals : [q.showIf.equals];
+        const bad = wanted.filter((v) => !parent.options.includes(v));
+        if (bad.length) fail(`${where} question "${q.id}" waits for "${parent.id}" to equal "${bad.join(', ')}", which is not one of its options.`);
       }
     }
   }

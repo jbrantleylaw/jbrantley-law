@@ -36,6 +36,8 @@
 
 import { LETTERS, SCOPES } from './letters.generated.mjs';
 
+export { SCOPES };
+
 /* ---------------------------------------------------------------------------
  * Firm details. Blank values are skipped everywhere, so leave a field as ""
  * until you have it rather than putting a placeholder in.
@@ -326,8 +328,8 @@ const COMMON_CLOSING = [
  *   fee. An option WITHOUT `whenAnswer` is shown to everyone. If nothing
  *   applies to a given client, they are told an invoice will follow.
  *
- * Any hosted payment page works — PracticePanther OneLink, Stripe, LawPay,
- * Clio, Square, PayPal. While an area has no link at all, the client is shown
+ * The firm uses PracticePanther OneLink. Any other hosted payment page would
+ * also work — Stripe, LawPay, Clio, Square, PayPal. While an area has no link at all, the client is shown
  * an invoice-will-follow message instead of a button, so the portal is safe to
  * launch before every link exists.
  * ------------------------------------------------------------------------- */
@@ -351,10 +353,11 @@ export const PRACTICE_AREAS = [
       },
       {
         label: 'File and Protect',
-        amount: '$1,100',
+        amount: '$1,200',
         note: 'Plus USPTO filing fees, paid directly to the government',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/089ccccc-01ec-4a47-ad5e-e39f6c2204ca',
         whenAnswer: { field: 'service_requested', equals: 'File and Protect' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/8789dd19-9041-42a2-8e60-026eca09f438' },
       },
       {
         label: 'Full Shield',
@@ -362,11 +365,12 @@ export const PRACTICE_AREAS = [
         note: 'Plus USPTO filing fees, paid directly to the government',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/c4436a1d-2089-436b-a739-207a0ee8b41f',
         whenAnswer: { field: 'service_requested', equals: 'Full Shield' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/daa37921-921c-488c-a1b0-10e643f7ab00' },
       },
     ],
     feeSummary:
       'The flat fee for this matter depends on the service you selected: Search and Clear, $350.00; '
-      + 'File and Protect, $1,100.00; Full Shield, $2,100.00. The fee is payable in full before work begins. '
+      + 'File and Protect, $1,200.00; Full Shield, $2,100.00. The fee is payable in full before work begins. '
       + 'For File and Protect and Full Shield the fee does not include the USPTO filing fee, which is currently '
       + '$350.00 per class of goods or services and is paid directly to the government at the time of filing. '
       + 'No package includes responding to a substantive Office Action, an opposition, or an appeal; those are '
@@ -392,6 +396,15 @@ export const PRACTICE_AREAS = [
           + '"Not sure yet" and the firm will recommend one.',
       },
       { id: 'mark_name', label: 'The mark you want to protect', type: 'text', required: true, placeholder: 'The exact word, phrase, or name', help: 'Type it exactly as you use it, including any spacing or punctuation.' },
+      {
+        id: 'number_of_classes',
+        label: 'How many classes of goods or services do you need?',
+        type: 'text',
+        required: true,
+        showIf: { field: 'service_requested', equals: ['Search and Clear', 'File and Protect', 'Full Shield'] },
+        placeholder: '1',
+        help: 'Each class is a category of goods or services under the USPTO system and carries its own $350 filing fee. Not sure? Say so and the firm will confirm during the clearance search.',
+      },
       {
         id: 'mark_type',
         label: 'What kind of mark is it?',
@@ -524,6 +537,7 @@ export const PRACTICE_AREAS = [
     slug: 'contracts',
     name: 'Contract Drafting & Review',
     short: 'Contracts',
+    letterKeyField: 'service_tier',
     blurb: 'Review, drafting, or negotiation of the contracts you provide — three tiers, from a single review to full negotiation.',
     icon: '§',
     // The three OneLinks the firm sent were labeled "Contract Command (Tier 1)",
@@ -539,16 +553,22 @@ export const PRACTICE_AREAS = [
         label: 'Review & Advise', amount: '$500',
         note: 'Review and written advice on the contract you provide',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/f82d312e-6e29-4525-b594-52d5d2f9810b', // "Tier 1"
+        whenAnswer: { field: 'service_tier', equals: 'Review & Advise' },
+        installment: { fraction: '1/2', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/9693d0c4-2ef4-4442-91c1-f334b799eca0' },
       },
       {
         label: 'Draft & Deliver', amount: '$1,200',
         note: 'Drafting or redrafting, delivered ready to sign',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/a912a954-df99-493b-bf05-d643fefa40a2', // "Tier 2"
+        whenAnswer: { field: 'service_tier', equals: 'Draft & Deliver' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/99b961ea-bdb7-4278-bf50-c5adb0ff929e' },
       },
       {
         label: 'Contract Command', amount: '$2,000',
         note: 'Drafting plus negotiation with the other side',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/884cfe72-6922-49dd-8b2d-960d947f51c5', // "Tier 3"
+        whenAnswer: { field: 'service_tier', equals: 'Contract Command' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/f33b0893-8d41-48ed-b43d-89a7a195cc85' },
       },
     ],
     feeSummary:
@@ -557,6 +577,17 @@ export const PRACTICE_AREAS = [
       + 'pass and one round of revisions after your comments. Additional rounds of negotiation, or a redraft '
       + 'after the other side proposes material changes, are quoted before that work begins.',
     questions: [
+      {
+        id: 'service_tier',
+        label: 'Which service tier do you need?',
+        type: 'radio',
+        required: true,
+        options: ['Review & Advise', 'Draft & Deliver', 'Contract Command', 'Not sure yet'],
+        help: 'Review & Advise ($500) is a review and written risk summary, no redline. Draft & Deliver '
+          + '($1,200) is custom drafting of one agreement with one round of revisions. Contract Command '
+          + '($2,000) covers up to 3 agreements with a full redline and negotiation with the other side. If '
+          + 'you are not sure, choose "Not sure yet" and the firm will recommend one before any fee is due.',
+      },
       {
         id: 'contract_need',
         label: 'What do you need?',
@@ -629,6 +660,7 @@ export const PRACTICE_AREAS = [
     slug: 'business-formation',
     name: 'Business Formation & Governance',
     short: 'Business Formation',
+    letterKeyField: 'service_tier',
     blurb: 'Entity formation in Texas or Georgia, from filing and EIN support up to full governance documents.',
     icon: '◆',
     paymentOptions: [
@@ -637,18 +669,24 @@ export const PRACTICE_AREAS = [
         amount: '$750',
         note: 'State filing, formation certificate, registered agent guidance, EIN support, onboarding call',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/f99a1117-589f-4c40-a9dc-c31404287089',
+        whenAnswer: { field: 'service_tier', equals: 'Launch Ready' },
+        installment: { fraction: '1/2', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/06073d70-5cce-446f-aa47-dac2e74d850d' },
       },
       {
         label: 'Formation Plus',
         amount: '$1,500',
         note: 'Everything in Launch Ready, plus an operating agreement, S-Corp election, and initial resolutions',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/c6b8cb41-c69d-4eab-a703-70761cae25cd',
+        whenAnswer: { field: 'service_tier', equals: 'Formation Plus' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/da1842b5-4340-417f-bb47-fcba007b256c' },
       },
       {
         label: 'Business Built',
         amount: '$2,750',
         note: 'Everything in Formation Plus, plus a custom operating agreement, founders/buy-sell provisions, and a contractor or employment agreement',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/6a2d1dc2-553e-463d-a8ff-610ae405ae0f',
+        whenAnswer: { field: 'service_tier', equals: 'Business Built' },
+        installment: { fraction: '1/5', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/d94b6d60-863b-4c1a-a0d6-91d5e54202d6' },
       },
     ],
     feeSummary:
@@ -657,6 +695,17 @@ export const PRACTICE_AREAS = [
       + 'described above. It does not include the Secretary of State filing fee, registered agent fees, '
       + 'franchise tax, publication costs, or federal or state tax filings, all of which are your responsibility.',
     questions: [
+      {
+        id: 'service_tier',
+        label: 'Which service tier do you need?',
+        type: 'radio',
+        required: true,
+        options: ['Launch Ready', 'Formation Plus', 'Business Built', 'Not sure yet'],
+        help: 'Launch Ready ($750) covers state filing and EIN support. Formation Plus ($1,500) adds an '
+          + 'operating agreement and S-Corp election. Business Built ($2,750) adds custom governance and a '
+          + 'contractor or employment agreement. If you are not sure, choose "Not sure yet" and the firm will '
+          + 'recommend one before any fee is due.',
+      },
       {
         id: 'formation_need',
         label: 'What do you need?',
@@ -796,13 +845,17 @@ export const PRACTICE_AREAS = [
     // TODO: paste the matching OneLink URL into each `url` below.
     paymentOptions: [
       { label: 'Simple Will — one person', amount: '$1,250', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/d8286827-18d0-4412-8ba5-b24eaeca65ab',
-        whenAnswer: { field: 'planning_need', equals: 'Simple Will — one person' } },
+        whenAnswer: { field: 'planning_need', equals: 'Simple Will — one person' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/75c3497a-1963-4dee-8ae1-f0fb49a07d9a' } },
       { label: 'Simple Wills — married couple', amount: '$1,995', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/ea03ff08-1f6d-4665-b66d-71c56abdae51',
-        whenAnswer: { field: 'planning_need', equals: 'Simple Wills — married couple' } },
+        whenAnswer: { field: 'planning_need', equals: 'Simple Wills — married couple' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/c2b44312-2017-49ca-977e-3b637edd505b' } },
       { label: 'Will Package with POA — one person', amount: '$1,750', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/4251556f-ab4c-41a2-af4a-82cd8a7de4d7',
-        whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — one person' } },
+        whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — one person' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/b737da09-adb1-4cc7-8f09-4e6bf564a274' } },
       { label: 'Will Package with POA — married couple', amount: '$2,995', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/81f101d8-341a-40fb-a64c-7fa3b1125713',
-        whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — married couple' } },
+        whenAnswer: { field: 'planning_need', equals: 'Will Package with POA — married couple' },
+        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/795f36c7-3871-4982-b5e5-5343d9208622' } },
       { label: 'Healthcare Directive — one person', amount: '$275', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/a597dddf-3bb1-458c-8011-12d9f6ff46d0',
         whenAnswer: { field: 'planning_need', equals: 'Healthcare Directive — one person' } },
       { label: 'Healthcare Directive — married couple', amount: '$450', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/64ba1bdb-e413-43ea-81b3-ebd8e8524646',
@@ -967,8 +1020,10 @@ export function hasImportedLetter(area, answers = {}) {
   return Boolean(LETTERS[key]);
 }
 
-/** Should a field be shown, given the answers collected so far? */
+/** Should a field be shown, given the answers collected so far? `equals` may be a single value or an array. */
 export function isVisible(field, values) {
   if (!field.showIf) return true;
-  return values[field.showIf.field] === field.showIf.equals;
+  const { field: dep, equals } = field.showIf;
+  const wanted = Array.isArray(equals) ? equals : [equals];
+  return wanted.includes(values[dep]);
 }

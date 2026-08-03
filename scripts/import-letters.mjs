@@ -32,8 +32,15 @@ const MAP = {
   'trademark:File and Protect': '04_Trademark_File_and_Protect_Engagement_Agreement.docx',
   'trademark:Full Shield': '05_Trademark_Full_Shield_Engagement_Agreement.docx',
   'copyright:default': '06_Copyright_Registration_Engagement_Agreement.docx',
-  'business-formation:default': '01_Business_Formation_Engagement_Agreement.docx',
-  'contracts:default': '02_Contract_Review_Engagement_Agreement.docx',
+  // business-formation and contracts each ship as ONE Word document covering all
+  // three tiers, elected in the letter by a "check one" box in the Service Tier
+  // Election section. TIER_SPLIT below turns that single source file into three
+  // separate letter variants — one per tier — the same way the trademark tiers
+  // are three separate agreements, so the client only ever signs the tier they
+  // actually elected (and picked at intake) rather than one document listing
+  // all three with an unchecked box.
+  'business-formation:__source': '01_Business_Formation_Engagement_Agreement.docx',
+  'contracts:__source': '02_Contract_Review_Engagement_Agreement.docx',
   'estate-planning:Simple Will — one person': '01_Simple_Will_Engagement_Agreement_Single.docx',
   'estate-planning:Simple Wills — married couple': '02_Simple_Will_Engagement_Agreement_Joint.docx',
   'estate-planning:Will Package with POA — one person': '03_Will_Package_with_POA_Engagement_Agreement_Single.docx',
@@ -51,6 +58,76 @@ const MAP = {
 
 /** Areas where the client's state is elected in the letter (TX/GA only). */
 const STATE_ELECTION_AREAS = new Set(['business-formation', 'contracts', 'estate-planning', 'name-change']);
+
+/**
+ * Splits a single "Service Tier Election" section, containing all of an
+ * area's tiers with a "check one" box apiece, into one letter per tier. The
+ * tier the client already elected at intake (`answers.<introField>`) is the
+ * only one that reaches them, so the signed document never lists tiers they
+ * did not choose alongside an unchecked box.
+ */
+const TIER_SPLIT = {
+  'business-formation': {
+    introField: 'service_tier',
+    sectionHeading: /Service Tier Election/i,
+    tiers: ['Launch Ready', 'Formation Plus', 'Business Built'],
+    trailingMatch: /^State filing fees are a separate/,
+  },
+  contracts: {
+    introField: 'service_tier',
+    sectionHeading: /Service Tier Election/i,
+    tiers: ['Review & Advise', 'Draft & Deliver', 'Contract Command'],
+    trailingMatch: null,
+  },
+};
+
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function splitTierLetters(sections, config) {
+  const idx = sections.findIndex((s) => config.sectionHeading.test(s.heading || ''));
+  if (idx < 0) throw new Error('Service Tier Election section not found for splitting.');
+  const body = sections[idx].body;
+
+  const boundaries = config.tiers.map((tier) => {
+    const re = new RegExp(`^\\[ \\]\\s*${escapeRe(tier)}\\b`);
+    const i = body.findIndex((line) => re.test(line));
+    if (i < 0) throw new Error(`Tier "${tier}" checkbox not found in Service Tier Election section.`);
+    return i;
+  });
+
+  const lastChunkEnd0 = body.length;
+  let trailing = [];
+  let lastChunkEnd = lastChunkEnd0;
+  if (config.trailingMatch) {
+    const t = body.findIndex((line, i) => i > boundaries.at(-1) && config.trailingMatch.test(line));
+    if (t >= 0) {
+      trailing = body.slice(t);
+      lastChunkEnd = t;
+    }
+  }
+
+  const out = {};
+  for (let t = 0; t < config.tiers.length; t++) {
+    const tier = config.tiers[t];
+    const start = boundaries[t];
+    const end = t + 1 < boundaries.length ? boundaries[t + 1] : lastChunkEnd;
+    const [firstLine, ...rest] = body.slice(start, end);
+    const heading = firstLine.replace(/^\[ \]\s*/, '');
+    const tierSection = {
+      ...sections[idx],
+      body: [
+        `Client elects the {{answers.${config.introField}}} tier, described below:`,
+        heading,
+        ...rest,
+        ...trailing,
+      ],
+    };
+    out[tier] = [...sections.slice(0, idx), tierSection, ...sections.slice(idx + 1)];
+  }
+  return out;
+}
 
 /* ---------------------------------------------------------------- docx ---- */
 
@@ -233,6 +310,20 @@ const scopes = {};
 for (const [key, file] of Object.entries(MAP)) {
   const areaSlug = key.split(':')[0];
   const { sections, scope } = convert(paragraphs(await documentXml(path.join(SRC, file))), { areaSlug });
+
+  const split = key.endsWith(':__source') ? TIER_SPLIT[areaSlug] : null;
+  if (split) {
+    const byTier = splitTierLetters(sections, split);
+    for (const [tier, tierSections] of Object.entries(byTier)) {
+      const tierKey = `${areaSlug}:${tier}`;
+      letters[tierKey] = tierSections;
+      scopes[tierKey] = scope;
+      const boxes = tierSections.flatMap((s) => s.body).filter((b) => /^\[[ *]\]/.test(b)).length;
+      console.log(`  ${tierKey.padEnd(52)} ${String(tierSections.length).padStart(2)} sections, ${boxes} checkbox(es)`);
+    }
+    continue;
+  }
+
   letters[key] = sections;
   scopes[key] = scope;
   const boxes = sections.flatMap((s) => s.body).filter((b) => /^\[[ *]\]/.test(b)).length;

@@ -52,6 +52,12 @@ mistyped address would otherwise send the file to a stranger. The client copy is
 only attempted after the email to you succeeds, so a mail outage produces one
 failure to report rather than two.
 
+Two more emails you may see, covered in their own sections below: **`Installment
+deposit selected`** when a signed client pays a deposit instead of the full fee
+(see "Installment deposit links"), and **`N incomplete intake(s) reminded
+today`**, a periodic digest of clients who started but never finished (see
+"Abandoned intake reminders").
+
 ---
 
 ## Going live
@@ -109,8 +115,8 @@ setting and the next submission goes through normally.
 ### 3. Add the payment links
 
 Payment links go in [`public/data/practice-areas.mjs`](public/data/practice-areas.mjs).
-Any hosted payment page works — PracticePanther OneLink, Stripe, LawPay, Clio,
-Square, PayPal, or your own page.
+The firm uses PracticePanther OneLink. Any other hosted payment page also
+works — Stripe, LawPay, Clio, Square, PayPal, or your own page.
 
 If a practice area has **one fee**, give it a single link:
 
@@ -216,11 +222,19 @@ cannot creep into a legal document. The importer:
 - drops the Word signature block, since the PDF draws its own with the captured
   signature and the audit record.
 
-Estate planning and trademark use a different agreement per package, chosen by
-the client's answer (`letterKeyField` on the area).
+Estate planning, trademark, business formation, and contracts each use a
+different agreement per package or tier, chosen by the client's answer
+(`letterKeyField` on the area). Business formation and contracts ship as a
+*single* Word document with all of their tiers in one "check one" Service Tier
+Election section — the importer splits that one section into a separate
+letter per tier (see `TIER_SPLIT` in `scripts/import-letters.mjs`), so a client
+who elects Launch Ready only ever sees and signs the Launch Ready tier, never
+the other two with an unticked box next to them.
 
-Every selection across every practice area now has a signed agreement on
-file — there is no draft fallback left in active use.
+A selection with no agreement on file (for example trademark's "Responding to
+an Office Action," or "Not sure yet" on a tiered area) falls back to the
+generic draft in that area's `letter` array — it exists so a client is never
+shown an empty page, not because it is meant to be signed as-is.
 
 ### Matters that are not on the portal
 
@@ -247,10 +261,53 @@ and put them in writing.
 
 This is deliberately not a "type your own amount" box: a client paying an
 arbitrary part of a fee, against a letter that says *payable in full before work
-begins*, leaves the engagement in an ambiguous state. If you want to offer
-installments as a standing option instead, add them as ordinary
-`paymentOptions` with fixed amounts ("First of two payments — $875") and update
-that area's `feeSummary` to describe the schedule.
+begins*, leaves the engagement in an ambiguous state.
+
+### Installment deposit links
+
+For services where you have a dedicated OneLink deposit page (a 1/2, 1/3, or
+1/5 installment), add an `installment` object next to that option's regular
+`url` in `paymentOptions`:
+
+```js
+{
+  label: 'File and Protect', amount: '$1,200', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/...',
+  installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/...' },
+}
+```
+
+When present, the client sees a second, smaller "Pay 1/3 deposit →" link under
+the full-fee button, with a note that the remaining balance will be invoiced
+separately. Clicking it opens the deposit page and — separately, best-effort —
+emails you `Installment deposit selected — Client Name — Practice Area` so you
+know to send the follow-up invoice(s) by hand. That email confirms the client
+*clicked* the deposit link, not that PracticePanther actually received payment;
+check PracticePanther itself for that. An option with no `installment` shows
+only the full-fee button, exactly as before.
+
+### Abandoned intake reminders
+
+The moment a client finishes the contact screen and moves on to the matter
+questions, the portal records that (name, email, phone, practice area) in
+[Netlify Blobs](https://docs.netlify.com/blobs/overview/) — a key/value store
+every Netlify site gets automatically, no setup or extra environment variable
+required, whether the site was deployed from Git or dropped as a zip.
+
+A scheduled function, `send-intake-reminders.mjs`, runs every 6 hours and:
+
+- finds any intake that started at least ~20 hours ago, was never signed, and
+  has not already been reminded;
+- sends that client **one** reminder email — "Still interested in your
+  \_\_\_\_ matter?" — with a link back to the intake and an invitation to
+  reply or book a consultation instead;
+- sends you a single digest, `N incomplete intake(s) reminded today`, listing
+  everyone just reminded.
+
+There is nothing to configure — Netlify schedules it from the `config.schedule`
+export in the function file. Records older than 21 days are treated as too
+stale to bother with and are left alone. The portal does not save a client's
+in-progress answers, only enough contact information to follow up, so the
+reminder is honest that finishing means filling the form out again.
 
 ### 4. Link it from the marketing site
 
@@ -349,6 +406,21 @@ leaving a `{{token}}` in a client's letter.
 
 Every `feeSummary` currently reads `$__________`. Fill in your real numbers
 before launch — the amount is what the client is agreeing to pay.
+
+**If you edit a `.docx` and want the client to fill something in — a mark, a
+class count, a dollar figure — do not type a literal blank line like
+`Mark: ______________`.** Nobody types on a blank line inside a read-only
+letter preview, and the PDF just draws whatever underscores you typed, forever
+empty. Add an intake question for it instead (or reuse one that already asks
+for it), then reference it with a merge field:
+
+```
+Mark: {{answers.mark_name}}     Number of classes to be filed: {{answers.number_of_classes}}
+```
+
+Run `npm run letters` after the edit, and `npm run check` to confirm every
+merge field in the docx matches a real question `id` — it fails loudly on a
+typo rather than shipping a letter with a literal `{{token}}` in it.
 
 ### After any edit
 

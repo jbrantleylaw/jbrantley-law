@@ -25,7 +25,7 @@ if (existsSync('.env')) {
 // Every function in netlify/functions is served at its own endpoint, exactly
 // as Netlify does, so a new function needs no change here.
 const FUNCTIONS = Object.fromEntries(await Promise.all(
-  ['submit-intake', 'request-payment-plan'].map(async (name) => [
+  ['submit-intake', 'request-payment-plan', 'log-installment-choice', 'track-intake-start', 'send-intake-reminders'].map(async (name) => [
     name, (await import(`../netlify/functions/${name}.mjs`)).default,
   ]),
 ));

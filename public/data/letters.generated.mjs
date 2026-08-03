@@ -23,9 +23,8 @@ export const LETTERS = {
       "heading": "Section 2. Mark Election",
       "body": [
         "This Agreement covers one (1) mark only. If Client is seeking protection for more than one mark, including a word or standard character mark and a separate design or logo mark, a separate signed engagement agreement and separate fee are required for each mark, even if the marks are related or filed at the same time.",
-        "[ ] Word / standard character mark",
-        "[ ] Design / logo mark",
-        "Mark: ______________________________ Number of classes: _______",
+        "Mark type elected: {{answers.mark_type}}.",
+        "Mark: {{answers.mark_name}} Number of classes to be filed: {{answers.number_of_classes}}",
         "Client may include as many classes of goods or services as Client elects. The attorney fee stated in Section 3 does not change based on the number of classes filed; Client is responsible only for the USPTO's separate filing fee of $350 per class, paid directly to the USPTO."
       ]
     },
@@ -125,16 +124,15 @@ export const LETTERS = {
       "heading": "Section 2. Mark Election",
       "body": [
         "This Agreement covers one (1) mark only. If Client is seeking protection for more than one mark, including a word or standard character mark and a separate design or logo mark, a separate signed engagement agreement and separate fee are required for each mark, even if the marks are related or filed at the same time.",
-        "[ ] Word / standard character mark",
-        "[ ] Design / logo mark",
-        "Mark: ______________________________ Number of classes: _______",
+        "Mark type elected: {{answers.mark_type}}.",
+        "Mark: {{answers.mark_name}} Number of classes to be filed: {{answers.number_of_classes}}",
         "Client may include as many classes of goods or services as Client elects. The attorney fee stated in Section 3 does not change based on the number of classes filed; Client is responsible only for the USPTO's separate filing fee of $350 per class, paid directly to the USPTO."
       ]
     },
     {
       "heading": "Section 3. Fee and Payment",
       "body": [
-        "The flat fee for the File and Protect tier is $1,100 + USPTO fees, regardless of the number of classes Client elects to include in the application. This fee does not include the USPTO filing fee of $350 per class, which is a separate government cost paid directly to the USPTO and is entirely separate from and not included in the attorney fee.",
+        "The flat fee for the File and Protect tier is $1,200 + USPTO fees, regardless of the number of classes Client elects to include in the application. This fee does not include the USPTO filing fee of $350 per class, which is a separate government cost paid directly to the USPTO and is entirely separate from and not included in the attorney fee.",
         "The total fee is due in full at the time Client signs this Agreement, payable through the Firm's online payment portal. Advance fees are deposited into Attorney's IOLTA trust account and are not earned by Attorney until the trademark application is filed with the USPTO, consistent with Attorney's standard trust accounting practice.",
         "If Client wishes to pay in installments rather than in full at signing, Client may request an installment payment plan before signing. Any installment plan must be set up through Attorney's practice management system and requires a saved payment method on file. Amounts collected under an installment plan remain unearned advance fees held in trust until the applicable deliverable is complete, regardless of the collection schedule, and installment payments do not begin the engagement or reserve Attorney's services until the plan is approved and the first payment is processed.",
         "Invoices for any out-of-scope work billed under this Agreement, including any response to a USPTO office action, are due within 7 days of the invoice date. Client authorizes automatic billing of any card or payment method on file for amounts due under this Agreement. Where no card is on file, unpaid balances accrue a late fee of 1.5% per month (18% per annum maximum). Attorney reserves the right to suspend services for any account with an unpaid balance more than 30 days past due."
@@ -237,9 +235,8 @@ export const LETTERS = {
       "heading": "Section 2. Mark Election",
       "body": [
         "This Agreement covers one (1) mark only. If Client is seeking protection for more than one mark, including a word or standard character mark and a separate design or logo mark, a separate signed engagement agreement and separate fee are required for each mark, even if the marks are related or filed at the same time.",
-        "[ ] Word / standard character mark",
-        "[ ] Design / logo mark",
-        "Mark: ______________________________ Number of classes: _______",
+        "Mark type elected: {{answers.mark_type}}.",
+        "Mark: {{answers.mark_name}} Number of classes to be filed: {{answers.number_of_classes}}",
         "Client may include as many classes of goods or services as Client elects. The attorney fee stated in Section 3 does not change based on the number of classes filed; Client is responsible only for the USPTO's separate filing fee of $350 per class, paid directly to the USPTO."
       ]
     },
@@ -400,7 +397,7 @@ export const LETTERS = {
       ]
     }
   ],
-  "business-formation:default": [
+  "business-formation:Launch Ready": [
     {
       "heading": "",
       "body": [
@@ -416,21 +413,187 @@ export const LETTERS = {
     {
       "heading": "Section 2. Service Tier Election",
       "body": [
-        "Client elects one tier below (check one):",
-        "[ ] Launch Ready — $750",
+        "Client elects the {{answers.service_tier}} tier, described below:",
+        "Launch Ready — $750",
         "State LLC or Corporation filing (Texas or Georgia)",
         "Certificate of Formation / Articles of Organization",
         "Registered agent guidance",
         "EIN application support",
         "30-minute onboarding call",
-        "[ ] Formation Plus — $1,500",
+        "State filing fees are a separate government cost paid directly to the Texas or Georgia Secretary of State and are not included in the attorney fee stated above. Current approximate filing fees are $300 for a Texas LLC or corporation and $100 for a Georgia LLC or corporation; Client should confirm current fees before filing, as these amounts are subject to change by the state."
+      ]
+    },
+    {
+      "heading": "Section 3. Fee and Payment",
+      "body": [
+        "The total fee for the elected service is due in full at the time Client signs this Agreement, payable through the Firm's online payment portal. Advance fees are deposited into Attorney's IOLTA trust account and are not earned by Attorney until the formation filing is submitted to the Secretary of State and, if applicable, the operating agreement is delivered, whichever occurs later, consistent with Attorney's standard trust accounting practice.",
+        "If Client wishes to pay in installments rather than in full at signing, Client may request an installment payment plan before signing. Any installment plan must be set up through Attorney's practice management system and requires a saved payment method on file. Amounts collected under an installment plan remain unearned advance fees held in trust until the applicable deliverable is complete, regardless of the collection schedule, and installment payments do not begin the engagement or reserve Attorney's services until the plan is approved and the first payment is processed.",
+        "Invoices for any out-of-scope work billed under this Agreement are due within 7 days of the invoice date. Client authorizes automatic billing of any card or payment method on file for amounts due under this Agreement. Where no card is on file, unpaid balances accrue a late fee of 1.5% per month (18% per annum maximum). Attorney reserves the right to suspend services for any account with an unpaid balance more than 30 days past due."
+      ]
+    },
+    {
+      "heading": "Section 4. Deliverables and Acceptance",
+      "body": [
+        "Client has 5 business days from the date of delivery to review the deliverable and request revisions within the scope of this engagement. The deliverable is deemed accepted if Attorney receives no written objection within that period. Revisions requested outside that window, or revisions that exceed the scope of this engagement, will be billed as an out-of-scope service at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 5. Client Responsibilities",
+      "body": [
+        "Client agrees to provide complete and accurate information necessary for Attorney to perform the services described in this Agreement, and to respond to Attorney's requests in a timely manner. Delay in providing requested information may delay delivery of the deliverable and, where applicable, may extend USPTO or state filing timelines beyond Attorney's control."
+      ]
+    },
+    {
+      "heading": "Section 6. Communication and Business Hours",
+      "body": [
+        "The Firm's business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Attorney has no obligation to respond to communications received outside of business hours, and after-hours voicemails may be deleted without response. Attorney reserves the right to bill any expedited or after-hours request at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 7. Confidentiality",
+      "body": [
+        "Attorney will maintain the confidentiality of information Client provides in connection with this engagement, consistent with Georgia Rule of Professional Conduct 1.6 and Texas Disciplinary Rule of Professional Conduct 1.05."
+      ]
+    },
+    {
+      "heading": "Section 8. Termination",
+      "body": [
+        "Either Party may terminate this Agreement as provided under Georgia Rule of Professional Conduct 1.16 and Texas Disciplinary Rule of Professional Conduct 1.15. Fees for work performed prior to termination are earned and non-refundable. Any unearned trust deposit will be refunded to Client following termination."
+      ]
+    },
+    {
+      "heading": "Section 9. Malpractice Insurance Disclosure",
+      "body": [
+        "Attorney carries professional liability (malpractice) insurance."
+      ]
+    },
+    {
+      "heading": "Section 10. Dispute Resolution",
+      "body": [
+        "Any dispute regarding fees arising under this Agreement is subject to a seven (7) day written notice period as a good faith prerequisite to formal proceedings. If the dispute is not resolved within that period, it will be submitted to binding arbitration administered under the State Bar of Texas fee dispute and arbitration procedures, before a single arbitrator, with each Party bearing its own costs and fees. Both Parties waive the right to a jury trial."
+      ]
+    },
+    {
+      "heading": "Section 11. Governing Law",
+      "body": [
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
+    },
+    {
+      "heading": "Section 12. Entire Agreement",
+      "body": [
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+      ]
+    }
+  ],
+  "business-formation:Formation Plus": [
+    {
+      "heading": "",
+      "body": [
+        "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\""
+      ]
+    },
+    {
+      "heading": "Section 1. Scope of Engagement",
+      "body": [
+        "Attorney is engaged to provide business formation services for Client's proposed or existing business entity in the jurisdiction Client elects below. The specific deliverables included in this engagement depend on the service tier Client elects in Section 2. This engagement does not include ongoing registered agent service, bookkeeping, tax return preparation, or securities compliance advice unless separately elected in writing."
+      ]
+    },
+    {
+      "heading": "Section 2. Service Tier Election",
+      "body": [
+        "Client elects the {{answers.service_tier}} tier, described below:",
+        "Formation Plus — $1,500",
         "Everything in Launch Ready",
         "Single-member or multi-member operating agreement",
         "S-Corp election filing (if applicable)",
         "Initial resolutions",
         "Registered agent setup guidance (1 year)",
         "60-minute strategy call",
-        "[ ] Business Built — $2,750",
+        "State filing fees are a separate government cost paid directly to the Texas or Georgia Secretary of State and are not included in the attorney fee stated above. Current approximate filing fees are $300 for a Texas LLC or corporation and $100 for a Georgia LLC or corporation; Client should confirm current fees before filing, as these amounts are subject to change by the state."
+      ]
+    },
+    {
+      "heading": "Section 3. Fee and Payment",
+      "body": [
+        "The total fee for the elected service is due in full at the time Client signs this Agreement, payable through the Firm's online payment portal. Advance fees are deposited into Attorney's IOLTA trust account and are not earned by Attorney until the formation filing is submitted to the Secretary of State and, if applicable, the operating agreement is delivered, whichever occurs later, consistent with Attorney's standard trust accounting practice.",
+        "If Client wishes to pay in installments rather than in full at signing, Client may request an installment payment plan before signing. Any installment plan must be set up through Attorney's practice management system and requires a saved payment method on file. Amounts collected under an installment plan remain unearned advance fees held in trust until the applicable deliverable is complete, regardless of the collection schedule, and installment payments do not begin the engagement or reserve Attorney's services until the plan is approved and the first payment is processed.",
+        "Invoices for any out-of-scope work billed under this Agreement are due within 7 days of the invoice date. Client authorizes automatic billing of any card or payment method on file for amounts due under this Agreement. Where no card is on file, unpaid balances accrue a late fee of 1.5% per month (18% per annum maximum). Attorney reserves the right to suspend services for any account with an unpaid balance more than 30 days past due."
+      ]
+    },
+    {
+      "heading": "Section 4. Deliverables and Acceptance",
+      "body": [
+        "Client has 5 business days from the date of delivery to review the deliverable and request revisions within the scope of this engagement. The deliverable is deemed accepted if Attorney receives no written objection within that period. Revisions requested outside that window, or revisions that exceed the scope of this engagement, will be billed as an out-of-scope service at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 5. Client Responsibilities",
+      "body": [
+        "Client agrees to provide complete and accurate information necessary for Attorney to perform the services described in this Agreement, and to respond to Attorney's requests in a timely manner. Delay in providing requested information may delay delivery of the deliverable and, where applicable, may extend USPTO or state filing timelines beyond Attorney's control."
+      ]
+    },
+    {
+      "heading": "Section 6. Communication and Business Hours",
+      "body": [
+        "The Firm's business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Attorney has no obligation to respond to communications received outside of business hours, and after-hours voicemails may be deleted without response. Attorney reserves the right to bill any expedited or after-hours request at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 7. Confidentiality",
+      "body": [
+        "Attorney will maintain the confidentiality of information Client provides in connection with this engagement, consistent with Georgia Rule of Professional Conduct 1.6 and Texas Disciplinary Rule of Professional Conduct 1.05."
+      ]
+    },
+    {
+      "heading": "Section 8. Termination",
+      "body": [
+        "Either Party may terminate this Agreement as provided under Georgia Rule of Professional Conduct 1.16 and Texas Disciplinary Rule of Professional Conduct 1.15. Fees for work performed prior to termination are earned and non-refundable. Any unearned trust deposit will be refunded to Client following termination."
+      ]
+    },
+    {
+      "heading": "Section 9. Malpractice Insurance Disclosure",
+      "body": [
+        "Attorney carries professional liability (malpractice) insurance."
+      ]
+    },
+    {
+      "heading": "Section 10. Dispute Resolution",
+      "body": [
+        "Any dispute regarding fees arising under this Agreement is subject to a seven (7) day written notice period as a good faith prerequisite to formal proceedings. If the dispute is not resolved within that period, it will be submitted to binding arbitration administered under the State Bar of Texas fee dispute and arbitration procedures, before a single arbitrator, with each Party bearing its own costs and fees. Both Parties waive the right to a jury trial."
+      ]
+    },
+    {
+      "heading": "Section 11. Governing Law",
+      "body": [
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
+    },
+    {
+      "heading": "Section 12. Entire Agreement",
+      "body": [
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+      ]
+    }
+  ],
+  "business-formation:Business Built": [
+    {
+      "heading": "",
+      "body": [
+        "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\""
+      ]
+    },
+    {
+      "heading": "Section 1. Scope of Engagement",
+      "body": [
+        "Attorney is engaged to provide business formation services for Client's proposed or existing business entity in the jurisdiction Client elects below. The specific deliverables included in this engagement depend on the service tier Client elects in Section 2. This engagement does not include ongoing registered agent service, bookkeeping, tax return preparation, or securities compliance advice unless separately elected in writing."
+      ]
+    },
+    {
+      "heading": "Section 2. Service Tier Election",
+      "body": [
+        "Client elects the {{answers.service_tier}} tier, described below:",
+        "Business Built — $2,750",
         "Everything in Formation Plus",
         "Custom multi-member operating agreement",
         "Founders agreement / buy-sell provisions",
@@ -504,7 +667,7 @@ export const LETTERS = {
       ]
     }
   ],
-  "contracts:default": [
+  "contracts:Review & Advise": [
     {
       "heading": "",
       "body": [
@@ -520,20 +683,184 @@ export const LETTERS = {
     {
       "heading": "Section 2. Service Tier Election",
       "body": [
-        "Client elects one tier below (check one):",
-        "[ ] Review & Advise — $500",
+        "Client elects the {{answers.service_tier}} tier, described below:",
+        "Review & Advise — $500",
         "Review of one contract (up to 15 pages)",
         "Written risk summary",
         "Plain-English risk flag memo",
         "Up to 3 negotiation recommendations",
         "30-minute debrief call",
-        "Does not include a redlined draft",
-        "[ ] Draft & Deliver — $1,200",
+        "Does not include a redlined draft"
+      ]
+    },
+    {
+      "heading": "Section 3. Fee and Payment",
+      "body": [
+        "The total fee for the elected service is due in full at the time Client signs this Agreement, payable through the Firm's online payment portal. Advance fees are deposited into Attorney's IOLTA trust account and are not earned by Attorney until the completed review, redline, or draft is delivered to Client, consistent with Attorney's standard trust accounting practice.",
+        "If Client wishes to pay in installments rather than in full at signing, Client may request an installment payment plan before signing. Any installment plan must be set up through Attorney's practice management system and requires a saved payment method on file. Amounts collected under an installment plan remain unearned advance fees held in trust until the applicable deliverable is complete, regardless of the collection schedule, and installment payments do not begin the engagement or reserve Attorney's services until the plan is approved and the first payment is processed.",
+        "Invoices for any out-of-scope work billed under this Agreement are due within 7 days of the invoice date. Client authorizes automatic billing of any card or payment method on file for amounts due under this Agreement. Where no card is on file, unpaid balances accrue a late fee of 1.5% per month (18% per annum maximum). Attorney reserves the right to suspend services for any account with an unpaid balance more than 30 days past due."
+      ]
+    },
+    {
+      "heading": "Section 4. Deliverables and Acceptance",
+      "body": [
+        "Client has 5 business days from the date of delivery to review the deliverable and request revisions within the scope of this engagement. The deliverable is deemed accepted if Attorney receives no written objection within that period. Revisions requested outside that window, or revisions that exceed the scope of this engagement, will be billed as an out-of-scope service at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 5. Client Responsibilities",
+      "body": [
+        "Client agrees to provide complete and accurate information necessary for Attorney to perform the services described in this Agreement, and to respond to Attorney's requests in a timely manner. Delay in providing requested information may delay delivery of the deliverable and, where applicable, may extend USPTO or state filing timelines beyond Attorney's control."
+      ]
+    },
+    {
+      "heading": "Section 6. Communication and Business Hours",
+      "body": [
+        "The Firm's business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Attorney has no obligation to respond to communications received outside of business hours, and after-hours voicemails may be deleted without response. Attorney reserves the right to bill any expedited or after-hours request at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 7. Confidentiality",
+      "body": [
+        "Attorney will maintain the confidentiality of information Client provides in connection with this engagement, consistent with Georgia Rule of Professional Conduct 1.6 and Texas Disciplinary Rule of Professional Conduct 1.05."
+      ]
+    },
+    {
+      "heading": "Section 8. Termination",
+      "body": [
+        "Either Party may terminate this Agreement as provided under Georgia Rule of Professional Conduct 1.16 and Texas Disciplinary Rule of Professional Conduct 1.15. Fees for work performed prior to termination are earned and non-refundable. Any unearned trust deposit will be refunded to Client following termination."
+      ]
+    },
+    {
+      "heading": "Section 9. Malpractice Insurance Disclosure",
+      "body": [
+        "Attorney carries professional liability (malpractice) insurance."
+      ]
+    },
+    {
+      "heading": "Section 10. Dispute Resolution",
+      "body": [
+        "Any dispute regarding fees arising under this Agreement is subject to a seven (7) day written notice period as a good faith prerequisite to formal proceedings. If the dispute is not resolved within that period, it will be submitted to binding arbitration administered under the State Bar of Texas fee dispute and arbitration procedures, before a single arbitrator, with each Party bearing its own costs and fees. Both Parties waive the right to a jury trial."
+      ]
+    },
+    {
+      "heading": "Section 11. Governing Law",
+      "body": [
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
+    },
+    {
+      "heading": "Section 12. Entire Agreement",
+      "body": [
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+      ]
+    }
+  ],
+  "contracts:Draft & Deliver": [
+    {
+      "heading": "",
+      "body": [
+        "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\""
+      ]
+    },
+    {
+      "heading": "Section 1. Scope of Engagement",
+      "body": [
+        "Attorney is engaged to review, draft, or negotiate the contract(s) Client provides, at the service tier Client elects in Section 2. This engagement is limited to the specific contract(s) identified at intake and does not include ongoing contract management, litigation related to any contract dispute, or review of contracts beyond the number specified in the elected tier unless separately elected in writing."
+      ]
+    },
+    {
+      "heading": "Section 2. Service Tier Election",
+      "body": [
+        "Client elects the {{answers.service_tier}} tier, described below:",
+        "Draft & Deliver — $1,200",
         "Custom drafting of one agreement",
         "One round of revisions",
         "Plain-English summary",
-        "45-minute review call",
-        "[ ] Contract Command — $2,000",
+        "45-minute review call"
+      ]
+    },
+    {
+      "heading": "Section 3. Fee and Payment",
+      "body": [
+        "The total fee for the elected service is due in full at the time Client signs this Agreement, payable through the Firm's online payment portal. Advance fees are deposited into Attorney's IOLTA trust account and are not earned by Attorney until the completed review, redline, or draft is delivered to Client, consistent with Attorney's standard trust accounting practice.",
+        "If Client wishes to pay in installments rather than in full at signing, Client may request an installment payment plan before signing. Any installment plan must be set up through Attorney's practice management system and requires a saved payment method on file. Amounts collected under an installment plan remain unearned advance fees held in trust until the applicable deliverable is complete, regardless of the collection schedule, and installment payments do not begin the engagement or reserve Attorney's services until the plan is approved and the first payment is processed.",
+        "Invoices for any out-of-scope work billed under this Agreement are due within 7 days of the invoice date. Client authorizes automatic billing of any card or payment method on file for amounts due under this Agreement. Where no card is on file, unpaid balances accrue a late fee of 1.5% per month (18% per annum maximum). Attorney reserves the right to suspend services for any account with an unpaid balance more than 30 days past due."
+      ]
+    },
+    {
+      "heading": "Section 4. Deliverables and Acceptance",
+      "body": [
+        "Client has 5 business days from the date of delivery to review the deliverable and request revisions within the scope of this engagement. The deliverable is deemed accepted if Attorney receives no written objection within that period. Revisions requested outside that window, or revisions that exceed the scope of this engagement, will be billed as an out-of-scope service at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 5. Client Responsibilities",
+      "body": [
+        "Client agrees to provide complete and accurate information necessary for Attorney to perform the services described in this Agreement, and to respond to Attorney's requests in a timely manner. Delay in providing requested information may delay delivery of the deliverable and, where applicable, may extend USPTO or state filing timelines beyond Attorney's control."
+      ]
+    },
+    {
+      "heading": "Section 6. Communication and Business Hours",
+      "body": [
+        "The Firm's business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Attorney has no obligation to respond to communications received outside of business hours, and after-hours voicemails may be deleted without response. Attorney reserves the right to bill any expedited or after-hours request at Attorney's then-current hourly rate."
+      ]
+    },
+    {
+      "heading": "Section 7. Confidentiality",
+      "body": [
+        "Attorney will maintain the confidentiality of information Client provides in connection with this engagement, consistent with Georgia Rule of Professional Conduct 1.6 and Texas Disciplinary Rule of Professional Conduct 1.05."
+      ]
+    },
+    {
+      "heading": "Section 8. Termination",
+      "body": [
+        "Either Party may terminate this Agreement as provided under Georgia Rule of Professional Conduct 1.16 and Texas Disciplinary Rule of Professional Conduct 1.15. Fees for work performed prior to termination are earned and non-refundable. Any unearned trust deposit will be refunded to Client following termination."
+      ]
+    },
+    {
+      "heading": "Section 9. Malpractice Insurance Disclosure",
+      "body": [
+        "Attorney carries professional liability (malpractice) insurance."
+      ]
+    },
+    {
+      "heading": "Section 10. Dispute Resolution",
+      "body": [
+        "Any dispute regarding fees arising under this Agreement is subject to a seven (7) day written notice period as a good faith prerequisite to formal proceedings. If the dispute is not resolved within that period, it will be submitted to binding arbitration administered under the State Bar of Texas fee dispute and arbitration procedures, before a single arbitrator, with each Party bearing its own costs and fees. Both Parties waive the right to a jury trial."
+      ]
+    },
+    {
+      "heading": "Section 11. Governing Law",
+      "body": [
+        "[*] Client's state of residence and governing law for this engagement is {{clientState}}."
+      ]
+    },
+    {
+      "heading": "Section 12. Entire Agreement",
+      "body": [
+        "This Agreement constitutes the entire agreement between the Parties regarding the subject matter described above and supersedes all prior discussions, whether oral or written, regarding this engagement."
+      ]
+    }
+  ],
+  "contracts:Contract Command": [
+    {
+      "heading": "",
+      "body": [
+        "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\""
+      ]
+    },
+    {
+      "heading": "Section 1. Scope of Engagement",
+      "body": [
+        "Attorney is engaged to review, draft, or negotiate the contract(s) Client provides, at the service tier Client elects in Section 2. This engagement is limited to the specific contract(s) identified at intake and does not include ongoing contract management, litigation related to any contract dispute, or review of contracts beyond the number specified in the elected tier unless separately elected in writing."
+      ]
+    },
+    {
+      "heading": "Section 2. Service Tier Election",
+      "body": [
+        "Client elects the {{answers.service_tier}} tier, described below:",
+        "Contract Command — $2,000",
         "Drafting or review of up to 3 agreements",
         "Full redline of an opposing party's draft",
         "Negotiation strategy memo",
@@ -1687,8 +2014,12 @@ export const SCOPES = {
   "trademark:File and Protect": "Attorney will conduct a USPTO and common law clearance search for one mark, prepare a written clearance opinion assessing registrability and conflict risk, and prepare and file a trademark application for that mark, together with a 30-minute legal strategy call. This engagement covers one mark only. It does not include response to any USPTO office action; office action response is available as a separately elected service.",
   "trademark:Full Shield": "Attorney will provide the following services for one mark:",
   "copyright:default": "This is a done-with-you copyright registration service. Client submits the work to be registered through the Firm's secure client portal, and Attorney will prepare and file a federal copyright application for that work with the U.S. Copyright Office, respond to Client's questions during the process, and deliver the registration certificate to Client once it is issued.",
-  "business-formation:default": "Attorney is engaged to provide business formation services for Client's proposed or existing business entity in the jurisdiction Client elects below. The specific deliverables included in this engagement depend on the service tier Client elects in Section 2. This engagement does not include ongoing registered agent service, bookkeeping, tax return preparation, or securities compliance advice unless separately elected in writing.",
-  "contracts:default": "Attorney is engaged to review, draft, or negotiate the contract(s) Client provides, at the service tier Client elects in Section 2. This engagement is limited to the specific contract(s) identified at intake and does not include ongoing contract management, litigation related to any contract dispute, or review of contracts beyond the number specified in the elected tier unless separately elected in writing.",
+  "business-formation:Launch Ready": "Attorney is engaged to provide business formation services for Client's proposed or existing business entity in the jurisdiction Client elects below. The specific deliverables included in this engagement depend on the service tier Client elects in Section 2. This engagement does not include ongoing registered agent service, bookkeeping, tax return preparation, or securities compliance advice unless separately elected in writing.",
+  "business-formation:Formation Plus": "Attorney is engaged to provide business formation services for Client's proposed or existing business entity in the jurisdiction Client elects below. The specific deliverables included in this engagement depend on the service tier Client elects in Section 2. This engagement does not include ongoing registered agent service, bookkeeping, tax return preparation, or securities compliance advice unless separately elected in writing.",
+  "business-formation:Business Built": "Attorney is engaged to provide business formation services for Client's proposed or existing business entity in the jurisdiction Client elects below. The specific deliverables included in this engagement depend on the service tier Client elects in Section 2. This engagement does not include ongoing registered agent service, bookkeeping, tax return preparation, or securities compliance advice unless separately elected in writing.",
+  "contracts:Review & Advise": "Attorney is engaged to review, draft, or negotiate the contract(s) Client provides, at the service tier Client elects in Section 2. This engagement is limited to the specific contract(s) identified at intake and does not include ongoing contract management, litigation related to any contract dispute, or review of contracts beyond the number specified in the elected tier unless separately elected in writing.",
+  "contracts:Draft & Deliver": "Attorney is engaged to review, draft, or negotiate the contract(s) Client provides, at the service tier Client elects in Section 2. This engagement is limited to the specific contract(s) identified at intake and does not include ongoing contract management, litigation related to any contract dispute, or review of contracts beyond the number specified in the elected tier unless separately elected in writing.",
+  "contracts:Contract Command": "Attorney is engaged to review, draft, or negotiate the contract(s) Client provides, at the service tier Client elects in Section 2. This engagement is limited to the specific contract(s) identified at intake and does not include ongoing contract management, litigation related to any contract dispute, or review of contracts beyond the number specified in the elected tier unless separately elected in writing.",
   "estate-planning:Simple Will — one person": "Attorney will prepare a Last Will and Testament for one individual Client, including nomination of an executor, distribution of Client's estate, and, if applicable, nomination of a guardian for minor children. The document will be prepared for execution with the witness and self-proving affidavit formalities required under Client's state of residence.",
   "estate-planning:Simple Wills — married couple": "Attorney will prepare separate, reciprocal Last Wills and Testaments for each Client, including nomination of an executor, distribution of each Client's estate, and, if applicable, nomination of a guardian for minor children. Each document will be prepared for execution with the witness and self-proving affidavit formalities required under Client's state of residence.",
   "estate-planning:Will Package with POA — one person": "Attorney will prepare the following documents for one individual Client:",

@@ -124,7 +124,13 @@ await cp('public', DIST, { recursive: true });
 
 // One self-contained function file: no imports left to resolve at runtime.
 const result = await build({
-  entryPoints: ['netlify/functions/submit-intake.mjs', 'netlify/functions/request-payment-plan.mjs'],
+  entryPoints: [
+    'netlify/functions/submit-intake.mjs',
+    'netlify/functions/request-payment-plan.mjs',
+    'netlify/functions/log-installment-choice.mjs',
+    'netlify/functions/track-intake-start.mjs',
+    'netlify/functions/send-intake-reminders.mjs',
+  ],
   outdir: `${DIST}/netlify/functions`,
   outExtension: { '.js': '.mjs' },
   bundle: true,

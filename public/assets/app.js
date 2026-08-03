@@ -3,7 +3,7 @@
  */
 import {
   FIRM, MILITARY_NOTE, getArea, questionsFor, CONTACT_FIELDS, isVisible,
-  isEligibleState, outOfStateMessage,
+  isEligibleState, outOfStateMessage, SCOPES,
 } from '/data/practice-areas.mjs';
 import { buildLetter, formatDate, signerName } from '/data/letter.mjs';
 import { SignaturePad } from '/assets/signature-pad.js';
@@ -41,6 +41,10 @@ function init(area) {
     checks: {},        // letter checkboxes the client ticked
     read: false,
     result: null,
+    // Stable per attempt, kept across a same-tab refresh, so a reminder email
+    // and the eventual submission both refer to the same abandoned-intake
+    // record rather than creating a new one each time.
+    sessionId: '',
   };
 
   // Restore a half-finished form (same tab only) so a refresh isn't punishing.
@@ -49,12 +53,16 @@ function init(area) {
     if (saved) {
       Object.assign(state.contact, saved.contact || {});
       Object.assign(state.answers, saved.answers || {});
+      if (saved.sessionId) state.sessionId = saved.sessionId;
     }
   } catch { /* ignore malformed storage */ }
+  if (!state.sessionId) {
+    state.sessionId = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  }
 
   const save = () => {
     try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ contact: state.contact, answers: state.answers }));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ contact: state.contact, answers: state.answers, sessionId: state.sessionId }));
     } catch { /* private browsing, quota — not worth interrupting the client */ }
   };
 
@@ -113,6 +121,24 @@ function init(area) {
     syncVisibility(form, fields, values);
   }
 
+  /**
+   * The price and scope description shown under an option on the question
+   * that picks the client's tier/service (the same question that selects
+   * which imported letter they sign — `area.letterKeyField`). Sourced from
+   * the matching `paymentOptions` entry and from `SCOPES`, which is the
+   * first paragraph of "Section 1. Scope of Engagement" in that option's own
+   * engagement letter — so the description always matches what they'd sign.
+   */
+  function optionDetailHtml(f, o) {
+    if (!area.letterKeyField || f.id !== area.letterKeyField) return '';
+    const opt = (area.paymentOptions || []).find((p) => p.label === o);
+    const scope = SCOPES[`${area.slug}:${o}`];
+    if (!opt?.amount && !scope) return '';
+    const price = opt?.amount ? `<span class="choice-price">${escapeHtml(opt.amount)}</span>` : '';
+    const desc = scope ? `<span class="choice-desc">${escapeHtml(scope)}</span>` : '';
+    return `<span class="choice-detail">${price}${desc}</span>`;
+  }
+
   function fieldHtml(f) {
     const req = f.required ? '<span class="req" aria-hidden="true">*</span>' : '';
     const help = f.help ? `<p class="help">${f.help}</p>` : '';
@@ -133,12 +159,12 @@ function init(area) {
       case 'radio':
         control = '<div class="choice-list">' + f.options.map((o, i) => `
           <label class="choice"><input type="radio" name="${f.id}" id="${f.id}-${i}" value="${escapeAttr(o)}" />
-          <span>${escapeHtml(o)}</span></label>`).join('') + '</div>';
+          <span class="choice-body"><span class="choice-label">${escapeHtml(o)}</span>${optionDetailHtml(f, o)}</span></label>`).join('') + '</div>';
         break;
       case 'checkboxes':
         control = '<div class="choice-list">' + f.options.map((o, i) => `
           <label class="choice"><input type="checkbox" name="${f.id}" id="${f.id}-${i}" value="${escapeAttr(o)}" />
-          <span>${escapeHtml(o)}</span></label>`).join('') + '</div>';
+          <span class="choice-body"><span class="choice-label">${escapeHtml(o)}</span>${optionDetailHtml(f, o)}</span></label>`).join('') + '</div>';
         break;
       default:
         control = `<input type="${f.type || 'text'}" id="${f.id}"${ph}${ac} />`;
@@ -239,9 +265,34 @@ function init(area) {
         return;
       }
 
+      if (from === 0) trackIntakeStart();
+
       show(from + 1);
     });
   });
+
+  /**
+   * Best-effort, fire-and-forget: lets the firm follow up if this client never
+   * comes back to sign. Never blocks moving to the next screen — a failed or
+   * slow request here should not cost a real client their intake.
+   */
+  function trackIntakeStart() {
+    fetch('/.netlify/functions/track-intake-start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId: state.sessionId,
+        areaSlug: area.slug,
+        contact: {
+          first_name: state.contact.first_name,
+          last_name: state.contact.last_name,
+          email: state.contact.email,
+          phone: state.contact.phone,
+        },
+        website: '',
+      }),
+    }).catch(() => { /* best-effort */ });
+  }
 
   function showOutOfState() {
     const box = document.getElementById('err-0');
@@ -453,6 +504,7 @@ function init(area) {
 
     const payload = {
       areaSlug: area.slug,
+      sessionId: state.sessionId,
       contact: state.contact,
       answers: state.answers,
       checks: state.checks,
@@ -671,6 +723,7 @@ function init(area) {
       a.rel = 'noopener';
       a.textContent = processor ? `Pay securely with ${processor} →` : 'Go to secure payment →';
       box.appendChild(a);
+      if (only.installment) box.appendChild(renderInstallmentOption(only, data));
       box.appendChild(el('p', 'help', referenceNote(data.id)));
       return;
     }
@@ -708,10 +761,56 @@ function init(area) {
       a.textContent = 'Pay →';
       row.appendChild(a);
 
+      if (opt.installment) row.appendChild(renderInstallmentOption(opt, data));
+
       list.appendChild(row);
     }
     box.appendChild(list);
     box.appendChild(el('p', 'help', referenceNote(data.id)));
+  }
+
+  /**
+   * A secondary "pay a deposit instead" link for services with a dedicated
+   * installment OneLink. Clicking it opens the deposit page and — separately,
+   * best-effort — tells the firm so the remaining balance gets invoiced by
+   * hand. This never blocks or delays the client's own click-through.
+   */
+  function renderInstallmentOption(opt, data) {
+    const { url } = paymentUrl(opt.installment.url, state.contact.email, data.id);
+    const wrap = el('div', 'pay-installment');
+    wrap.appendChild(el('p', 'help',
+      `Need to spread this out? Pay a ${opt.installment.fraction} deposit instead — the firm will ` +
+      'invoice the remaining balance separately.'));
+
+    const a = document.createElement('a');
+    a.className = 'btn btn-ghost btn-sm';
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = `Pay ${opt.installment.fraction} deposit →`;
+    a.addEventListener('click', () => {
+      fetch('/.netlify/functions/log-installment-choice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          docId: data.id,
+          areaSlug: area.slug,
+          tierLabel: opt.label || area.name,
+          fraction: opt.installment.fraction,
+          contact: {
+            first_name: state.contact.first_name,
+            last_name: state.contact.last_name,
+            entity_name: state.contact.entity_name,
+            client_type: state.contact.client_type,
+            email: state.contact.email,
+            phone: state.contact.phone,
+          },
+          website: '',
+        }),
+      }).catch(() => { /* best-effort — the client's own payment click is never blocked on this */ });
+    });
+    wrap.appendChild(a);
+    return wrap;
   }
 
   function referenceNote(id) {

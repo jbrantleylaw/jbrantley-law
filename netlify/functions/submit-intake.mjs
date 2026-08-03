@@ -15,6 +15,7 @@ import { buildEngagementPdf } from './lib/pdf.mjs';
 import { sendMail, mailConfig } from './lib/mailer.mjs';
 import { buildEmail, buildClientCopy } from './lib/email-body.mjs';
 import { json, fail, clientIp, rateLimited, readJson, plainObject } from './lib/http.mjs';
+import { intakeProgressStore } from './lib/store.mjs';
 
 const MAX_BODY_BYTES = 3_000_000; // a drawn signature is tens of KB; 3 MB is generous
 
@@ -108,6 +109,19 @@ export default async (req, context) => {
     emailed: delivery.ok,
     provider: delivery.provider,
   });
+
+  // Best-effort: marks this session done so send-intake-reminders.mjs never
+  // nags a client who actually finished. Never blocks or fails the submission.
+  const sessionId = String(payload.sessionId || '').slice(0, 100);
+  if (/^[A-Za-z0-9-]{10,100}$/.test(sessionId)) {
+    try {
+      const store = intakeProgressStore();
+      const existing = await store.get(sessionId, { type: 'json' }).catch(() => null);
+      await store.setJSON(sessionId, { ...existing, completed: true, completedAt: new Date().toISOString() });
+    } catch (err) {
+      console.error('Could not mark intake progress complete', { docId, error: err?.message || err });
+    }
+  }
 
   return json(200, {
     ok: true,
