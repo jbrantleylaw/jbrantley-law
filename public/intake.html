@@ -21,14 +21,15 @@
       <ol id="progress">
         <li data-step="0">Your information</li>
         <li data-step="1">About your matter</li>
-        <li data-step="2">Engagement letter</li>
-        <li data-step="3">Payment</li>
+        <li data-step="2">Your fee</li>
+        <li data-step="3">Engagement letter</li>
+        <li data-step="4">Payment</li>
       </ol>
     </div>
 
     <!-- Step 1 — contact -->
     <section class="panel hidden" id="step-0">
-      <p class="eyebrow">Step 1 of 4</p>
+      <p class="eyebrow">Step 1 of 5</p>
       <h1>Your contact information</h1>
       <p class="intro">Start with how to reach you. Everything here stays between you and the firm.</p>
       <form class="fields" id="contactFields" novalidate autocomplete="on"></form>
@@ -42,7 +43,7 @@
 
     <!-- Step 2 — matter questions -->
     <section class="panel hidden" id="step-1">
-      <p class="eyebrow">Step 2 of 4</p>
+      <p class="eyebrow">Step 2 of 5</p>
       <h1 id="matterHeading">About your matter</h1>
       <p class="intro">
         These answers go straight into your file and let the firm run a conflicts check before your
@@ -53,13 +54,31 @@
       <div class="actions">
         <button class="btn btn-ghost" type="button" data-back="1">Back</button>
         <span class="spacer"></span>
-        <button class="btn btn-primary" type="button" data-next="1">Continue to engagement letter</button>
+        <button class="btn btn-primary" type="button" data-next="1">Continue to your fee</button>
       </div>
     </section>
 
-    <!-- Step 3 — letter + signature -->
+    <!-- Step 3 — fee summary, shown before the client reads or signs anything -->
     <section class="panel hidden" id="step-2">
-      <p class="eyebrow">Step 3 of 4</p>
+      <p class="eyebrow">Step 3 of 5</p>
+      <h1>Your service and fee</h1>
+      <p class="intro">
+        Here is what this service costs and what it includes, before you read the engagement letter.
+        Nothing is charged yet.
+      </p>
+
+      <div class="pay-box" id="feeSummaryBox"></div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" type="button" data-back="2">Back</button>
+        <span class="spacer"></span>
+        <button class="btn btn-primary" type="button" data-next="2">Continue to engagement letter</button>
+      </div>
+    </section>
+
+    <!-- Step 4 — letter + signature -->
+    <section class="panel hidden" id="step-3">
+      <p class="eyebrow">Step 4 of 5</p>
       <h1>Your engagement letter</h1>
       <p class="intro">
         Please read this in full. It is the agreement between you and the firm. Scroll to the bottom
@@ -113,18 +132,18 @@
         <p class="help copy-note" id="copyNote"></p>
       </div>
 
-      <div class="alert alert-error hidden" id="err-2"></div>
+      <div class="alert alert-error hidden" id="err-3"></div>
       <div class="actions">
-        <button class="btn btn-ghost" type="button" data-back="2">Back</button>
+        <button class="btn btn-ghost" type="button" data-back="3">Back</button>
         <span class="spacer"></span>
         <button class="btn btn-gold btn-lg" type="button" id="submitBtn" disabled>Sign &amp; submit</button>
       </div>
     </section>
 
-    <!-- Step 4 — done + pay -->
-    <section class="panel hidden" id="step-3">
+    <!-- Step 5 — done + pay -->
+    <section class="panel hidden" id="step-4">
       <div class="done-mark" aria-hidden="true">&#10003;</div>
-      <p class="eyebrow">Step 4 of 4</p>
+      <p class="eyebrow">Step 5 of 5</p>
       <h1 id="doneHeading">You&rsquo;re signed.</h1>
       <p class="intro" id="doneIntro"></p>
 

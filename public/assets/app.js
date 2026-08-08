@@ -235,7 +235,7 @@ function init(area) {
 
   /* ------------------------------------------------------------- steps --- */
 
-  const panels = [0, 1, 2, 3].map((i) => document.getElementById(`step-${i}`));
+  const panels = [0, 1, 2, 3, 4].map((i) => document.getElementById(`step-${i}`));
   const progressItems = [...document.querySelectorAll('#progress li')];
 
   function show(step) {
@@ -246,15 +246,17 @@ function init(area) {
       li.classList.toggle('done', i < step);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (step === 2) renderLetter();
+    if (step === 2) renderFeeSummary();
+    if (step === 3) renderLetter();
   }
 
   document.querySelectorAll('[data-next]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const from = Number(btn.dataset.next);
-      const ok = from === 0
-        ? validate(contactForm, CONTACT_FIELDS, state.contact)
-        : validate(matterForm, questionsFor(area), state.answers);
+      let ok = true;
+      if (from === 0) ok = validate(contactForm, CONTACT_FIELDS, state.contact);
+      else if (from === 1) ok = validate(matterForm, questionsFor(area), state.answers);
+      // from === 2 is the fee summary — nothing to validate, just move on.
       if (!ok) return;
 
       // The firm can only take a state-law matter for a Texas or Georgia
@@ -481,7 +483,7 @@ function init(area) {
 
   /* ------------------------------------------------------------ submit --- */
 
-  const errBox = document.getElementById('err-2');
+  const errBox = document.getElementById('err-3');
 
   submitBtn.addEventListener('click', async () => {
     errBox.classList.add('hidden');
@@ -549,7 +551,7 @@ function init(area) {
   /* -------------------------------------------------------------- done --- */
 
   function finish(data) {
-    show(3);
+    show(4);
     downloadPdf(data);
     document.getElementById('redownload').addEventListener('click', () => downloadPdf(data));
 
@@ -665,6 +667,74 @@ function init(area) {
       }
       status.classList.remove('hidden');
     });
+  }
+
+  /**
+   * Step 3 — shown after the matter questions and before the client reads or
+   * signs anything. Answers the questions a client needs before deciding
+   * whether to proceed at all: what this costs, what it includes, and
+   * whether they can split it into an installment deposit. No payment link
+   * is live here — the signed letter states the fee is due at signing, and a
+   * reference number for the payment page does not exist until the document
+   * is submitted — so this is deliberately a preview, not a checkout.
+   */
+  function renderFeeSummary() {
+    const box = document.getElementById('feeSummaryBox');
+    box.replaceChildren();
+    renderMilitaryNote(box);
+
+    const all = paymentChoices(area);
+    const options = all.filter((o) => !o.whenAnswer || matchesAnswers(o, state.answers));
+    const suggested = options.filter((o) => o.whenAnswer);
+
+    const scopeFor = (value) => (area.letterKeyField && value ? SCOPES[`${area.slug}:${value}`] : '') || '';
+    const generalDescription = scopeFor(state.answers[area.letterKeyField]) || area.blurb || '';
+
+    /* --- nothing is priced on the portal for this area at all ---------- */
+    if (!all.length) {
+      box.appendChild(el('h3', '', 'What this includes'));
+      if (generalDescription) box.appendChild(el('p', '', generalDescription));
+      box.appendChild(el('p', '', 'The firm will send you an invoice by email. There is nothing to pay right now.'));
+      return;
+    }
+
+    /* --- exactly one price applies (one fixed fee, or one resolved tier) - */
+    const resolved = options.length === 1 ? options[0] : (suggested.length === 1 ? suggested[0] : null);
+    if (resolved) {
+      box.appendChild(el('h3', '', resolved.label ? `${resolved.label} — ${resolved.amount || ''}`.trim() : `Your fee: ${resolved.amount || ''}`));
+      const description = scopeFor(resolved.label) || generalDescription;
+      if (description) box.appendChild(el('p', '', description));
+      if (resolved.note) box.appendChild(el('p', 'help', resolved.note));
+      if (resolved.installment) {
+        box.appendChild(el('p', 'help',
+          `Need to spread this out? A ${resolved.installment.fraction} deposit option is available for this ` +
+          'service — you will see it on the payment screen after you sign, alongside the option to pay in full.'));
+      }
+      box.appendChild(el('p', 'help', 'Payment is due when you sign, on the payment screen at the end of this form.'));
+      return;
+    }
+
+    /* --- several fees could apply and none is settled yet -------------- */
+    // `options` can be empty here (every option was tied to a whenAnswer that
+    // did not match, e.g. "Not sure yet") — show the full menu so the client
+    // still has a sense of range, rather than nothing at all.
+    const shown = options.length ? options : all;
+    box.appendChild(el('h3', '', 'What this could cost'));
+    if (generalDescription) box.appendChild(el('p', '', generalDescription));
+    box.appendChild(el('p', '', 'Your answers do not point to one fee yet — here is what each option costs. The firm will confirm before any payment is due.'));
+
+    const list = el('div', 'pay-options');
+    for (const opt of shown) {
+      const row = el('div', 'pay-option');
+      const text = el('div', 'pay-option-text');
+      text.appendChild(el('span', 'pay-option-label', opt.label));
+      if (opt.note) text.appendChild(el('span', 'pay-option-note', opt.note));
+      if (opt.installment) text.appendChild(el('span', 'pay-option-note', `${opt.installment.fraction} deposit option available`));
+      row.appendChild(text);
+      if (opt.amount) row.appendChild(el('span', 'pay-option-amount', opt.amount));
+      list.appendChild(row);
+    }
+    box.appendChild(list);
   }
 
   /** True unless they answered "No" (or skipped the question). */

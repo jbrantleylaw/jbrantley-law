@@ -467,14 +467,14 @@ export const PRACTICE_AREAS = [
     paymentOptions: [
       {
         label: 'Copyright registration — single work, single author',
-        amount: '', // TODO: confirm this fee — not stated in the links you sent.
+        amount: '$350',
+        note: 'Plus the U.S. Copyright Office filing fee, paid directly to the government',
         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/fa12a323-c6a4-4acf-a3a1-41ebce0d7a27',
       },
     ],
     feeSummary:
-      'The flat fee for this matter is stated in the agreement below and is payable in full before '
-      + 'work begins. It does not include the U.S. Copyright Office filing fee, which is a separate '
-      + 'government cost paid at the time of filing.',
+      'The flat fee for this matter is $350.00, payable in full before work begins. It does not include '
+      + 'the U.S. Copyright Office filing fee, which is a separate government cost paid at the time of filing.',
     questions: [
       { id: 'work_title', label: 'Title of the work you want to register', type: 'text', required: true },
       {

@@ -21,8 +21,9 @@ no database, and no monthly e-signature subscription.
 | — | Picks their service from the landing page |
 | 1 | Contact information |
 | 2 | Intake questions for that practice area, plus the conflict-check questions |
-| 3 | The full engagement letter, merged with their answers, with a signature box below it |
-| 4 | Signed PDF downloads automatically, then the payment button and a payment-plan request line |
+| 3 | **Your service and fee** — price, what's included (pulled from the letter's own scope), and the installment deposit option if one exists. Nothing is charged here; it exists so a client sees the cost and can weigh an installment plan before they read or sign anything. |
+| 4 | The full engagement letter, merged with their answers, with a signature box below it |
+| 5 | Signed PDF downloads automatically, then the actual payment button(s) — including the installment deposit link where one exists — and a payment-plan request line |
 
 The signature box stays locked until they have scrolled to the end of the
 letter, and the submit button stays disabled until they have signed, typed their
