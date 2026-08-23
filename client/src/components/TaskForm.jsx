@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 import SearchableSelect from './SearchableSelect';
 
 const NAVY = '#1B2A4A';

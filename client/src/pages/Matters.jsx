@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../utils/axios';
 import Layout from '../components/Layout';
 import MatterForm from '../components/MatterForm';
 

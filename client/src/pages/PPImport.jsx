@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 
 const NAVY = '#1B2A4A';
 const GOLD = '#C9A84C';
