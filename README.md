@@ -180,11 +180,19 @@ fee, so it needs to be on record before the fee is settled.
 
 ### Where the firm can take a matter
 
-Trademark and copyright are federal, so those areas are open to clients in any
-state. **Every other area requires the client to reside in Texas or Georgia.**
-An out-of-state address is stopped at the contact screen with an explanation and
-a button to schedule a consultation — it never reaches the engagement letter.
-The rule is enforced again in the function, so it cannot be clicked past.
+Only trademark and copyright are signed online right now — both are federal,
+so they're open to clients in any state. Business formation, contracts, adult
+name change, and estate planning moved to `CONSULT_ONLY` (they start with a
+consultation instead of a form); see the comment above that list in
+[`public/data/practice-areas.mjs`](public/data/practice-areas.mjs) for how to
+bring one back.
+
+The Texas/Georgia residency check (`isEligibleState`, `outOfStateMessage`) is
+still wired into the contact screen and the function for whenever a state-law
+matter is self-service again — with both live areas federal, it currently
+never fires. An out-of-state address on a non-federal area is stopped at the
+contact screen with an explanation and a button to schedule a consultation;
+the rule is enforced again in the function, so it cannot be clicked past.
 
 Set `FIRM.consultUrl` in
 [`public/data/practice-areas.mjs`](public/data/practice-areas.mjs) to your
@@ -223,14 +231,17 @@ cannot creep into a legal document. The importer:
 - drops the Word signature block, since the PDF draws its own with the captured
   signature and the audit record.
 
-Estate planning, trademark, business formation, and contracts each use a
-different agreement per package or tier, chosen by the client's answer
-(`letterKeyField` on the area). Business formation and contracts ship as a
-*single* Word document with all of their tiers in one "check one" Service Tier
-Election section — the importer splits that one section into a separate
-letter per tier (see `TIER_SPLIT` in `scripts/import-letters.mjs`), so a client
-who elects Launch Ready only ever sees and signs the Launch Ready tier, never
-the other two with an unticked box next to them.
+Trademark uses a different agreement per tier, chosen by the client's answer
+(`letterKeyField` on the area). Estate planning, business formation, and
+contracts used the same pattern before those areas moved to consultation-only
+(see "Where the firm can take a matter" above) — their letters are still
+imported by `npm run letters` and still work, they're just not reachable from
+`PRACTICE_AREAS` anymore. Business formation and contracts ship as a *single*
+Word document with all of their tiers in one "check one" Service Tier Election
+section — the importer splits that one section into a separate letter per
+tier (see `TIER_SPLIT` in `scripts/import-letters.mjs`), so a client who
+elects Launch Ready only ever sees and signs the Launch Ready tier, never the
+other two with an unticked box next to them.
 
 A selection with no agreement on file (for example trademark's "Responding to
 an Office Action," or "Not sure yet" on a tiered area) falls back to the
