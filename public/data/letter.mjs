@@ -143,7 +143,10 @@ export function buildLetter(area, contact, answers, date = new Date()) {
 export function answerPairs(area, answers) {
   const pairs = [];
   for (const q of questionsFor(area)) {
-    if (q.showIf && answers[q.showIf.field] !== q.showIf.equals) continue;
+    if (q.showIf) {
+      const wanted = Array.isArray(q.showIf.equals) ? q.showIf.equals : [q.showIf.equals];
+      if (!wanted.includes(answers[q.showIf.field])) continue;
+    }
     const v = answers[q.id];
     const text = Array.isArray(v) ? v.join(', ') : (v ?? '').toString().trim();
     if (text === '') continue;
@@ -164,7 +167,9 @@ export function letterChecks(area, contact = {}, answers = {}) {
 
 export function paymentChoicesFor(area) {
   if (Array.isArray(area.paymentOptions) && area.paymentOptions.length) {
-    return area.paymentOptions.filter((o) => o && o.url);
+    // `pending: true` means the fee is known and worth disclosing even though
+    // there is no live payment link yet — e.g. a new processor being set up.
+    return area.paymentOptions.filter((o) => o && (o.url || o.pending));
   }
   const single = area.paymentLink || area.stripeLink;
   return single ? [{ label: '', url: single }] : [];

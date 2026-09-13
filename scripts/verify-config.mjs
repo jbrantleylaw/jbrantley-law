@@ -76,7 +76,9 @@ for (const area of PRACTICE_AREAS) {
   }
   for (const [i, opt] of payOptions.entries()) {
     const at = `${where} payment option ${i + 1}`;
-    if (!/^https:\/\/[^\s/]+\.[^\s/]+/.test(opt.url)) {
+    if (opt.pending) {
+      note(`${at} ("${opt.label}") is pending a real payment link — the fee is shown, but there is no button yet.`);
+    } else if (!/^https:\/\/[^\s/]+\.[^\s/]+/.test(opt.url)) {
       fail(`${at} must be a full https:// address.`);
     } else if (/\s/.test(opt.url)) {
       fail(`${at} contains a space — it was probably pasted with trailing text.`);

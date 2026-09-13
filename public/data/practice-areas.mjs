@@ -355,40 +355,54 @@ export const PRACTICE_AREAS = [
     short: 'Trademark',
     federal: true,                       // open to clients in any state
     letterKeyField: 'service_requested', // a different agreement per tier
-    blurb: 'Clearance search and opinion, federal filing, and full brand protection — three tiers, available nationwide.',
+    blurb: 'Clearance search and opinion, federal filing, and full brand protection — four tiers, available nationwide.',
     icon: '®',
+    // Every fee changed with the new LawPay-era letters (Sept. 2026), so the
+    // old PracticePanther OneLink URLs would show the WRONG amount — removed
+    // rather than left pointing at a stale page. `pending: true` keeps the fee
+    // itself visible to the client (on the fee-summary step and the payment
+    // step) while honestly saying the payment link isn't live yet. Swap in the
+    // real LawPay link and drop `pending` as each one is ready.
     paymentOptions: [
       {
         label: 'Search and Clear',
-        amount: '$350',
-        note: 'Clearance search and opinion',
-        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/6f395e60-ba66-492f-94d9-37c9ee7355b3',
+        amount: '$300',
+        note: 'Comprehensive knockout and clearance search with a written risk assessment. Paid in full at signing.',
+        pending: true,
         whenAnswer: { field: 'service_requested', equals: 'Search and Clear' },
       },
       {
+        label: 'Search and File',
+        amount: '$1,100',
+        note: 'Search and Clear, plus preparation and filing of one federal application in one class. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3- or 5-payment installment plans also available (ask the firm).',
+        pending: true,
+        whenAnswer: { field: 'service_requested', equals: 'Search and File' },
+      },
+      {
         label: 'File and Protect',
-        amount: '$1,200',
-        note: 'Plus USPTO filing fees, paid directly to the government',
-        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/089ccccc-01ec-4a47-ad5e-e39f6c2204ca',
+        amount: '$1,800',
+        note: 'Search and File, plus monitoring through the initial USPTO examination stage. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3- or 5-payment installment plans also available (ask the firm).',
+        pending: true,
         whenAnswer: { field: 'service_requested', equals: 'File and Protect' },
-        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/8789dd19-9041-42a2-8e60-026eca09f438' },
       },
       {
         label: 'Full Shield',
-        amount: '$2,100',
-        note: 'Plus USPTO filing fees, paid directly to the government',
-        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/c4436a1d-2089-436b-a739-207a0ee8b41f',
+        amount: '$2,200',
+        note: 'File and Protect, plus response to two non-substantive Office Actions and 60 days of post-registration monitoring. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3- or 5-payment installment plans also available (ask the firm).',
+        pending: true,
         whenAnswer: { field: 'service_requested', equals: 'Full Shield' },
-        installment: { fraction: '1/3', url: 'https://app.practicepanther.com/Payment/OneLinkPayment/daa37921-921c-488c-a1b0-10e643f7ab00' },
       },
     ],
     feeSummary:
-      'The flat fee for this matter depends on the service you selected: Search and Clear, $350.00; '
-      + 'File and Protect, $1,200.00; Full Shield, $2,100.00. The fee is payable in full before work begins. '
-      + 'For File and Protect and Full Shield the fee does not include the USPTO filing fee, which is currently '
-      + '$350.00 per class of goods or services and is paid directly to the government at the time of filing. '
-      + 'No package includes responding to a substantive Office Action, an opposition, or an appeal; those are '
-      + 'quoted separately if they become necessary. Any other trademark work is quoted before it begins.',
+      'The flat fee for this matter depends on the service you selected: Search and Clear, $300.00; '
+      + 'Search and File, $1,100.00; File and Protect, $1,800.00; Full Shield, $2,200.00. Search and Clear is '
+      + 'payable in full at signing. Search and File, File and Protect, and Full Shield require a 50% deposit '
+      + 'at signing, with the remaining balance due before filing, unless Client elects a 3- or 5-payment '
+      + 'installment plan instead. None of the above includes the USPTO filing fee, which is currently $350.00 '
+      + 'per class of goods or services and is paid directly to the government; the fees above cover one class, '
+      + 'and each additional class is billed at $200.00 in attorney fees plus the USPTO fee for that class. No '
+      + 'tier includes a substantive Office Action response, an opposition, or an appeal; those are quoted '
+      + 'separately if they become necessary. Any other trademark work is quoted before it begins.',
     questions: [
       {
         id: 'service_requested',
@@ -397,6 +411,7 @@ export const PRACTICE_AREAS = [
         required: true,
         options: [
           'Search and Clear',
+          'Search and File',
           'File and Protect',
           'Full Shield',
           'Responding to an Office Action or refusal',
@@ -405,17 +420,26 @@ export const PRACTICE_AREAS = [
           'Trademark renewal or maintenance filing',
           'Not sure yet',
         ],
-        help: 'Search and Clear is a clearance search and opinion. File and Protect adds the federal '
-          + 'application. Full Shield is the complete package. If you are not sure which fits, choose '
-          + '"Not sure yet" and the firm will recommend one.',
+        help: 'Search and Clear is a clearance search and opinion, with no filing. Search and File adds the '
+          + 'federal application. File and Protect adds USPTO examination monitoring. Full Shield is the '
+          + 'complete package. If you are not sure which fits, choose "Not sure yet" and the firm will '
+          + 'recommend one.',
       },
       { id: 'mark_name', label: 'The mark you want to protect', type: 'text', required: true, placeholder: 'The exact word, phrase, or name', help: 'Type it exactly as you use it, including any spacing or punctuation.' },
+      {
+        id: 'drivers_license',
+        label: 'Driver’s license number and state of issuance',
+        type: 'text',
+        required: true,
+        placeholder: '12345678 — Texas',
+        help: 'Needed for the limited power of attorney authorizing the firm to file on your behalf with the USPTO.',
+      },
       {
         id: 'number_of_classes',
         label: 'How many classes of goods or services do you need?',
         type: 'text',
         required: true,
-        showIf: { field: 'service_requested', equals: ['Search and Clear', 'File and Protect', 'Full Shield'] },
+        showIf: { field: 'service_requested', equals: ['Search and Clear', 'Search and File', 'File and Protect', 'Full Shield'] },
         placeholder: '1',
         help: 'Each class is a category of goods or services under the USPTO system and carries its own $350 filing fee. Not sure? Say so and the firm will confirm during the clearance search.',
       },
@@ -478,19 +502,57 @@ export const PRACTICE_AREAS = [
     blurb: 'A done-with-you federal copyright registration: the firm prepares and files the application and delivers your certificate.',
     icon: '©',
     federal: true, // open to clients in any state
+    // Fee changed to a $500 base work + optional additional works with the new
+    // LawPay-era letter (Sept. 2026); the old PracticePanther OneLink URL was
+    // for the old $350 fee, so it's removed rather than left stale.
+    // `pending: true` keeps the fee itself visible while being honest that the
+    // payment link isn't live yet — swap in the real LawPay link and drop
+    // `pending` once it exists.
     paymentOptions: [
       {
-        label: 'Copyright registration — single work, single author',
-        amount: '$350',
+        label: 'One work — $500 flat fee',
+        amount: '$500 (50% deposit due at signing)',
         note: 'Plus the U.S. Copyright Office filing fee, paid directly to the government',
-        url: 'https://app.practicepanther.com/Payment/OneLinkPayment/fa12a323-c6a4-4acf-a3a1-41ebce0d7a27',
+        pending: true,
+        whenAnswer: { field: 'works_elected', equals: 'One work — $500 flat fee' },
+      },
+      {
+        label: 'Two works (one plus one additional) — $850 flat fee',
+        amount: '$850 (50% deposit due at signing)',
+        note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government',
+        pending: true,
+        whenAnswer: { field: 'works_elected', equals: 'Two works (one plus one additional) — $850 flat fee' },
+      },
+      {
+        label: 'Three works (one plus two additional) — $1,200 flat fee',
+        amount: '$1,200 (50% deposit due at signing)',
+        note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government',
+        pending: true,
+        whenAnswer: { field: 'works_elected', equals: 'Three works (one plus two additional) — $1,200 flat fee' },
       },
     ],
     feeSummary:
-      'The flat fee for this matter is $350.00, payable in full before work begins. It does not include '
-      + 'the U.S. Copyright Office filing fee, which is a separate government cost paid at the time of filing.',
+      'The flat fee for this matter is $500.00 for one work, $850.00 for two works, or $1,200.00 for three '
+      + 'works (the most this engagement covers), depending on what Client elects. A 50% deposit is due at '
+      + 'signing and is credited against the first service milestone; the remaining balance is due before '
+      + 'filing. It does not include the U.S. Copyright Office filing fee — currently $45.00 to $65.00 per '
+      + 'work depending on authorship and claimant, or $125.00 for paper filing — which is a separate '
+      + 'government cost paid at the time of filing.',
     questions: [
-      { id: 'work_title', label: 'Title of the work you want to register', type: 'text', required: true },
+      {
+        id: 'works_elected',
+        label: 'How many works are you registering?',
+        type: 'radio',
+        required: true,
+        options: [
+          'One work — $500 flat fee',
+          'Two works (one plus one additional) — $850 flat fee',
+          'Three works (one plus two additional) — $1,200 flat fee',
+        ],
+        help: 'This engagement covers up to three works, each by a single author. Additional works beyond '
+          + 'three, or a work with multiple authors or claimants, require a separate written quote.',
+      },
+      { id: 'work_title', label: 'Title of the work(s) you want to register', type: 'text', required: true, help: 'List every title, separated by commas, if you are registering more than one work.' },
       {
         id: 'work_type',
         label: 'What kind of work is it?',

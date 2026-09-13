@@ -5,7 +5,7 @@ import {
   FIRM, MILITARY_NOTE, getArea, questionsFor, CONTACT_FIELDS, isVisible,
   isEligibleState, outOfStateMessage, SCOPES,
 } from '/data/practice-areas.mjs';
-import { buildLetter, formatDate, signerName } from '/data/letter.mjs';
+import { buildLetter, buildContext, merge, formatDate, signerName } from '/data/letter.mjs';
 import { SignaturePad } from '/assets/signature-pad.js';
 
 const ENDPOINT = '/.netlify/functions/submit-intake';
@@ -687,7 +687,15 @@ function init(area) {
     const options = all.filter((o) => !o.whenAnswer || matchesAnswers(o, state.answers));
     const suggested = options.filter((o) => o.whenAnswer);
 
-    const scopeFor = (value) => (area.letterKeyField && value ? SCOPES[`${area.slug}:${value}`] : '') || '';
+    // SCOPES holds the raw docx paragraph, merge fields and all, so a scope
+    // description that mentions an intake answer (e.g. the driver's-license
+    // line landing in the wrong spot would have shown a literal {{token}})
+    // resolves the same way the signed letter itself does.
+    const ctx = buildContext(area, state.contact, state.answers);
+    const scopeFor = (value) => {
+      const raw = area.letterKeyField && value ? SCOPES[`${area.slug}:${value}`] : '';
+      return raw ? merge(raw, ctx) : '';
+    };
     const generalDescription = scopeFor(state.answers[area.letterKeyField]) || area.blurb || '';
 
     /* --- nothing is priced on the portal for this area at all ---------- */
@@ -778,14 +786,19 @@ function init(area) {
     /* --- one fee applies: a single button ---------------------------- */
     if (options.length === 1) {
       const only = options[0];
-      const { url } = paymentUrl(only.url, state.contact.email, data.id);
       box.appendChild(el('h3', '', 'Pay for your services'));
       if (only.label) {
         box.appendChild(el('p', 'pay-single-label',
           [only.label, only.amount].filter(Boolean).join(' — ')));
       }
-      box.appendChild(el('p', '', reassurance));
 
+      if (!only.url) {
+        box.appendChild(renderPendingPayment(data));
+        return;
+      }
+
+      box.appendChild(el('p', '', reassurance));
+      const { url } = paymentUrl(only.url, state.contact.email, data.id);
       const a = document.createElement('a');
       a.className = 'btn btn-gold btn-lg';
       a.href = url;
@@ -812,7 +825,6 @@ function init(area) {
     const ordered = [...suggested, ...options.filter((o) => !suggested.includes(o))];
 
     for (const opt of ordered) {
-      const { url } = paymentUrl(opt.url, state.contact.email, data.id);
       const row = el('div', 'pay-option' + (suggested.includes(opt) ? ' suggested' : ''));
 
       const text = el('div', 'pay-option-text');
@@ -823,20 +835,33 @@ function init(area) {
 
       if (opt.amount) row.appendChild(el('span', 'pay-option-amount', opt.amount));
 
-      const a = document.createElement('a');
-      a.className = 'btn ' + (suggested.includes(opt) ? 'btn-gold' : 'btn-ghost');
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.textContent = 'Pay →';
-      row.appendChild(a);
-
-      if (opt.installment) row.appendChild(renderInstallmentOption(opt, data));
+      if (opt.url) {
+        const { url } = paymentUrl(opt.url, state.contact.email, data.id);
+        const a = document.createElement('a');
+        a.className = 'btn ' + (suggested.includes(opt) ? 'btn-gold' : 'btn-ghost');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = 'Pay →';
+        row.appendChild(a);
+        if (opt.installment) row.appendChild(renderInstallmentOption(opt, data));
+      } else {
+        row.appendChild(el('span', 'pay-option-note', 'Payment link coming soon — the firm will follow up.'));
+      }
 
       list.appendChild(row);
     }
     box.appendChild(list);
     box.appendChild(el('p', 'help', referenceNote(data.id)));
+  }
+
+  /** A price is known but the payment link isn't live yet — say so plainly. */
+  function renderPendingPayment(data) {
+    const wrap = el('div', '');
+    wrap.appendChild(el('p', '',
+      'The payment link for this service isn’t live yet. The firm will follow up by email with a way to pay — ' +
+      `nothing is due right now. Reference ${data.id} in any reply.`));
+    return wrap;
   }
 
   /**
@@ -915,7 +940,9 @@ function init(area) {
  */
 export function paymentChoices(area) {
   if (Array.isArray(area.paymentOptions) && area.paymentOptions.length) {
-    return area.paymentOptions.filter((o) => o && o.url);
+    // `pending: true` means the fee is known and worth disclosing even though
+    // there is no live payment link yet — e.g. a new processor being set up.
+    return area.paymentOptions.filter((o) => o && (o.url || o.pending));
   }
   const single = area.paymentLink || area.stripeLink;
   return single ? [{ label: '', url: single }] : [];
