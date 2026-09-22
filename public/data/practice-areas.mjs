@@ -355,54 +355,70 @@ export const PRACTICE_AREAS = [
     short: 'Trademark',
     federal: true,                       // open to clients in any state
     letterKeyField: 'service_requested', // a different agreement per tier
-    blurb: 'Clearance search and opinion, federal filing, and full brand protection — four tiers, available nationwide.',
+    blurb: 'Knockout search through full brand protection — five tiers, available nationwide.',
     icon: '®',
-    // Every fee changed with the new LawPay-era letters (Sept. 2026), so the
-    // old PracticePanther OneLink URLs would show the WRONG amount — removed
-    // rather than left pointing at a stale page. `pending: true` keeps the fee
-    // itself visible to the client (on the fee-summary step and the payment
-    // step) while honestly saying the payment link isn't live yet. Swap in the
-    // real LawPay link and drop `pending` as each one is ready.
+    // Rebuilt around the Sept. 2026 letters (5 tiers, Track B upcharge, a la
+    // carte add-ons). Every fee is new and there is no LawPay link yet —
+    // `pending: true` keeps the fee itself visible to the client (on the
+    // fee-summary step and the payment step) while honestly saying the
+    // payment link isn't live. Swap in the real LawPay link and drop
+    // `pending` as each one is ready.
+    //
+    // Knockout Search's own payment terms are not stated in the source letter
+    // (Section 3's deposit schedule only names Search and Clear and the three
+    // filing tiers) — treated the same as Search and Clear (paid in full at
+    // signing) as the closest fit, since both are non-filing search products.
+    // Flagged for the firm to confirm.
     paymentOptions: [
       {
+        label: 'Knockout Search',
+        amount: '$350',
+        note: 'A quick USPTO database scan with a brief risk assessment. No filing, and cannot be upgraded to a filing tier later. Paid in full at signing.',
+        pending: true,
+        whenAnswer: { field: 'service_requested', equals: 'Knockout Search' },
+      },
+      {
         label: 'Search and Clear',
-        amount: '$300',
-        note: 'Comprehensive knockout and clearance search with a written risk assessment. Paid in full at signing.',
+        amount: '$500',
+        note: 'A deeper clearance search — USPTO, state registries, business directories, domain names, and common-law marks — with a written opinion and consultation. No filing, but can be upgraded to a filing tier later. Paid in full at signing.',
         pending: true,
         whenAnswer: { field: 'service_requested', equals: 'Search and Clear' },
       },
       {
         label: 'Search and File',
-        amount: '$1,100',
-        note: 'Search and Clear, plus preparation and filing of one federal application in one class. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3- or 5-payment installment plans also available (ask the firm).',
+        amount: '$1,500',
+        note: 'Search and Clear, plus preparation and filing of one federal application in one class. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3-, 5-, or 6-payment installment plans also available (ask the firm).',
         pending: true,
         whenAnswer: { field: 'service_requested', equals: 'Search and File' },
       },
       {
         label: 'File and Protect',
-        amount: '$1,800',
-        note: 'Search and File, plus monitoring through the initial USPTO examination stage. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3- or 5-payment installment plans also available (ask the firm).',
+        amount: '$2,000',
+        note: 'Search and File, plus response to one non-substantive Office Action and monitoring through the initial USPTO examination stage. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3-, 5-, or 6-payment installment plans also available (ask the firm). A $750 upcharge applies if filing on an intent-to-use basis.',
         pending: true,
         whenAnswer: { field: 'service_requested', equals: 'File and Protect' },
       },
       {
         label: 'Full Shield',
-        amount: '$2,200',
-        note: 'File and Protect, plus response to two non-substantive Office Actions and 60 days of post-registration monitoring. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3- or 5-payment installment plans also available (ask the firm).',
+        amount: '$3,000',
+        note: 'File and Protect, plus response to one substantive Office Action and 60 days of post-registration monitoring. Plus USPTO filing fees. 50% deposit due at signing, remainder before filing — 3-, 5-, or 6-payment installment plans also available (ask the firm). A $750 upcharge applies if filing on an intent-to-use basis.',
         pending: true,
         whenAnswer: { field: 'service_requested', equals: 'Full Shield' },
       },
     ],
     feeSummary:
-      'The flat fee for this matter depends on the service you selected: Search and Clear, $300.00; '
-      + 'Search and File, $1,100.00; File and Protect, $1,800.00; Full Shield, $2,200.00. Search and Clear is '
-      + 'payable in full at signing. Search and File, File and Protect, and Full Shield require a 50% deposit '
-      + 'at signing, with the remaining balance due before filing, unless Client elects a 3- or 5-payment '
-      + 'installment plan instead. None of the above includes the USPTO filing fee, which is currently $350.00 '
-      + 'per class of goods or services and is paid directly to the government; the fees above cover one class, '
-      + 'and each additional class is billed at $200.00 in attorney fees plus the USPTO fee for that class. No '
-      + 'tier includes a substantive Office Action response, an opposition, or an appeal; those are quoted '
-      + 'separately if they become necessary. Any other trademark work is quoted before it begins.',
+      'The flat fee for this matter depends on the service you selected: Knockout Search, $350.00; Search and '
+      + 'Clear, $500.00; Search and File, $1,500.00; File and Protect, $2,000.00; Full Shield, $3,000.00. '
+      + 'Knockout Search and Search and Clear are payable in full at signing. Search and File, File and '
+      + 'Protect, and Full Shield require a 50% deposit at signing, with the remaining balance due before '
+      + 'filing, unless Client elects a 3-, 5-, or 6-payment installment plan instead. If Client is filing on an '
+      + 'intent-to-use basis, File and Protect and Full Shield carry an additional $750.00 upcharge. None of '
+      + 'the above includes the USPTO filing fee, which is currently $350.00 per class of goods or services and '
+      + 'is paid directly to the government; the fees above cover one class, and each additional class is billed '
+      + 'at $250.00 in attorney fees plus the USPTO fee for that class. Office Action responses beyond what '
+      + 'the elected tier includes, a cease-and-desist letter, a pro se filing amendment, and rush handling are '
+      + 'each available a la carte and quoted in the engagement letter. Any other trademark work is quoted '
+      + 'before it begins.',
     questions: [
       {
         id: 'service_requested',
@@ -410,6 +426,7 @@ export const PRACTICE_AREAS = [
         type: 'radio',
         required: true,
         options: [
+          'Knockout Search',
           'Search and Clear',
           'Search and File',
           'File and Protect',
@@ -420,10 +437,10 @@ export const PRACTICE_AREAS = [
           'Trademark renewal or maintenance filing',
           'Not sure yet',
         ],
-        help: 'Search and Clear is a clearance search and opinion, with no filing. Search and File adds the '
-          + 'federal application. File and Protect adds USPTO examination monitoring. Full Shield is the '
-          + 'complete package. If you are not sure which fits, choose "Not sure yet" and the firm will '
-          + 'recommend one.',
+        help: 'Knockout Search is a quick USPTO-only scan — cheapest, but you cannot upgrade to a filing tier '
+          + 'later. Search and Clear is a deeper search that can be upgraded. Search and File adds the federal '
+          + 'application. File and Protect adds USPTO examination monitoring. Full Shield is the complete '
+          + 'package. If you are not sure which fits, choose "Not sure yet" and the firm will recommend one.',
       },
       { id: 'mark_name', label: 'The mark you want to protect', type: 'text', required: true, placeholder: 'The exact word, phrase, or name', help: 'Type it exactly as you use it, including any spacing or punctuation.' },
       {
@@ -439,7 +456,7 @@ export const PRACTICE_AREAS = [
         label: 'How many classes of goods or services do you need?',
         type: 'text',
         required: true,
-        showIf: { field: 'service_requested', equals: ['Search and Clear', 'Search and File', 'File and Protect', 'Full Shield'] },
+        showIf: { field: 'service_requested', equals: ['Knockout Search', 'Search and Clear', 'Search and File', 'File and Protect', 'Full Shield'] },
         placeholder: '1',
         help: 'Each class is a category of goods or services under the USPTO system and carries its own $350 filing fee. Not sure? Say so and the firm will confirm during the clearance search.',
       },

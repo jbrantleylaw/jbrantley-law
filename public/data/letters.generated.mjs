@@ -6,12 +6,12 @@
  */
 
 export const LETTERS = {
-  "trademark:Search and Clear": [
+  "trademark:Knockout Search": [
     {
       "heading": "",
       "body": [
         "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\"",
-        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\") (or a single, alternate mark should the chosen mark be unavailable). Please note that this proposal expires seven (7) business days from date of issuance."
+        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\"). Please note that this proposal expires seven (7) business days from date of issuance."
       ]
     },
     {
@@ -19,45 +19,40 @@ export const LETTERS = {
       "body": [
         "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
         "The following are outside the scope of this engagement unless separately elected in writing: application tiers or classes not elected in this agreement, trademark litigation, opposition, or cancellation proceedings; patent prosecution, including design patents; copyright registration; state trademark filings; international or Madrid Protocol filings; and any matter not expressly described and elected in Section 2, below.",
-        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 5: {{answers.drivers_license}}."
+        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 6: {{answers.drivers_license}}."
       ]
     },
     {
       "heading": "Section 2. Trademark Services and Fee Election",
       "body": [
-        "2A. Tier Election: Client elects the Search and Clear tier of trademark services for the Proposed Mark, described below.",
-        "Search and Clear: Comprehensive knockout and clearance search for the Proposed Mark, with a written risk assessment. This option does not include preparation or filing of a federal trademark application. Attorney fee: $300.00.",
-        "Note on Additional Classes: The fees in this engagement cover the application in one (1) class. If Client wishes to add classes to any application, additional search, clearance analysis, and filing fees will apply. Additional classes will be billed at $200 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney prior to work commencing.",
-        "If Client initially elects Search and Clear and later wishes to proceed with a trademark application filing, Client may upgrade to Search and File, File and Protect or Full Shield by executing a separate written addendum or amended engagement letter.",
-        "Upgrade Timeline and Search Validity: Client must elect to upgrade within sixty (60) days of Attorney’s delivery of the written clearance opinion. The clearance opinion and search results remain valid for upgrade purposes during this sixty-day period. If Client elects to upgrade after sixty (60) days have passed, or if there is a material delay in Client’s decision to file, Attorney may recommend a new knockout and clearance search to ensure the search results remain current and accurate. Any new search required due to elapsed time or material delay shall be billed at the rate of $300.00 for Search and Clear or as a separate scope adjustment to the engagement.",
-        "Different Mark: If Client wishes to upgrade but intends to use a mark different from the mark that was the subject of the initial Search and Clear opinion, a new clearance search for the alternate mark is required. The Search and Clear fee paid for the original mark shall not be credited toward the new search. Client must elect to conduct a new search for the alternate mark and pay the applicable Search and Clear fee before proceeding to upgrade to a filing tier for that alternate mark.",
-        "Fee Credit: The Search and Clear fee of $300.00 paid by Client shall be credited dollar-for-dollar toward the initial milestone of the upgraded tier as follows:",
-        "Upgrade to Search and File: The $300.00 Search and Clear fee is credited toward the first milestone of Search and File. Client shall pay an additional $800.00 to satisfy the full fee ($1,100.00 total) for Search and File, plus applicable USPTO filing fees.",
-        "Upgrade to File and Protect: The $300.00 Search and Clear fee is credited toward the first milestone of File and Protect. Client shall pay an additional $1,500.00 to satisfy the full fee ($1,800.00 total) for File and Protect, plus applicable USPTO filing fees.",
-        "Upgrade to Full Shield: The $300.00 Search and Clear fee is credited toward the first milestone of Full Shield. Client shall pay an additional $1,900.00 to satisfy the full fee for Full Shield ($2,200.00 total), plus applicable USPTO filing fees.",
-        "Upgrade to a filing tier requires a separate written addendum to this Agreement or a fully executed amended engagement letter setting forth the upgraded tier, the specific mark to be filed, any revised payment terms, and the new fee earning milestones. No work beyond the initial clearance search shall commence under the upgraded tier until the upgrade agreement is fully executed and any additional fees are received.",
-        "2B. Optional Add-On Services: Client may elect the following add-on service.",
-        "Trademark Cease and Desist Letter: $300.00 per letter. This includes consultation with Attorney (not to exceed fifteen (15) minutes or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter on Client’s behalf, and delivery to Client for Client’s approval prior to sending. Client is responsible for all costs associated with delivery of the letter (postage, courier, etc.). This service is limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, Attorney shall notify Client that additional work is outside this scope. Client may elect to proceed with follow-up representation at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, subject to a separate written fee agreement.",
-        "[ ] Elect the Trademark Cease and Desist Letter add-on ($300.00 per letter)."
+        "2A. Tier Election: Client elects the Knockout Search tier of trademark services for the Proposed Mark, described below. The fee below reflects one (1) class; additional classes incur an additional charge as set out in Section 2B.",
+        "Knockout Search: A quick scan of the official USPTO database and a brief risk assessment. This option does not include preparation or filing of a federal trademark application. Client cannot upgrade to a filing tier if this search is selected. Attorney fee: $350.00.",
+        "2B. Additional Services: Client may elect the following a la carte / add-on services.",
+        "[ ] Trademark Cease and Desist Letter or Cease and Desist Response (if Client is the recipient): $750.00 per letter. Includes applicable research, up to fifteen (15) minutes of consultation (or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter, and delivery to Client for approval before sending. Client is responsible for delivery costs (postage, courier, etc.) if not sent electronically. Limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, that work is outside this scope and available at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, under a separate written fee agreement.",
+        "[ ] Non-substantive (procedural) Office Action response: $500.00 per response. Non-substantive actions address minor technical, procedural, or formatting errors — for example, unclear or miscategorized identification of goods/services, specimen issues, disclaimers, or clarifications — rather than refusing the core eligibility of the mark.",
+        "[ ] Substantive Office Action response: $1,500.00 per response. Substantive actions refuse registration on legal grounds and challenge the core eligibility of the mark, name, logo, or slogan. If not included in Client’s elected tier, Attorney may provide this service a la carte at the current rate.",
+        "[ ] Amendment to a pro se existing filing: $1,500.00 per amendment.",
+        "[ ] Additional class(es): the fees in Section 2 cover the application in one (1) class. Additional classes are billed at $250.00 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney before work commences.",
+        "[ ] Rush fee: $500.00 per requested instance. Client must elect this service if applicable; if applicable but not elected, the Rush fee will be added to Client’s invoice by Attorney."
       ]
     },
     {
       "heading": "Section 3. Fees, Billing, and Payment Terms",
       "body": [
         "Deposit",
-        "Full payment ($300.00) is due at signing and held in trust until delivery of the written clearance opinion.",
+        "Full payment is due at signing and held in trust until delivery of the brief risk assessment.",
         "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available.",
-        "Invoices for any services outside the elected tiers are due within seven (7) days of the invoice date.",
-        "Client authorizes automatic billing of any card on file for amounts due under this Agreement. Where no card is on file, a late fee of 1.5% per month (maximum 18% per annum) applies to any balance not paid within seven (7) days of invoicing. Attorney reserves the right to suspend services for any account with a past-due balance.",
+        "Invoices for any services outside the elected tier are due within seven (7) days of the invoice date.",
         "Fee Earning Milestones: Attorney’s fees are held in Client’s IOLTA trust account upon receipt and are earned according to the following milestones:",
-        "The full fee ($300.00) is earned in full upon Attorney’s completion of the clearance search and delivery of the written clearance opinion to Client. If Attorney has already completed the search and clearance check prior to this Agreement’s execution, the full fee is earned upon execution of this Agreement and Client’s payment.",
-        "Completion of Milestones: Upon completion of each milestone, Attorney shall transfer the earned portion from the IOLTA trust account to Attorney’s operating account. Client shall receive written notice when each milestone is reached and funds are transferred."
+        "The full fee is earned in full upon Attorney’s completion of the knockout search and delivery of the brief risk assessment to Client. If Attorney has already completed the search prior to this Agreement’s execution, the full fee is earned upon execution of this Agreement and Client’s payment."
       ]
     },
     {
       "heading": "Section 4. Business Hours and Communication",
       "body": [
-        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response."
+        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response.",
+        "Communication Deadlines: When Attorney sends Client a material communication requiring Client’s response (including requests for approval of draft applications, payment authorization, or clarification of project scope), Client has ten (10) business days to respond. Response means written communication back to Attorney addressing the specific request. Silence or failure to respond is treated as a breach of this engagement’s communication requirement.",
+        "If Client does not respond within ten (10) business days: on Day 10, Attorney will send a follow-up reminder email, restating the original request and extending the deadline to Day 15 (an additional five (5) business days). If Client has not responded by Day 15, Attorney may, at Attorney’s sole discretion, (a) proceed with the engagement based on Attorney’s professional judgment regarding the matter at issue, with Client remaining liable for all fees incurred and Attorney not responsible for any consequences of Client’s non-participation, or (b) terminate this engagement for material breach (Client’s failure to cooperate and communicate), with Client responsible for all fees incurred through termination as described above."
       ]
     },
     {
@@ -66,13 +61,15 @@ export const LETTERS = {
         "General: Client agrees to be truthful with Attorney, to cooperate, to provide all factual and documentary evidence necessary for Attorney to perform the professional services, to abide by this Agreement and to keep Attorney advised of Client’s address, telephone number, and email address. In the event the Firm is unable to locate Client, the Firm may terminate all further representation of Client by sending an email to Client’s last known email address and filing all necessary documents to seek permission to withdraw from any formal representation.",
         "Use of TM, SM, and R: Client may use the \"TM\" symbol for unregistered marks, slogans, or logos to claim ownership under common law (or the \"SM\" mark for services), even while an application is pending. In signing this Agreement, Client acknowledges that this denotation does not fully inoculate Client in the event someone else registers the mark, slogan, or logo first. Client also acknowledges that the registered symbol is legally restricted and may only be used after the United States Patent and Trademark Office (USPTO) officially registers Client’s trademark and issues a registration certificate. Improper use of the registered symbol may result in legal penalties and/or lawsuits, for which Client is wholly responsible. Representation of the Client regarding such matters is expressly excluded from Legal Services under this Agreement.",
         "Communication Policies: Client will exclusively communicate with the Attorney via email at jbrantley@jenniferbrantleylaw.com or via the provided telephone number and/or case management portal, Monday through Friday between 9:00 a.m. to 4:30 p.m. Central Time. Client understands social media is not the proper avenue to contact Attorney.",
-        "Power of Attorney: Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
+        "Deliverables and Acceptance: Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has ten (10) business days from the date of delivery of any deliverable to review and object in writing to its contents. The ten-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted.",
+        "Client-Provided Research and Artificial Intelligence (AI) Materials: Review of client-supplied research, internet materials, social media content, or artificial intelligence-generated information is outside the defined scope of legal services described in this Agreement unless Attorney determines such review is reasonably necessary to advance Client’s legal objectives. Any review, analysis, verification, or response to such materials will be undertaken solely at Attorney’s discretion and will constitute billable legal work. Such time will be billed at Attorney’s standard hourly rate or, in flat-fee matters, as an additional fee separate from and not included in the flat fee. Attorney is not obligated to advance arguments, cite authorities, or incorporate materials that Attorney determines to be inaccurate, unsupported, strategically unsound, or inconsistent with applicable law or ethical obligations.",
+        "WARNING: use of AI and search engine prompts and queries related to your matter may constitute waiver of attorney-client privilege and confidentiality of such information and documents, which may be discoverable and used against you. AI and search engines are not attorneys and may not owe you any duty of confidentiality or privilege protections."
       ]
     },
     {
-      "heading": "Section 6. Deliverables and Acceptance",
+      "heading": "Section 6. Power of Attorney",
       "body": [
-        "Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has five (5) business days from the date of delivery of any deliverable to review and object in writing to its contents. The five-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted."
+        "Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
       ]
     },
     {
@@ -85,16 +82,25 @@ export const LETTERS = {
       "heading": "Section 8. Registration Timeline and Process Overview",
       "body": [
         "Client acknowledges and understands the following regarding the federal trademark registration process for the Proposed Mark:",
-        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date.",
-        "An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing, and affects the process described below. If Client has not sold goods and/or provided services as of the date of Client’s intake call, Client must proceed with filing a multi-step (\"intent to use\") trademark application. Client understands that after filing Client’s initial trademark application the next step in this multi-stage process is to submit evidence (i.e., proof) that Client is either selling products and/or providing services in connection with Client’s trademark. Client understands that Client must submit evidence and pay the invoice in a timely manner so that Attorney can review and approve the evidence. Client understands that Client must pay $650.00 USD to submit the evidence to the USPTO for one class only (plus an additional $150.00 for 2 or more classes). If Client cannot show proof by the invoice deadline, Client understands that Client must file an Extension Request and pay a fee to do so ($650.00 USD for one class plus an additional $125.00 for 2 or more classes) to keep Client’s trademark application alive and active.",
+        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date. An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing.",
+        "Registration Timeline for Use in Commerce (Track A) Applications:",
         "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
         "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier.",
         "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
-        "Registration or Notice of Allowance: If no opposition is filed, a use-in-commerce application proceeds to registration. An intent-to-use application instead receives a Notice of Allowance, after which Client must submit evidence of use (a Statement of Use) or file an Extension Request before registration issues. USPTO fees and any additional Attorney fees associated with the Statement of Use or Extension Request stage are billed separately as those stages occur and are not included in the fees elected under Section 2.",
-        "Maintenance: Following registration, periodic maintenance filings are required to keep the registration active. Maintenance filings are not included in this engagement unless separately elected in writing.",
-        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake. This reflects a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures below. Attorney makes no guarantee of registration or of any timeframe.",
+        "Registration: If no opposition is filed and the application is based on use in commerce, the mark proceeds to registration and Client receives a registration certificate.",
+        "Registration Timeline for Intent to Use (Track B) Applications:",
+        "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
+        "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier (File and Protect or Full Shield).",
+        "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
+        "Notice of Allowance: If no opposition is filed and the application is based on intent to use, the USPTO issues a Notice of Allowance. Client must then submit evidence that Client is using the mark in commerce (a Statement of Use), or file an Extension Request if Client is not yet ready to use the mark.",
+        "Statement of Use or Extension Request: If Client has elected the File and Protect or Full Shield tier with the Track B upcharge, Attorney will assist with one (1) Statement of Use or Extension Request submission, including review of Client’s specimens and submission to the USPTO. The Track B upcharge covers this work.",
+        "If Client is on a Search and File engagement (which does not include Track B services), Client is responsible for independently submitting the Statement of Use or Extension Request to the USPTO or engaging separate counsel.",
+        "USPTO Government Fees for Evidence Submission: The Statement of Use or Extension Request requires a separate USPTO government filing fee. This government fee is separate from Attorney’s Track B upcharge and is due at the time of submission to the USPTO. If Client needs more than one Extension Request before becoming ready to use the mark in commerce, additional Extension Requests beyond the first will be billed at Attorney’s hourly rate in quarter-hour increments, in addition to the applicable USPTO government filing fee for each submission.",
+        "Registration: Once the Statement of Use is approved or the Extension Request period expires with evidence of use submitted, the mark proceeds to registration and Client receives a registration certificate.",
+        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake.",
         "Time from filing to first Office Action in the TSDR record: approximately 4.3 months on average; USPTO target 5.0 months.",
-        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months."
+        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months.",
+        "The figures above reflect a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures above. For Intent to Use applications, the additional time needed to prepare and submit a Statement of Use or Extension Request will further extend the overall timeline to registration. Attorney makes no guarantee of registration or of any timeframe."
       ]
     },
     {
@@ -153,7 +159,182 @@ export const LETTERS = {
       ]
     },
     {
-      "heading": "Section 18. Entire Agreement",
+      "heading": "Section 18. Publicity",
+      "body": [
+        "By signing this agreement, Client authorizes J Brantley Law, PLLC to identify Client as a client and share the firm’s work together, including registration certificates, outcomes, and case descriptions, for marketing and business development purposes across all platforms. The Firm may use Client’s name, unless Client requests anonymity in writing, at any time. Opting out will not affect the Firm’s service or Client’s fees."
+      ]
+    },
+    {
+      "heading": "Section 19. Entire Agreement",
+      "body": [
+        "This Agreement constitutes the entire agreement between Attorney and Client regarding the services described above and supersedes any prior discussions or understandings, written or oral.",
+        "By signing below, Client confirms the elections above and agrees to the terms of this Agreement."
+      ]
+    }
+  ],
+  "trademark:Search and Clear": [
+    {
+      "heading": "",
+      "body": [
+        "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\"",
+        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\"). Please note that this proposal expires seven (7) business days from date of issuance."
+      ]
+    },
+    {
+      "heading": "Section 1. Scope of Representation",
+      "body": [
+        "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
+        "The following are outside the scope of this engagement unless separately elected in writing: application tiers or classes not elected in this agreement, trademark litigation, opposition, or cancellation proceedings; patent prosecution, including design patents; copyright registration; state trademark filings; international or Madrid Protocol filings; and any matter not expressly described and elected in Section 2, below.",
+        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 6: {{answers.drivers_license}}."
+      ]
+    },
+    {
+      "heading": "Section 2. Trademark Services and Fee Election",
+      "body": [
+        "2A. Tier Election: Client elects the Search and Clear tier of trademark services for the Proposed Mark, described below. The fee below reflects one (1) class; additional classes incur an additional charge as set out in Section 2B.",
+        "Search and Clear: Comprehensive clearance search for the Proposed Mark, with a written risk assessment, and consultation. Includes a deep-dive search of the USPTO database, state registries, business directories, domain names, and unregistered \"common law\" marks. This option does not include preparation or filing of a federal trademark application. Client can upgrade to a filing tier if this search is selected. Attorney fee: $500.00.",
+        "Upgrading Tiers: Upgrading to a filing tier requires a separate written addendum to this Agreement or a fully executed amended engagement letter setting forth the upgraded tier, confirming the specific mark to be filed, any revised payment terms, and the new fee earning milestones. No work beyond the initial clearance search shall commence under the upgraded tier until the upgrade agreement is fully executed and any additional fees are received. If Client begins with Search and Clear and upgrades to a filing tier, the Search and Clear fee paid will be credited against the cost of the selected filing tier.",
+        "Upgrade Timeline and Search Validity: Client must elect to upgrade within sixty (60) days of Attorney’s delivery of the written clearance opinion. The clearance opinion and search results remain valid for upgrade purposes during this sixty-day period. If Client elects to upgrade after sixty (60) days have passed, or if there is a material delay in Client’s decision to file, Attorney may recommend a new knockout and clearance search to ensure the search results remain current and accurate. Any new search required due to elapsed time or material delay shall be billed at the current Search and Clear rate.",
+        "Alternate Mark: If Client wishes to upgrade but intends to use a mark different from the mark that was the subject of the initial Search and Clear opinion, a new clearance search for the alternate mark is required. The Search and Clear fee paid for the original mark shall not be credited toward the new search. Client must elect to conduct a new search for the alternate mark and pay the applicable Search and Clear fee before proceeding to upgrade to a filing tier for that alternate mark.",
+        "2B. Additional Services: Client may elect the following a la carte / add-on services.",
+        "[ ] Trademark Cease and Desist Letter or Cease and Desist Response (if Client is the recipient): $750.00 per letter. Includes applicable research, up to fifteen (15) minutes of consultation (or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter, and delivery to Client for approval before sending. Client is responsible for delivery costs (postage, courier, etc.) if not sent electronically. Limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, that work is outside this scope and available at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, under a separate written fee agreement.",
+        "[ ] Non-substantive (procedural) Office Action response: $500.00 per response. Non-substantive actions address minor technical, procedural, or formatting errors — for example, unclear or miscategorized identification of goods/services, specimen issues, disclaimers, or clarifications — rather than refusing the core eligibility of the mark.",
+        "[ ] Substantive Office Action response: $1,500.00 per response. Substantive actions refuse registration on legal grounds and challenge the core eligibility of the mark, name, logo, or slogan. If not included in Client’s elected tier, Attorney may provide this service a la carte at the current rate.",
+        "[ ] Amendment to a pro se existing filing: $1,500.00 per amendment.",
+        "[ ] Additional class(es): the fees in Section 2 cover the application in one (1) class. Additional classes are billed at $250.00 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney before work commences.",
+        "[ ] Rush fee: $500.00 per requested instance. Client must elect this service if applicable; if applicable but not elected, the Rush fee will be added to Client’s invoice by Attorney."
+      ]
+    },
+    {
+      "heading": "Section 3. Fees, Billing, and Payment Terms",
+      "body": [
+        "Deposit",
+        "Full payment is due at signing and held in trust until delivery of the written clearance opinion.",
+        "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available.",
+        "Invoices for any services outside the elected tier are due within seven (7) days of the invoice date.",
+        "Fee Earning Milestones: Attorney’s fees are held in Client’s IOLTA trust account upon receipt and are earned according to the following milestones:",
+        "The full fee is earned in full upon Attorney’s completion of the clearance search and delivery of the written clearance opinion to Client. If Attorney has already completed the search and clearance check prior to this Agreement’s execution, the full fee is earned upon execution of this Agreement and Client’s payment."
+      ]
+    },
+    {
+      "heading": "Section 4. Business Hours and Communication",
+      "body": [
+        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response.",
+        "Communication Deadlines: When Attorney sends Client a material communication requiring Client’s response (including requests for approval of draft applications, payment authorization, or clarification of project scope), Client has ten (10) business days to respond. Response means written communication back to Attorney addressing the specific request. Silence or failure to respond is treated as a breach of this engagement’s communication requirement.",
+        "If Client does not respond within ten (10) business days: on Day 10, Attorney will send a follow-up reminder email, restating the original request and extending the deadline to Day 15 (an additional five (5) business days). If Client has not responded by Day 15, Attorney may, at Attorney’s sole discretion, (a) proceed with the engagement based on Attorney’s professional judgment regarding the matter at issue, with Client remaining liable for all fees incurred and Attorney not responsible for any consequences of Client’s non-participation, or (b) terminate this engagement for material breach (Client’s failure to cooperate and communicate), with Client responsible for all fees incurred through termination as described above."
+      ]
+    },
+    {
+      "heading": "Section 5. Client Responsibilities",
+      "body": [
+        "General: Client agrees to be truthful with Attorney, to cooperate, to provide all factual and documentary evidence necessary for Attorney to perform the professional services, to abide by this Agreement and to keep Attorney advised of Client’s address, telephone number, and email address. In the event the Firm is unable to locate Client, the Firm may terminate all further representation of Client by sending an email to Client’s last known email address and filing all necessary documents to seek permission to withdraw from any formal representation.",
+        "Use of TM, SM, and R: Client may use the \"TM\" symbol for unregistered marks, slogans, or logos to claim ownership under common law (or the \"SM\" mark for services), even while an application is pending. In signing this Agreement, Client acknowledges that this denotation does not fully inoculate Client in the event someone else registers the mark, slogan, or logo first. Client also acknowledges that the registered symbol is legally restricted and may only be used after the United States Patent and Trademark Office (USPTO) officially registers Client’s trademark and issues a registration certificate. Improper use of the registered symbol may result in legal penalties and/or lawsuits, for which Client is wholly responsible. Representation of the Client regarding such matters is expressly excluded from Legal Services under this Agreement.",
+        "Communication Policies: Client will exclusively communicate with the Attorney via email at jbrantley@jenniferbrantleylaw.com or via the provided telephone number and/or case management portal, Monday through Friday between 9:00 a.m. to 4:30 p.m. Central Time. Client understands social media is not the proper avenue to contact Attorney.",
+        "Deliverables and Acceptance: Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has ten (10) business days from the date of delivery of any deliverable to review and object in writing to its contents. The ten-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted.",
+        "Client-Provided Research and Artificial Intelligence (AI) Materials: Review of client-supplied research, internet materials, social media content, or artificial intelligence-generated information is outside the defined scope of legal services described in this Agreement unless Attorney determines such review is reasonably necessary to advance Client’s legal objectives. Any review, analysis, verification, or response to such materials will be undertaken solely at Attorney’s discretion and will constitute billable legal work. Such time will be billed at Attorney’s standard hourly rate or, in flat-fee matters, as an additional fee separate from and not included in the flat fee. Attorney is not obligated to advance arguments, cite authorities, or incorporate materials that Attorney determines to be inaccurate, unsupported, strategically unsound, or inconsistent with applicable law or ethical obligations.",
+        "WARNING: use of AI and search engine prompts and queries related to your matter may constitute waiver of attorney-client privilege and confidentiality of such information and documents, which may be discoverable and used against you. AI and search engines are not attorneys and may not owe you any duty of confidentiality or privilege protections."
+      ]
+    },
+    {
+      "heading": "Section 6. Power of Attorney",
+      "body": [
+        "Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
+      ]
+    },
+    {
+      "heading": "Section 7. USPTO Fees and Government Costs",
+      "body": [
+        "Any USPTO filing fee referenced in this Agreement is a separate government cost paid directly to the USPTO. USPTO filing fees are not included in, and are separate from, the Attorney fee for any elected tier."
+      ]
+    },
+    {
+      "heading": "Section 8. Registration Timeline and Process Overview",
+      "body": [
+        "Client acknowledges and understands the following regarding the federal trademark registration process for the Proposed Mark:",
+        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date. An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing.",
+        "Registration Timeline for Use in Commerce (Track A) Applications:",
+        "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
+        "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier.",
+        "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
+        "Registration: If no opposition is filed and the application is based on use in commerce, the mark proceeds to registration and Client receives a registration certificate.",
+        "Registration Timeline for Intent to Use (Track B) Applications:",
+        "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
+        "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier (File and Protect or Full Shield).",
+        "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
+        "Notice of Allowance: If no opposition is filed and the application is based on intent to use, the USPTO issues a Notice of Allowance. Client must then submit evidence that Client is using the mark in commerce (a Statement of Use), or file an Extension Request if Client is not yet ready to use the mark.",
+        "Statement of Use or Extension Request: If Client has elected the File and Protect or Full Shield tier with the Track B upcharge, Attorney will assist with one (1) Statement of Use or Extension Request submission, including review of Client’s specimens and submission to the USPTO. The Track B upcharge covers this work.",
+        "If Client is on a Search and File engagement (which does not include Track B services), Client is responsible for independently submitting the Statement of Use or Extension Request to the USPTO or engaging separate counsel.",
+        "USPTO Government Fees for Evidence Submission: The Statement of Use or Extension Request requires a separate USPTO government filing fee. This government fee is separate from Attorney’s Track B upcharge and is due at the time of submission to the USPTO. If Client needs more than one Extension Request before becoming ready to use the mark in commerce, additional Extension Requests beyond the first will be billed at Attorney’s hourly rate in quarter-hour increments, in addition to the applicable USPTO government filing fee for each submission.",
+        "Registration: Once the Statement of Use is approved or the Extension Request period expires with evidence of use submitted, the mark proceeds to registration and Client receives a registration certificate.",
+        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake.",
+        "Time from filing to first Office Action in the TSDR record: approximately 4.3 months on average; USPTO target 5.0 months.",
+        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months.",
+        "The figures above reflect a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures above. For Intent to Use applications, the additional time needed to prepare and submit a Statement of Use or Extension Request will further extend the overall timeline to registration. Attorney makes no guarantee of registration or of any timeframe."
+      ]
+    },
+    {
+      "heading": "Section 9. Confidentiality",
+      "body": [
+        "Attorney will maintain the confidentiality of Client information consistent with the applicable rules of professional conduct."
+      ]
+    },
+    {
+      "heading": "Section 10. Conflicts of Interest",
+      "body": [
+        "Attorney is not aware of any conflict of interest with this engagement. Client agrees to notify Attorney promptly if Client becomes aware of any potential conflict."
+      ]
+    },
+    {
+      "heading": "Section 11. No Guarantee of Outcome or Estimates",
+      "body": [
+        "Nothing in this Agreement or Attorney’s statements to Client shall be construed as a promise or guarantee regarding trademark registration or about the outcome of the matter. Any estimate of fees or costs given by Attorney or non-attorney staff shall not be considered a guarantee. Client understands this is an application process which could result in denial of Client’s trademark.",
+        "Client further understands that if Client does not timely pay Client’s invoice for either the statement of use or extension request by the invoice deadline, Client’s trademark will abandon at no fault to Attorney and Client will have to pay additional fees to reinstate Client’s application."
+      ]
+    },
+    {
+      "heading": "Section 12. Malpractice Insurance Disclosure",
+      "body": [
+        "Attorney maintains professional liability insurance."
+      ]
+    },
+    {
+      "heading": "Section 13. Termination of Representation",
+      "body": [
+        "Either Attorney or Client may terminate this engagement upon written notice. Client remains responsible for fees earned and costs incurred through the date of termination."
+      ]
+    },
+    {
+      "heading": "Section 14. Trust Account (IOLTA) Administration",
+      "body": [
+        "Installment payments received in advance of work performed will be deposited into Attorney’s IOLTA trust account and transferred to Attorney’s operating account as fees are earned upon completion of the corresponding milestone."
+      ]
+    },
+    {
+      "heading": "Section 15. Electronic Communications and Delivery Consent",
+      "body": [
+        "Client consents to receive this Agreement, invoices, deliverables, and other communications electronically via their client portal or the email address on file. Client is responsible for notifying Attorney promptly of any change to Client’s contact information."
+      ]
+    },
+    {
+      "heading": "Section 16. Governing Law and Jurisdiction",
+      "body": [
+        "This Agreement is governed by the laws of the State of Texas."
+      ]
+    },
+    {
+      "heading": "Section 17. Arbitration",
+      "body": [
+        "If a dispute arises out of or related to a claimed breach of this Agreement, or any other disagreement of any nature, regardless of the facts or legal theories involved, the dispute will be resolved by binding arbitration before a single arbitrator through the State Bar of Texas. Each side will bear its own costs and attorneys’ fees. The parties waive their right to a jury trial. Prior to arbitration, the parties will make a good faith effort to resolve the dispute without outside intervention. Client agrees that, to constitute a good faith effort, Client must give the Firm written notice of any dispute about costs, fees, or expenses within seven (7) days of the date Client receives the Firm’s invoice."
+      ]
+    },
+    {
+      "heading": "Section 18. Publicity",
+      "body": [
+        "By signing this agreement, Client authorizes J Brantley Law, PLLC to identify Client as a client and share the firm’s work together, including registration certificates, outcomes, and case descriptions, for marketing and business development purposes across all platforms. The Firm may use Client’s name, unless Client requests anonymity in writing, at any time. Opting out will not affect the Firm’s service or Client’s fees."
+      ]
+    },
+    {
+      "heading": "Section 19. Entire Agreement",
       "body": [
         "This Agreement constitutes the entire agreement between Attorney and Client regarding the services described above and supersedes any prior discussions or understandings, written or oral.",
         "By signing below, Client confirms the elections above and agrees to the terms of this Agreement."
@@ -165,7 +346,7 @@ export const LETTERS = {
       "heading": "",
       "body": [
         "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\"",
-        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\") (or a single, alternate mark should the chosen mark be unavailable). Please note that this proposal expires seven (7) business days from date of issuance."
+        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\"). Please note that this proposal expires seven (7) business days from date of issuance."
       ]
     },
     {
@@ -173,18 +354,21 @@ export const LETTERS = {
       "body": [
         "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
         "The following are outside the scope of this engagement unless separately elected in writing: application tiers or classes not elected in this agreement, trademark litigation, opposition, or cancellation proceedings; patent prosecution, including design patents; copyright registration; state trademark filings; international or Madrid Protocol filings; and any matter not expressly described and elected in Section 2, below.",
-        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 5: {{answers.drivers_license}}."
+        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 6: {{answers.drivers_license}}."
       ]
     },
     {
       "heading": "Section 2. Trademark Services and Fee Election",
       "body": [
-        "2A. Tier Election: Client elects the Search and File tier of trademark services for the Proposed Mark, described below.",
-        "Search and File: Includes the Search and Clear services above, preparation and filing of one federal trademark application for the Proposed Mark in one class of goods or services. The USPTO filing fee of $350.00 per class is a separate government cost paid directly to the USPTO and is not included in the Attorney fee. Attorney fee: $1,100.00 + USPTO filing fee (separate government cost).",
-        "Note on Additional Classes: The fees in this engagement cover the application in one (1) class. If Client wishes to add classes to any application, additional search, clearance analysis, and filing fees will apply. Additional classes will be billed at $200 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney prior to work commencing.",
-        "2B. Optional Add-On Services: Client may elect the following add-on service.",
-        "Trademark Cease and Desist Letter: $300.00 per letter. This includes consultation with Attorney (not to exceed fifteen (15) minutes or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter on Client’s behalf, and delivery to Client for Client’s approval prior to sending. Client is responsible for all costs associated with delivery of the letter (postage, courier, etc.). This service is limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, Attorney shall notify Client that additional work is outside this scope. Client may elect to proceed with follow-up representation at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, subject to a separate written fee agreement.",
-        "[ ] Elect the Trademark Cease and Desist Letter add-on ($300.00 per letter)."
+        "2A. Tier Election: Client elects the Search and File tier of trademark services for the Proposed Mark, described below. The fee below reflects one (1) class; additional classes incur an additional charge as set out in Section 2B.",
+        "Search and File: Includes the Search and Clear services above, preparation and filing of one federal trademark application for the Proposed Mark in one class of goods or services. The USPTO filing fee of $350.00 per class (as of August 2026) is a separate government cost paid directly to the USPTO and is not included in the Attorney fee. Attorney fee: $1,500.00 + USPTO filing fee (separate government cost).",
+        "2B. Additional Services: Client may elect the following a la carte / add-on services.",
+        "[ ] Trademark Cease and Desist Letter or Cease and Desist Response (if Client is the recipient): $750.00 per letter. Includes applicable research, up to fifteen (15) minutes of consultation (or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter, and delivery to Client for approval before sending. Client is responsible for delivery costs (postage, courier, etc.) if not sent electronically. Limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, that work is outside this scope and available at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, under a separate written fee agreement.",
+        "[ ] Non-substantive (procedural) Office Action response: $500.00 per response. Non-substantive actions address minor technical, procedural, or formatting errors — for example, unclear or miscategorized identification of goods/services, specimen issues, disclaimers, or clarifications — rather than refusing the core eligibility of the mark.",
+        "[ ] Substantive Office Action response: $1,500.00 per response. Substantive actions refuse registration on legal grounds and challenge the core eligibility of the mark, name, logo, or slogan. If not included in Client’s elected tier, Attorney may provide this service a la carte at the current rate.",
+        "[ ] Amendment to a pro se existing filing: $1,500.00 per amendment.",
+        "[ ] Additional class(es): the fees in Section 2 cover the application in one (1) class. Additional classes are billed at $250.00 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney before work commences.",
+        "[ ] Rush fee: $500.00 per requested instance. Client must elect this service if applicable; if applicable but not elected, the Rush fee will be added to Client’s invoice by Attorney."
       ]
     },
     {
@@ -192,17 +376,17 @@ export const LETTERS = {
       "body": [
         "Deposit",
         "A deposit of fifty percent (50%) of the attorney fee is due at signing and credited toward the initial milestone, with the remaining balance due prior to filing.",
-        "For the Search and File, File and Protect and Full Shield tiers, Client may also elect to pay the total elected fee above (exclusive of USPTO filing fees) in either three (3) or five (5) equal (or approximately equal) installment payments, as set forth below. Alternate terms may be agreed upon, in writing, by the parties.",
-        "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available.",
-        "[ ] Option A — 3 equal payments: Payments debited at 14-day intervals beginning on the date of signing, in the amount of one-third (1/3) of the total elected fee per installment.",
-        "[ ] Option B — 5 equal payments: Payments debited at 14-day intervals beginning on the date of signing, in the amount of one-fifth (1/5) of the total elected fee per installment.",
-        "Automatic Billing: Client authorizes automatic electronic debit of each installment from the payment method on file, at the intervals set forth in the elected Installment Plan above.",
+        "Client may also elect to pay the total elected fee above (exclusive of USPTO filing fees) in either three (3), five (5), or six (6) equal (or approximately equal) installment payments, as set forth below, instead of the deposit-and-balance schedule above. Alternate terms may be agreed upon, in writing, by the parties.",
+        "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available for add-on services.",
+        "[ ] Option A — 3 equal payments, at the intervals the firm sets at signing.",
+        "[ ] Option B — 5 equal payments, at the intervals the firm sets at signing.",
+        "[ ] Option C — 6 equal payments, at the intervals the firm sets at signing.",
+        "Automatic Billing: Client authorizes automatic electronic debit of each installment from the payment method on file, at the intervals set forth in the elected Installment Plan above. Client also authorizes automatic billing of any card on file for amounts due under this Agreement. Where no card is on file, a late fee of 1.5% per month (maximum 18% per annum) applies to any balance not paid within seven (7) days of invoicing. Attorney reserves the right to suspend services for any account with a past-due balance.",
         "USPTO filing fees are government costs, are not eligible for the installment plan, and are due in full prior to filing.",
-        "Invoices for any services outside the elected tiers are due within seven (7) days of the invoice date.",
-        "Client authorizes automatic billing of any card on file for amounts due under this Agreement. Where no card is on file, a late fee of 1.5% per month (maximum 18% per annum) applies to any balance not paid within seven (7) days of invoicing. Attorney reserves the right to suspend services for any account with a past-due balance.",
+        "Invoices for any services outside the elected tier are due within seven (7) days of the invoice date.",
         "Fee Earning Milestones: Attorney’s fees are held in Client’s IOLTA trust account upon receipt and are earned according to the following milestones:",
-        "First Portion (Search and Opinion): $300.00 is earned upon Attorney’s completion of the trademark search, analysis, and delivery of the written clearance opinion to Client. If Attorney has already completed the search and delivered the written clearance opinion prior to this Agreement’s execution, this portion is earned upon execution of this Agreement and Client’s payment.",
-        "Second Portion (Filing): The remaining $800.00 is earned upon Attorney’s preparation and delivery of the draft application to Client. This portion is earned regardless of whether Client elects to proceed with filing. If Client terminates this engagement after receiving the draft application, Client remains responsible for the full $800.00 for work performed in preparing the application.",
+        "First Portion (Search and Opinion): $500.00 (the Search and Clear fee) is earned upon Attorney’s completion of the trademark search, analysis, and delivery of the written clearance opinion to Client. If Attorney has already completed the search and delivered the written clearance opinion prior to this Agreement’s execution, this portion is earned upon execution of this Agreement and Client’s payment.",
+        "Second Portion (Filing): The remaining $1,000.00 is earned upon Attorney’s preparation and delivery of the draft application to Client. This portion is earned regardless of whether Client elects to proceed with filing. If Client terminates this engagement after receiving the draft application, Client remains responsible for the full amount for work performed in preparing the application.",
         "Application Revisions: One (1) revision to the draft application prior to filing is included at no additional charge. Revisions include modifications to goods/services descriptions, specimen updates, or other substantive changes to the application based on Client feedback. Additional revisions beyond the first are billed at Attorney’s hourly rate of $250/hour in quarter-hour increments.",
         "Completion of Milestones: Upon completion of each milestone, Attorney shall transfer the earned portion from the IOLTA trust account to Attorney’s operating account. Client shall receive written notice when each milestone is reached and funds are transferred.",
         "Termination by Client: If Client terminates this engagement after Attorney has prepared and delivered the draft application to Client, all fees earned through application preparation remain due and payable, whether or not Client elects to file the application with the USPTO. Client may terminate prior to receiving the draft application; however, termination after delivery of the draft application does not reduce Client’s obligation for the preparation work completed. If Client terminates before the draft application is delivered, Attorney may charge Client a reasonable hourly rate (not to exceed $250/hour) for work performed to date, not to exceed fifty percent of the fee for the elected tier, and shall refund any remaining balance within fourteen (14) days."
@@ -211,7 +395,9 @@ export const LETTERS = {
     {
       "heading": "Section 4. Business Hours and Communication",
       "body": [
-        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response."
+        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response.",
+        "Communication Deadlines: When Attorney sends Client a material communication requiring Client’s response (including requests for approval of draft applications, payment authorization, or clarification of project scope), Client has ten (10) business days to respond. Response means written communication back to Attorney addressing the specific request. Silence or failure to respond is treated as a breach of this engagement’s communication requirement.",
+        "If Client does not respond within ten (10) business days: on Day 10, Attorney will send a follow-up reminder email, restating the original request and extending the deadline to Day 15 (an additional five (5) business days). If Client has not responded by Day 15, Attorney may, at Attorney’s sole discretion, (a) proceed with the engagement based on Attorney’s professional judgment regarding the matter at issue, with Client remaining liable for all fees incurred and Attorney not responsible for any consequences of Client’s non-participation, or (b) terminate this engagement for material breach (Client’s failure to cooperate and communicate), with Client responsible for all fees incurred through termination as described above."
       ]
     },
     {
@@ -220,13 +406,15 @@ export const LETTERS = {
         "General: Client agrees to be truthful with Attorney, to cooperate, to provide all factual and documentary evidence necessary for Attorney to perform the professional services, to abide by this Agreement and to keep Attorney advised of Client’s address, telephone number, and email address. In the event the Firm is unable to locate Client, the Firm may terminate all further representation of Client by sending an email to Client’s last known email address and filing all necessary documents to seek permission to withdraw from any formal representation.",
         "Use of TM, SM, and R: Client may use the \"TM\" symbol for unregistered marks, slogans, or logos to claim ownership under common law (or the \"SM\" mark for services), even while an application is pending. In signing this Agreement, Client acknowledges that this denotation does not fully inoculate Client in the event someone else registers the mark, slogan, or logo first. Client also acknowledges that the registered symbol is legally restricted and may only be used after the United States Patent and Trademark Office (USPTO) officially registers Client’s trademark and issues a registration certificate. Improper use of the registered symbol may result in legal penalties and/or lawsuits, for which Client is wholly responsible. Representation of the Client regarding such matters is expressly excluded from Legal Services under this Agreement.",
         "Communication Policies: Client will exclusively communicate with the Attorney via email at jbrantley@jenniferbrantleylaw.com or via the provided telephone number and/or case management portal, Monday through Friday between 9:00 a.m. to 4:30 p.m. Central Time. Client understands social media is not the proper avenue to contact Attorney.",
-        "Power of Attorney: Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
+        "Deliverables and Acceptance: Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has ten (10) business days from the date of delivery of any deliverable to review and object in writing to its contents. The ten-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted.",
+        "Client-Provided Research and Artificial Intelligence (AI) Materials: Review of client-supplied research, internet materials, social media content, or artificial intelligence-generated information is outside the defined scope of legal services described in this Agreement unless Attorney determines such review is reasonably necessary to advance Client’s legal objectives. Any review, analysis, verification, or response to such materials will be undertaken solely at Attorney’s discretion and will constitute billable legal work. Such time will be billed at Attorney’s standard hourly rate or, in flat-fee matters, as an additional fee separate from and not included in the flat fee. Attorney is not obligated to advance arguments, cite authorities, or incorporate materials that Attorney determines to be inaccurate, unsupported, strategically unsound, or inconsistent with applicable law or ethical obligations.",
+        "WARNING: use of AI and search engine prompts and queries related to your matter may constitute waiver of attorney-client privilege and confidentiality of such information and documents, which may be discoverable and used against you. AI and search engines are not attorneys and may not owe you any duty of confidentiality or privilege protections."
       ]
     },
     {
-      "heading": "Section 6. Deliverables and Acceptance",
+      "heading": "Section 6. Power of Attorney",
       "body": [
-        "Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has five (5) business days from the date of delivery of any deliverable to review and object in writing to its contents. The five-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted."
+        "Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
       ]
     },
     {
@@ -239,16 +427,25 @@ export const LETTERS = {
       "heading": "Section 8. Registration Timeline and Process Overview",
       "body": [
         "Client acknowledges and understands the following regarding the federal trademark registration process for the Proposed Mark:",
-        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date.",
-        "An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing, and affects the process described below. If Client has not sold goods and/or provided services as of the date of Client’s intake call, Client must proceed with filing a multi-step (\"intent to use\") trademark application. Client understands that after filing Client’s initial trademark application the next step in this multi-stage process is to submit evidence (i.e., proof) that Client is either selling products and/or providing services in connection with Client’s trademark. Client understands that Client must submit evidence and pay the invoice in a timely manner so that Attorney can review and approve the evidence. Client understands that Client must pay $650.00 USD to submit the evidence to the USPTO for one class only (plus an additional $150.00 for 2 or more classes). If Client cannot show proof by the invoice deadline, Client understands that Client must file an Extension Request and pay a fee to do so ($650.00 USD for one class plus an additional $125.00 for 2 or more classes) to keep Client’s trademark application alive and active.",
+        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date. An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing.",
+        "Registration Timeline for Use in Commerce (Track A) Applications:",
         "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
         "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier.",
         "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
-        "Registration or Notice of Allowance: If no opposition is filed, a use-in-commerce application proceeds to registration. An intent-to-use application instead receives a Notice of Allowance, after which Client must submit evidence of use (a Statement of Use) or file an Extension Request before registration issues. USPTO fees and any additional Attorney fees associated with the Statement of Use or Extension Request stage are billed separately as those stages occur and are not included in the fees elected under Section 2.",
-        "Maintenance: Following registration, periodic maintenance filings are required to keep the registration active. Maintenance filings are not included in this engagement unless separately elected in writing.",
-        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake. This reflects a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures below. Attorney makes no guarantee of registration or of any timeframe.",
+        "Registration: If no opposition is filed and the application is based on use in commerce, the mark proceeds to registration and Client receives a registration certificate.",
+        "Registration Timeline for Intent to Use (Track B) Applications:",
+        "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
+        "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier (File and Protect or Full Shield).",
+        "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
+        "Notice of Allowance: If no opposition is filed and the application is based on intent to use, the USPTO issues a Notice of Allowance. Client must then submit evidence that Client is using the mark in commerce (a Statement of Use), or file an Extension Request if Client is not yet ready to use the mark.",
+        "Statement of Use or Extension Request: If Client has elected the File and Protect or Full Shield tier with the Track B upcharge, Attorney will assist with one (1) Statement of Use or Extension Request submission, including review of Client’s specimens and submission to the USPTO. The Track B upcharge covers this work.",
+        "If Client is on a Search and File engagement (which does not include Track B services), Client is responsible for independently submitting the Statement of Use or Extension Request to the USPTO or engaging separate counsel.",
+        "USPTO Government Fees for Evidence Submission: The Statement of Use or Extension Request requires a separate USPTO government filing fee. This government fee is separate from Attorney’s Track B upcharge and is due at the time of submission to the USPTO. If Client needs more than one Extension Request before becoming ready to use the mark in commerce, additional Extension Requests beyond the first will be billed at Attorney’s hourly rate in quarter-hour increments, in addition to the applicable USPTO government filing fee for each submission.",
+        "Registration: Once the Statement of Use is approved or the Extension Request period expires with evidence of use submitted, the mark proceeds to registration and Client receives a registration certificate.",
+        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake.",
         "Time from filing to first Office Action in the TSDR record: approximately 4.3 months on average; USPTO target 5.0 months.",
-        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months."
+        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months.",
+        "The figures above reflect a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures above. For Intent to Use applications, the additional time needed to prepare and submit a Statement of Use or Extension Request will further extend the overall timeline to registration. Attorney makes no guarantee of registration or of any timeframe."
       ]
     },
     {
@@ -307,7 +504,13 @@ export const LETTERS = {
       ]
     },
     {
-      "heading": "Section 18. Entire Agreement",
+      "heading": "Section 18. Publicity",
+      "body": [
+        "By signing this agreement, Client authorizes J Brantley Law, PLLC to identify Client as a client and share the firm’s work together, including registration certificates, outcomes, and case descriptions, for marketing and business development purposes across all platforms. The Firm may use Client’s name, unless Client requests anonymity in writing, at any time. Opting out will not affect the Firm’s service or Client’s fees."
+      ]
+    },
+    {
+      "heading": "Section 19. Entire Agreement",
       "body": [
         "This Agreement constitutes the entire agreement between Attorney and Client regarding the services described above and supersedes any prior discussions or understandings, written or oral.",
         "By signing below, Client confirms the elections above and agrees to the terms of this Agreement."
@@ -319,7 +522,7 @@ export const LETTERS = {
       "heading": "",
       "body": [
         "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\"",
-        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\") (or a single, alternate mark should the chosen mark be unavailable). Please note that this proposal expires seven (7) business days from date of issuance."
+        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\"). Please note that this proposal expires seven (7) business days from date of issuance."
       ]
     },
     {
@@ -327,18 +530,25 @@ export const LETTERS = {
       "body": [
         "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
         "The following are outside the scope of this engagement unless separately elected in writing: application tiers or classes not elected in this agreement, trademark litigation, opposition, or cancellation proceedings; patent prosecution, including design patents; copyright registration; state trademark filings; international or Madrid Protocol filings; and any matter not expressly described and elected in Section 2, below.",
-        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 5: {{answers.drivers_license}}."
+        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 6: {{answers.drivers_license}}."
       ]
     },
     {
       "heading": "Section 2. Trademark Services and Fee Election",
       "body": [
-        "2A. Tier Election: Client elects the File and Protect tier of trademark services for the Proposed Mark, described below.",
-        "File and Protect: Includes the Search and Clear services above, preparation and filing of one federal trademark application for the Proposed Mark in one class of goods or services, and monitoring of the application through the initial USPTO examination stage. The USPTO filing fee of $350.00 per class is a separate government cost paid directly to the USPTO and is not included in the Attorney fee. Attorney fee: $1,800.00 + USPTO filing fee (separate government cost).",
-        "Note on Additional Classes: The fees in this engagement cover the application in one (1) class. If Client wishes to add classes to any application, additional search, clearance analysis, and filing fees will apply. Additional classes will be billed at $200 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney prior to work commencing.",
-        "2B. Optional Add-On Services: Client may elect the following add-on service.",
-        "Trademark Cease and Desist Letter: $300.00 per letter. This includes consultation with Attorney (not to exceed fifteen (15) minutes or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter on Client’s behalf, and delivery to Client for Client’s approval prior to sending. Client is responsible for all costs associated with delivery of the letter (postage, courier, etc.). This service is limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, Attorney shall notify Client that additional work is outside this scope. Client may elect to proceed with follow-up representation at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, subject to a separate written fee agreement.",
-        "[ ] Elect the Trademark Cease and Desist Letter add-on ($300.00 per letter)."
+        "2A. Tier Election: Client elects the File and Protect tier of trademark services for the Proposed Mark, described below. The fee below reflects one (1) class; additional classes incur an additional charge as set out in Section 2B.",
+        "File and Protect: Includes the Search and Clear services above, preparation and filing of one federal trademark application for the Proposed Mark in one class of goods or services, response to one (1) non-substantive Office Action, and monitoring of the application through the initial USPTO examination stage. The USPTO filing fee of $350.00 per class is a separate government cost paid directly to the USPTO and is not included in the Attorney fee. Attorney fee: $2,000.00 + USPTO filing fee (separate government cost).",
+        "2A-1. Filing Basis Election: Intent to Use (Track B) Upcharge",
+        "The fee above assumes a \"Use in Commerce\" (Track A) filing basis, where Client is already selling goods or providing services under the Proposed Mark as of the filing date.",
+        "If Client is filing under the \"Intent to Use\" (Track B) basis, add the Track B upcharge of $750.00 to the elected tier fee. This additional charge covers one (1) Statement of Use or Extension Request submission, including specimen review, form preparation, and minor back-and-forth communication with Client regarding proof of use. Filing basis will be confirmed at intake based on Client’s current use status as of the filing date.",
+        "[ ] Elect the Intent to Use (Track B) upcharge ($750.00, added to the elected tier fee).",
+        "2B. Additional Services: Client may elect the following a la carte / add-on services.",
+        "[ ] Trademark Cease and Desist Letter or Cease and Desist Response (if Client is the recipient): $750.00 per letter. Includes applicable research, up to fifteen (15) minutes of consultation (or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter, and delivery to Client for approval before sending. Client is responsible for delivery costs (postage, courier, etc.) if not sent electronically. Limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, that work is outside this scope and available at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, under a separate written fee agreement.",
+        "[ ] Non-substantive (procedural) Office Action response: $500.00 per response. Non-substantive actions address minor technical, procedural, or formatting errors — for example, unclear or miscategorized identification of goods/services, specimen issues, disclaimers, or clarifications — rather than refusing the core eligibility of the mark.",
+        "[ ] Substantive Office Action response: $1,500.00 per response. Substantive actions refuse registration on legal grounds and challenge the core eligibility of the mark, name, logo, or slogan. If not included in Client’s elected tier, Attorney may provide this service a la carte at the current rate.",
+        "[ ] Amendment to a pro se existing filing: $1,500.00 per amendment.",
+        "[ ] Additional class(es): the fees in Section 2 cover the application in one (1) class. Additional classes are billed at $250.00 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney before work commences.",
+        "[ ] Rush fee: $500.00 per requested instance. Client must elect this service if applicable; if applicable but not elected, the Rush fee will be added to Client’s invoice by Attorney."
       ]
     },
     {
@@ -346,17 +556,19 @@ export const LETTERS = {
       "body": [
         "Deposit",
         "A deposit of fifty percent (50%) of the attorney fee is due at signing and credited toward the initial milestone, with the remaining balance due prior to filing.",
-        "For the Search and File, File and Protect and Full Shield tiers, Client may also elect to pay the total elected fee above (exclusive of USPTO filing fees) in either three (3) or five (5) equal (or approximately equal) installment payments, as set forth below. Alternate terms may be agreed upon, in writing, by the parties.",
-        "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available.",
-        "[ ] Option A — 3 equal payments: Payments debited at 14-day intervals beginning on the date of signing, in the amount of one-third (1/3) of the total elected fee per installment.",
-        "[ ] Option B — 5 equal payments: Payments debited at 14-day intervals beginning on the date of signing, in the amount of one-fifth (1/5) of the total elected fee per installment.",
-        "Automatic Billing: Client authorizes automatic electronic debit of each installment from the payment method on file, at the intervals set forth in the elected Installment Plan above.",
+        "Client may also elect to pay the total elected fee above (exclusive of USPTO filing fees) in either three (3), five (5), or six (6) equal (or approximately equal) installment payments, as set forth below, instead of the deposit-and-balance schedule above. Alternate terms may be agreed upon, in writing, by the parties.",
+        "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available for add-on services.",
+        "[ ] Option A — 3 equal payments, at the intervals the firm sets at signing.",
+        "[ ] Option B — 5 equal payments, at the intervals the firm sets at signing.",
+        "[ ] Option C — 6 equal payments, at the intervals the firm sets at signing.",
+        "Automatic Billing: Client authorizes automatic electronic debit of each installment from the payment method on file, at the intervals set forth in the elected Installment Plan above. Client also authorizes automatic billing of any card on file for amounts due under this Agreement. Where no card is on file, a late fee of 1.5% per month (maximum 18% per annum) applies to any balance not paid within seven (7) days of invoicing. Attorney reserves the right to suspend services for any account with a past-due balance.",
+        "Deposits for Intent to Use (Track B) Filings: If Client has elected the Intent to Use (Track B) upcharge under Section 2A-1, the deposit of fifty percent (50%) shall be calculated on the total of the elected tier fee plus the Track B upcharge. If Client has elected an installment plan, the Track B upcharge will be included in the installment payment calculations.",
         "USPTO filing fees are government costs, are not eligible for the installment plan, and are due in full prior to filing.",
-        "Invoices for any services outside the elected tiers are due within seven (7) days of the invoice date.",
-        "Client authorizes automatic billing of any card on file for amounts due under this Agreement. Where no card is on file, a late fee of 1.5% per month (maximum 18% per annum) applies to any balance not paid within seven (7) days of invoicing. Attorney reserves the right to suspend services for any account with a past-due balance.",
+        "Invoices for any services outside the elected tier are due within seven (7) days of the invoice date.",
         "Fee Earning Milestones: Attorney’s fees are held in Client’s IOLTA trust account upon receipt and are earned according to the following milestones:",
-        "First Portion (Search and Opinion): $300.00 is earned upon Attorney’s completion of the trademark search, analysis, and delivery of the written clearance opinion to Client. If Attorney has already completed the search and delivered the written clearance opinion prior to this Agreement’s execution, this portion is earned upon execution of this Agreement and Client’s payment.",
-        "Second Portion (Filing and Application Preparation): The remaining $1,500.00 is earned upon Attorney’s preparation and delivery of the draft application to Client. This portion is earned regardless of whether Client elects to proceed with filing. If Client terminates this engagement after receiving the draft application, Client remains responsible for the full $1,500.00 for work performed in preparing the application.",
+        "First Portion (Search and Opinion): $500.00 (the Search and Clear fee) is earned upon Attorney’s completion of the trademark search, analysis, and delivery of the written clearance opinion to Client. If Attorney has already completed the search and delivered the written clearance opinion prior to this Agreement’s execution, this portion is earned upon execution of this Agreement and Client’s payment.",
+        "Second Portion (Filing): The remaining $1,500.00 is earned upon Attorney’s preparation and delivery of the draft application to Client. This portion is earned regardless of whether Client elects to proceed with filing. If Client terminates this engagement after receiving the draft application, Client remains responsible for the full amount for work performed in preparing the application.",
+        "Third Portion (Track B Statement of Use or Extension Request) [if the Track B upcharge is elected]: The $750.00 Track B upcharge is earned upon Attorney’s preparation and delivery of the draft Statement of Use or Extension Request to Client for review and approval. This fee is earned regardless of whether Client’s evidence of use is ultimately accepted by the USPTO or whether Client elects to proceed with filing the Extension Request.",
         "Application Revisions: One (1) revision to the draft application prior to filing is included at no additional charge. Revisions include modifications to goods/services descriptions, specimen updates, or other substantive changes to the application based on Client feedback. Additional revisions beyond the first are billed at Attorney’s hourly rate of $250/hour in quarter-hour increments.",
         "Amendments to Filed Application: One (1) amendment to the filed application is included in the elected fee. Amendments include responses to Office Actions requiring minor changes such as disclaimers, amendments to the description of goods or services, or non-substantive updates requested by the USPTO. Additional amendments beyond the first are billed at Attorney’s hourly rate of $250/hour in quarter-hour increments. Amendments that require substantial reworking of the application or responses to final or complex Office Actions are billed separately and require a separate written fee agreement.",
         "Completion of Milestones: Upon completion of each milestone, Attorney shall transfer the earned portion from the IOLTA trust account to Attorney’s operating account. Client shall receive written notice when each milestone is reached and funds are transferred.",
@@ -366,7 +578,9 @@ export const LETTERS = {
     {
       "heading": "Section 4. Business Hours and Communication",
       "body": [
-        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response."
+        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response.",
+        "Communication Deadlines: When Attorney sends Client a material communication requiring Client’s response (including requests for approval of draft applications, payment authorization, or clarification of project scope), Client has ten (10) business days to respond. Response means written communication back to Attorney addressing the specific request. Silence or failure to respond is treated as a breach of this engagement’s communication requirement.",
+        "If Client does not respond within ten (10) business days: on Day 10, Attorney will send a follow-up reminder email, restating the original request and extending the deadline to Day 15 (an additional five (5) business days). If Client has not responded by Day 15, Attorney may, at Attorney’s sole discretion, (a) proceed with the engagement based on Attorney’s professional judgment regarding the matter at issue, with Client remaining liable for all fees incurred and Attorney not responsible for any consequences of Client’s non-participation, or (b) terminate this engagement for material breach (Client’s failure to cooperate and communicate), with Client responsible for all fees incurred through termination as described above."
       ]
     },
     {
@@ -375,13 +589,15 @@ export const LETTERS = {
         "General: Client agrees to be truthful with Attorney, to cooperate, to provide all factual and documentary evidence necessary for Attorney to perform the professional services, to abide by this Agreement and to keep Attorney advised of Client’s address, telephone number, and email address. In the event the Firm is unable to locate Client, the Firm may terminate all further representation of Client by sending an email to Client’s last known email address and filing all necessary documents to seek permission to withdraw from any formal representation.",
         "Use of TM, SM, and R: Client may use the \"TM\" symbol for unregistered marks, slogans, or logos to claim ownership under common law (or the \"SM\" mark for services), even while an application is pending. In signing this Agreement, Client acknowledges that this denotation does not fully inoculate Client in the event someone else registers the mark, slogan, or logo first. Client also acknowledges that the registered symbol is legally restricted and may only be used after the United States Patent and Trademark Office (USPTO) officially registers Client’s trademark and issues a registration certificate. Improper use of the registered symbol may result in legal penalties and/or lawsuits, for which Client is wholly responsible. Representation of the Client regarding such matters is expressly excluded from Legal Services under this Agreement.",
         "Communication Policies: Client will exclusively communicate with the Attorney via email at jbrantley@jenniferbrantleylaw.com or via the provided telephone number and/or case management portal, Monday through Friday between 9:00 a.m. to 4:30 p.m. Central Time. Client understands social media is not the proper avenue to contact Attorney.",
-        "Power of Attorney: Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
+        "Deliverables and Acceptance: Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has ten (10) business days from the date of delivery of any deliverable to review and object in writing to its contents. The ten-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted.",
+        "Client-Provided Research and Artificial Intelligence (AI) Materials: Review of client-supplied research, internet materials, social media content, or artificial intelligence-generated information is outside the defined scope of legal services described in this Agreement unless Attorney determines such review is reasonably necessary to advance Client’s legal objectives. Any review, analysis, verification, or response to such materials will be undertaken solely at Attorney’s discretion and will constitute billable legal work. Such time will be billed at Attorney’s standard hourly rate or, in flat-fee matters, as an additional fee separate from and not included in the flat fee. Attorney is not obligated to advance arguments, cite authorities, or incorporate materials that Attorney determines to be inaccurate, unsupported, strategically unsound, or inconsistent with applicable law or ethical obligations.",
+        "WARNING: use of AI and search engine prompts and queries related to your matter may constitute waiver of attorney-client privilege and confidentiality of such information and documents, which may be discoverable and used against you. AI and search engines are not attorneys and may not owe you any duty of confidentiality or privilege protections."
       ]
     },
     {
-      "heading": "Section 6. Deliverables and Acceptance",
+      "heading": "Section 6. Power of Attorney",
       "body": [
-        "Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has five (5) business days from the date of delivery of any deliverable to review and object in writing to its contents. The five-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted."
+        "Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
       ]
     },
     {
@@ -394,16 +610,25 @@ export const LETTERS = {
       "heading": "Section 8. Registration Timeline and Process Overview",
       "body": [
         "Client acknowledges and understands the following regarding the federal trademark registration process for the Proposed Mark:",
-        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date.",
-        "An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing, and affects the process described below. If Client has not sold goods and/or provided services as of the date of Client’s intake call, Client must proceed with filing a multi-step (\"intent to use\") trademark application. Client understands that after filing Client’s initial trademark application the next step in this multi-stage process is to submit evidence (i.e., proof) that Client is either selling products and/or providing services in connection with Client’s trademark. Client understands that Client must submit evidence and pay the invoice in a timely manner so that Attorney can review and approve the evidence. Client understands that Client must pay $650.00 USD to submit the evidence to the USPTO for one class only (plus an additional $150.00 for 2 or more classes). If Client cannot show proof by the invoice deadline, Client understands that Client must file an Extension Request and pay a fee to do so ($650.00 USD for one class plus an additional $125.00 for 2 or more classes) to keep Client’s trademark application alive and active.",
+        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date. An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing.",
+        "Registration Timeline for Use in Commerce (Track A) Applications:",
         "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
         "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier.",
         "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
-        "Registration or Notice of Allowance: If no opposition is filed, a use-in-commerce application proceeds to registration. An intent-to-use application instead receives a Notice of Allowance, after which Client must submit evidence of use (a Statement of Use) or file an Extension Request before registration issues. USPTO fees and any additional Attorney fees associated with the Statement of Use or Extension Request stage are billed separately as those stages occur and are not included in the fees elected under Section 2.",
-        "Maintenance: Following registration, periodic maintenance filings are required to keep the registration active. Maintenance filings are not included in this engagement unless separately elected in writing.",
-        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake. This reflects a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures below. Attorney makes no guarantee of registration or of any timeframe.",
+        "Registration: If no opposition is filed and the application is based on use in commerce, the mark proceeds to registration and Client receives a registration certificate.",
+        "Registration Timeline for Intent to Use (Track B) Applications:",
+        "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
+        "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier (File and Protect or Full Shield).",
+        "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
+        "Notice of Allowance: If no opposition is filed and the application is based on intent to use, the USPTO issues a Notice of Allowance. Client must then submit evidence that Client is using the mark in commerce (a Statement of Use), or file an Extension Request if Client is not yet ready to use the mark.",
+        "Statement of Use or Extension Request: If Client has elected the File and Protect or Full Shield tier with the Track B upcharge, Attorney will assist with one (1) Statement of Use or Extension Request submission, including review of Client’s specimens and submission to the USPTO. The Track B upcharge covers this work.",
+        "If Client is on a Search and File engagement (which does not include Track B services), Client is responsible for independently submitting the Statement of Use or Extension Request to the USPTO or engaging separate counsel.",
+        "USPTO Government Fees for Evidence Submission: The Statement of Use or Extension Request requires a separate USPTO government filing fee. This government fee is separate from Attorney’s Track B upcharge and is due at the time of submission to the USPTO. If Client needs more than one Extension Request before becoming ready to use the mark in commerce, additional Extension Requests beyond the first will be billed at Attorney’s hourly rate in quarter-hour increments, in addition to the applicable USPTO government filing fee for each submission.",
+        "Registration: Once the Statement of Use is approved or the Extension Request period expires with evidence of use submitted, the mark proceeds to registration and Client receives a registration certificate.",
+        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake.",
         "Time from filing to first Office Action in the TSDR record: approximately 4.3 months on average; USPTO target 5.0 months.",
-        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months."
+        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months.",
+        "The figures above reflect a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures above. For Intent to Use applications, the additional time needed to prepare and submit a Statement of Use or Extension Request will further extend the overall timeline to registration. Attorney makes no guarantee of registration or of any timeframe."
       ]
     },
     {
@@ -462,7 +687,13 @@ export const LETTERS = {
       ]
     },
     {
-      "heading": "Section 18. Entire Agreement",
+      "heading": "Section 18. Publicity",
+      "body": [
+        "By signing this agreement, Client authorizes J Brantley Law, PLLC to identify Client as a client and share the firm’s work together, including registration certificates, outcomes, and case descriptions, for marketing and business development purposes across all platforms. The Firm may use Client’s name, unless Client requests anonymity in writing, at any time. Opting out will not affect the Firm’s service or Client’s fees."
+      ]
+    },
+    {
+      "heading": "Section 19. Entire Agreement",
       "body": [
         "This Agreement constitutes the entire agreement between Attorney and Client regarding the services described above and supersedes any prior discussions or understandings, written or oral.",
         "By signing below, Client confirms the elections above and agrees to the terms of this Agreement."
@@ -474,7 +705,7 @@ export const LETTERS = {
       "heading": "",
       "body": [
         "This Engagement Agreement (\"Agreement\") is entered into by and between J Brantley Law, PLLC (\"Attorney\" or \"Firm\"), and the undersigned individual or entity (\"Client\"), collectively the \"Parties.\"",
-        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\") (or a single, alternate mark should the chosen mark be unavailable). Please note that this proposal expires seven (7) business days from date of issuance."
+        "Thank you for choosing J Brantley Law, PLLC for representation in the matters described below. This letter sets forth the terms of engagement between the Firm and Client, in their individual capacity (\"Client\"), regarding trademark registration services for {{answers.mark_name}} (the \"Proposed Mark\"). Please note that this proposal expires seven (7) business days from date of issuance."
       ]
     },
     {
@@ -482,18 +713,25 @@ export const LETTERS = {
       "body": [
         "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
         "The following are outside the scope of this engagement unless separately elected in writing: application tiers or classes not elected in this agreement, trademark litigation, opposition, or cancellation proceedings; patent prosecution, including design patents; copyright registration; state trademark filings; international or Madrid Protocol filings; and any matter not expressly described and elected in Section 2, below.",
-        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 5: {{answers.drivers_license}}."
+        "Client’s driver’s license number and state of issuance, provided in connection with the Power of Attorney granted in Section 6: {{answers.drivers_license}}."
       ]
     },
     {
       "heading": "Section 2. Trademark Services and Fee Election",
       "body": [
-        "2A. Tier Election: Client elects the Full Shield tier of trademark services for the Proposed Mark, described below.",
-        "Full Shield: Includes all File and Protect services above, response to two non-substantive USPTO Office Actions if issued, and 60 days post-registration monitoring for conflicting applications. The USPTO filing fee of $350.00 per class is a separate government cost paid directly to the USPTO and is not included in the Attorney fee. Attorney fee: $2,200.00 + USPTO filing fee (separate government cost).",
-        "Note on Additional Classes: The fees in this engagement cover the application in one (1) class. If Client wishes to add classes to any application, additional search, clearance analysis, and filing fees will apply. Additional classes will be billed at $200 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney prior to work commencing.",
-        "2B. Optional Add-On Services: Client may elect the following add-on service.",
-        "Trademark Cease and Desist Letter: $300.00 per letter. This includes consultation with Attorney (not to exceed fifteen (15) minutes or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter on Client’s behalf, and delivery to Client for Client’s approval prior to sending. Client is responsible for all costs associated with delivery of the letter (postage, courier, etc.). This service is limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, Attorney shall notify Client that additional work is outside this scope. Client may elect to proceed with follow-up representation at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, subject to a separate written fee agreement.",
-        "[ ] Elect the Trademark Cease and Desist Letter add-on ($300.00 per letter)."
+        "2A. Tier Election: Client elects the Full Shield tier of trademark services for the Proposed Mark, described below. The fee below reflects one (1) class; additional classes incur an additional charge as set out in Section 2B.",
+        "Full Shield: Includes all File and Protect services above, response to one (1) non-substantive USPTO Office Action and one (1) substantive Office Action, monitoring during the publication period, and 60 days of post-registration monitoring for conflicting applications. The USPTO filing fee of $350.00 per class is a separate government cost paid directly to the USPTO and is not included in the Attorney fee. Attorney fee: $3,000.00 + USPTO filing fee (separate government cost).",
+        "2A-1. Filing Basis Election: Intent to Use (Track B) Upcharge",
+        "The fee above assumes a \"Use in Commerce\" (Track A) filing basis, where Client is already selling goods or providing services under the Proposed Mark as of the filing date.",
+        "If Client is filing under the \"Intent to Use\" (Track B) basis, add the Track B upcharge of $750.00 to the elected tier fee. This additional charge covers one (1) Statement of Use or Extension Request submission, including specimen review, form preparation, and minor back-and-forth communication with Client regarding proof of use. Filing basis will be confirmed at intake based on Client’s current use status as of the filing date.",
+        "[ ] Elect the Intent to Use (Track B) upcharge ($750.00, added to the elected tier fee).",
+        "2B. Additional Services: Client may elect the following a la carte / add-on services.",
+        "[ ] Trademark Cease and Desist Letter or Cease and Desist Response (if Client is the recipient): $750.00 per letter. Includes applicable research, up to fifteen (15) minutes of consultation (or equivalent email correspondence) regarding the trademark use at issue, drafting of one cease and desist letter, and delivery to Client for approval before sending. Client is responsible for delivery costs (postage, courier, etc.) if not sent electronically. Limited to trademark-related cease and desist matters only. If the offending party responds or negotiation is required, that work is outside this scope and available at Attorney’s hourly rate of $250/hour, billed in quarter-hour (.25) increments, under a separate written fee agreement.",
+        "[ ] Non-substantive (procedural) Office Action response: $500.00 per response. Non-substantive actions address minor technical, procedural, or formatting errors — for example, unclear or miscategorized identification of goods/services, specimen issues, disclaimers, or clarifications — rather than refusing the core eligibility of the mark.",
+        "[ ] Substantive Office Action response: $1,500.00 per response. Substantive actions refuse registration on legal grounds and challenge the core eligibility of the mark, name, logo, or slogan. If not included in Client’s elected tier, Attorney may provide this service a la carte at the current rate.",
+        "[ ] Amendment to a pro se existing filing: $1,500.00 per amendment.",
+        "[ ] Additional class(es): the fees in Section 2 cover the application in one (1) class. Additional classes are billed at $250.00 per class in attorney fees, plus the applicable USPTO filing fee per class, per application. Any request to add classes must be approved in writing by Attorney before work commences.",
+        "[ ] Rush fee: $500.00 per requested instance. Client must elect this service if applicable; if applicable but not elected, the Rush fee will be added to Client’s invoice by Attorney."
       ]
     },
     {
@@ -501,17 +739,19 @@ export const LETTERS = {
       "body": [
         "Deposit",
         "A deposit of fifty percent (50%) of the attorney fee is due at signing and credited toward the initial milestone, with the remaining balance due prior to filing.",
-        "For the Search and File, File and Protect and Full Shield tiers, Client may also elect to pay the total elected fee above (exclusive of USPTO filing fees) in either three (3) or five (5) equal (or approximately equal) installment payments, as set forth below. Alternate terms may be agreed upon, in writing, by the parties.",
-        "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available.",
-        "[ ] Option A — 3 equal payments: Payments debited at 14-day intervals beginning on the date of signing, in the amount of one-third (1/3) of the total elected fee per installment.",
-        "[ ] Option B — 5 equal payments: Payments debited at 14-day intervals beginning on the date of signing, in the amount of one-fifth (1/5) of the total elected fee per installment.",
-        "Automatic Billing: Client authorizes automatic electronic debit of each installment from the payment method on file, at the intervals set forth in the elected Installment Plan above.",
+        "Client may also elect to pay the total elected fee above (exclusive of USPTO filing fees) in either three (3), five (5), or six (6) equal (or approximately equal) installment payments, as set forth below, instead of the deposit-and-balance schedule above. Alternate terms may be agreed upon, in writing, by the parties.",
+        "Optional add-on services elected at signing are invoiced upon completion and are due in full within seven (7) days of invoice date. No installment plans are available for add-on services.",
+        "[ ] Option A — 3 equal payments, at the intervals the firm sets at signing.",
+        "[ ] Option B — 5 equal payments, at the intervals the firm sets at signing.",
+        "[ ] Option C — 6 equal payments, at the intervals the firm sets at signing.",
+        "Automatic Billing: Client authorizes automatic electronic debit of each installment from the payment method on file, at the intervals set forth in the elected Installment Plan above. Client also authorizes automatic billing of any card on file for amounts due under this Agreement. Where no card is on file, a late fee of 1.5% per month (maximum 18% per annum) applies to any balance not paid within seven (7) days of invoicing. Attorney reserves the right to suspend services for any account with a past-due balance.",
+        "Deposits for Intent to Use (Track B) Filings: If Client has elected the Intent to Use (Track B) upcharge under Section 2A-1, the deposit of fifty percent (50%) shall be calculated on the total of the elected tier fee plus the Track B upcharge. If Client has elected an installment plan, the Track B upcharge will be included in the installment payment calculations.",
         "USPTO filing fees are government costs, are not eligible for the installment plan, and are due in full prior to filing.",
-        "Invoices for any services outside the elected tiers are due within seven (7) days of the invoice date.",
-        "Client authorizes automatic billing of any card on file for amounts due under this Agreement. Where no card is on file, a late fee of 1.5% per month (maximum 18% per annum) applies to any balance not paid within seven (7) days of invoicing. Attorney reserves the right to suspend services for any account with a past-due balance.",
+        "Invoices for any services outside the elected tier are due within seven (7) days of the invoice date.",
         "Fee Earning Milestones: Attorney’s fees are held in Client’s IOLTA trust account upon receipt and are earned according to the following milestones:",
-        "First Portion (Search and Opinion): $300.00 is earned upon Attorney’s completion of the trademark search, analysis, and delivery of the written clearance opinion to Client. If Attorney has already completed the search and delivered the written clearance opinion prior to this Agreement’s execution, this portion is earned upon execution of this Agreement and Client’s payment.",
-        "Second Portion (Filing and Application Preparation): The remaining $1,900.00 is earned upon Attorney’s preparation and delivery of the draft application to Client. This portion is earned regardless of whether Client elects to proceed with filing. If Client terminates this engagement after receiving the draft application, Client remains responsible for the full $1,900.00 for work performed in preparing the application.",
+        "First Portion (Search and Opinion): $500.00 (the Search and Clear fee) is earned upon Attorney’s completion of the trademark search, analysis, and delivery of the written clearance opinion to Client. If Attorney has already completed the search and delivered the written clearance opinion prior to this Agreement’s execution, this portion is earned upon execution of this Agreement and Client’s payment.",
+        "Second Portion (Filing): The remaining $2,500.00 is earned upon Attorney’s preparation and delivery of the draft application to Client. This portion is earned regardless of whether Client elects to proceed with filing. If Client terminates this engagement after receiving the draft application, Client remains responsible for the full amount for work performed in preparing the application.",
+        "Third Portion (Track B Statement of Use or Extension Request) [if the Track B upcharge is elected]: The $750.00 Track B upcharge is earned upon Attorney’s preparation and delivery of the draft Statement of Use or Extension Request to Client for review and approval. This fee is earned regardless of whether Client’s evidence of use is ultimately accepted by the USPTO or whether Client elects to proceed with filing the Extension Request.",
         "Application Revisions: One (1) revision to the draft application prior to filing is included at no additional charge. Revisions include modifications to goods/services descriptions, specimen updates, or other substantive changes to the application based on Client feedback. Additional revisions beyond the first are billed at Attorney’s hourly rate of $250/hour in quarter-hour increments.",
         "Amendments to Filed Application: One (1) amendment to the filed application is included in the elected fee. Amendments include responses to Office Actions requiring minor changes such as disclaimers, amendments to the description of goods or services, or non-substantive updates requested by the USPTO. Additional amendments beyond the first are billed at Attorney’s hourly rate of $250/hour in quarter-hour increments. Amendments that require substantial reworking of the application or responses to final or complex Office Actions are billed separately and require a separate written fee agreement.",
         "Completion of Milestones: Upon completion of each milestone, Attorney shall transfer the earned portion from the IOLTA trust account to Attorney’s operating account. Client shall receive written notice when each milestone is reached and funds are transferred.",
@@ -521,7 +761,9 @@ export const LETTERS = {
     {
       "heading": "Section 4. Business Hours and Communication",
       "body": [
-        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response."
+        "Attorney’s business hours are Monday through Friday, 9:30 a.m. to 4:30 p.m. Central Time. Communications received outside business hours will be addressed the next business day. Attorney reserves the right to bill for after-hours communications requiring substantive attorney time and reserves the right to delete after-hours voicemails without transcription. Client agrees to respond to Attorney’s requests for information in a timely manner; delayed responses may delay deliverables, and Attorney is not responsible for delays caused by Client’s delayed response.",
+        "Communication Deadlines: When Attorney sends Client a material communication requiring Client’s response (including requests for approval of draft applications, payment authorization, or clarification of project scope), Client has ten (10) business days to respond. Response means written communication back to Attorney addressing the specific request. Silence or failure to respond is treated as a breach of this engagement’s communication requirement.",
+        "If Client does not respond within ten (10) business days: on Day 10, Attorney will send a follow-up reminder email, restating the original request and extending the deadline to Day 15 (an additional five (5) business days). If Client has not responded by Day 15, Attorney may, at Attorney’s sole discretion, (a) proceed with the engagement based on Attorney’s professional judgment regarding the matter at issue, with Client remaining liable for all fees incurred and Attorney not responsible for any consequences of Client’s non-participation, or (b) terminate this engagement for material breach (Client’s failure to cooperate and communicate), with Client responsible for all fees incurred through termination as described above."
       ]
     },
     {
@@ -530,13 +772,15 @@ export const LETTERS = {
         "General: Client agrees to be truthful with Attorney, to cooperate, to provide all factual and documentary evidence necessary for Attorney to perform the professional services, to abide by this Agreement and to keep Attorney advised of Client’s address, telephone number, and email address. In the event the Firm is unable to locate Client, the Firm may terminate all further representation of Client by sending an email to Client’s last known email address and filing all necessary documents to seek permission to withdraw from any formal representation.",
         "Use of TM, SM, and R: Client may use the \"TM\" symbol for unregistered marks, slogans, or logos to claim ownership under common law (or the \"SM\" mark for services), even while an application is pending. In signing this Agreement, Client acknowledges that this denotation does not fully inoculate Client in the event someone else registers the mark, slogan, or logo first. Client also acknowledges that the registered symbol is legally restricted and may only be used after the United States Patent and Trademark Office (USPTO) officially registers Client’s trademark and issues a registration certificate. Improper use of the registered symbol may result in legal penalties and/or lawsuits, for which Client is wholly responsible. Representation of the Client regarding such matters is expressly excluded from Legal Services under this Agreement.",
         "Communication Policies: Client will exclusively communicate with the Attorney via email at jbrantley@jenniferbrantleylaw.com or via the provided telephone number and/or case management portal, Monday through Friday between 9:00 a.m. to 4:30 p.m. Central Time. Client understands social media is not the proper avenue to contact Attorney.",
-        "Power of Attorney: Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
+        "Deliverables and Acceptance: Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has ten (10) business days from the date of delivery of any deliverable to review and object in writing to its contents. The ten-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted.",
+        "Client-Provided Research and Artificial Intelligence (AI) Materials: Review of client-supplied research, internet materials, social media content, or artificial intelligence-generated information is outside the defined scope of legal services described in this Agreement unless Attorney determines such review is reasonably necessary to advance Client’s legal objectives. Any review, analysis, verification, or response to such materials will be undertaken solely at Attorney’s discretion and will constitute billable legal work. Such time will be billed at Attorney’s standard hourly rate or, in flat-fee matters, as an additional fee separate from and not included in the flat fee. Attorney is not obligated to advance arguments, cite authorities, or incorporate materials that Attorney determines to be inaccurate, unsupported, strategically unsound, or inconsistent with applicable law or ethical obligations.",
+        "WARNING: use of AI and search engine prompts and queries related to your matter may constitute waiver of attorney-client privilege and confidentiality of such information and documents, which may be discoverable and used against you. AI and search engines are not attorneys and may not owe you any duty of confidentiality or privilege protections."
       ]
     },
     {
-      "heading": "Section 6. Deliverables and Acceptance",
+      "heading": "Section 6. Power of Attorney",
       "body": [
-        "Attorney will communicate the anticipated completion timeline for each elected deliverable directly with Client during representation. Client has five (5) business days from the date of delivery of any deliverable to review and object in writing to its contents. The five-business-day clock runs from the delivery date. Absent a timely written objection, the deliverable is deemed accepted."
+        "Client gives Attorney a limited power of attorney to execute all documents which are necessary or desirable to file their trademark application. Client designates Jennifer N. Brantley, Esq., and J Brantley Law, PLLC as its representative with power to bind Client in connection with representation under this engagement."
       ]
     },
     {
@@ -549,16 +793,25 @@ export const LETTERS = {
       "heading": "Section 8. Registration Timeline and Process Overview",
       "body": [
         "Client acknowledges and understands the following regarding the federal trademark registration process for the Proposed Mark:",
-        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date.",
-        "An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing, and affects the process described below. If Client has not sold goods and/or provided services as of the date of Client’s intake call, Client must proceed with filing a multi-step (\"intent to use\") trademark application. Client understands that after filing Client’s initial trademark application the next step in this multi-stage process is to submit evidence (i.e., proof) that Client is either selling products and/or providing services in connection with Client’s trademark. Client understands that Client must submit evidence and pay the invoice in a timely manner so that Attorney can review and approve the evidence. Client understands that Client must pay $650.00 USD to submit the evidence to the USPTO for one class only (plus an additional $150.00 for 2 or more classes). If Client cannot show proof by the invoice deadline, Client understands that Client must file an Extension Request and pay a fee to do so ($650.00 USD for one class plus an additional $125.00 for 2 or more classes) to keep Client’s trademark application alive and active.",
+        "Trademark applications proceed under one of two filing bases. A \"use in commerce\" application applies where Client is already selling goods or services under the mark as of the filing date. An \"intent to use\" application, sometimes called a Track B application, applies where Client has a bona fide intention to use the mark but has not yet begun sales under it as of the filing date. Client’s filing basis for the Proposed Mark will be determined based on Client’s use of the mark at the time of filing.",
+        "Registration Timeline for Use in Commerce (Track A) Applications:",
         "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
         "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier.",
         "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
-        "Registration or Notice of Allowance: If no opposition is filed, a use-in-commerce application proceeds to registration. An intent-to-use application instead receives a Notice of Allowance, after which Client must submit evidence of use (a Statement of Use) or file an Extension Request before registration issues. USPTO fees and any additional Attorney fees associated with the Statement of Use or Extension Request stage are billed separately as those stages occur and are not included in the fees elected under Section 2.",
-        "Maintenance: Following registration, periodic maintenance filings are required to keep the registration active. Maintenance filings are not included in this engagement unless separately elected in writing.",
-        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake. This reflects a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures below. Attorney makes no guarantee of registration or of any timeframe.",
+        "Registration: If no opposition is filed and the application is based on use in commerce, the mark proceeds to registration and Client receives a registration certificate.",
+        "Registration Timeline for Intent to Use (Track B) Applications:",
+        "Filing: Attorney files the application with the USPTO. The application receives a serial number and appears in the USPTO’s Trademark Status and Document Retrieval (TSDR) system.",
+        "Examination: An examining attorney reviews the application to determine whether federal law permits registration. If the examining attorney identifies an issue, the USPTO issues an Office Action, and Attorney responds on Client’s behalf to the extent included in the elected service tier (File and Protect or Full Shield).",
+        "Publication: If the examining attorney finds no grounds for refusal, the mark is published in the Official Gazette for a thirty (30) day period during which third parties may oppose registration.",
+        "Notice of Allowance: If no opposition is filed and the application is based on intent to use, the USPTO issues a Notice of Allowance. Client must then submit evidence that Client is using the mark in commerce (a Statement of Use), or file an Extension Request if Client is not yet ready to use the mark.",
+        "Statement of Use or Extension Request: If Client has elected the File and Protect or Full Shield tier with the Track B upcharge, Attorney will assist with one (1) Statement of Use or Extension Request submission, including review of Client’s specimens and submission to the USPTO. The Track B upcharge covers this work.",
+        "If Client is on a Search and File engagement (which does not include Track B services), Client is responsible for independently submitting the Statement of Use or Extension Request to the USPTO or engaging separate counsel.",
+        "USPTO Government Fees for Evidence Submission: The Statement of Use or Extension Request requires a separate USPTO government filing fee. This government fee is separate from Attorney’s Track B upcharge and is due at the time of submission to the USPTO. If Client needs more than one Extension Request before becoming ready to use the mark in commerce, additional Extension Requests beyond the first will be billed at Attorney’s hourly rate in quarter-hour increments, in addition to the applicable USPTO government filing fee for each submission.",
+        "Registration: Once the Statement of Use is approved or the Extension Request period expires with evidence of use submitted, the mark proceeds to registration and Client receives a registration certificate.",
+        "Note: The following figures are drawn from the USPTO’s published trademark dashboard and processing wait times, current as of May 31, 2026, and supersede any timeframe discussed during Client’s intake.",
         "Time from filing to first Office Action in the TSDR record: approximately 4.3 months on average; USPTO target 5.0 months.",
-        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months."
+        "Time from filing to registration or application abandonment: approximately 9.9 months on average; USPTO target 11.0 months.",
+        "The figures above reflect a straightforward application that does not receive an Office Action, opposition, or request for additional evidence. Any of those events will extend the timeline beyond the figures above. For Intent to Use applications, the additional time needed to prepare and submit a Statement of Use or Extension Request will further extend the overall timeline to registration. Attorney makes no guarantee of registration or of any timeframe."
       ]
     },
     {
@@ -617,7 +870,13 @@ export const LETTERS = {
       ]
     },
     {
-      "heading": "Section 18. Entire Agreement",
+      "heading": "Section 18. Publicity",
+      "body": [
+        "By signing this agreement, Client authorizes J Brantley Law, PLLC to identify Client as a client and share the firm’s work together, including registration certificates, outcomes, and case descriptions, for marketing and business development purposes across all platforms. The Firm may use Client’s name, unless Client requests anonymity in writing, at any time. Opting out will not affect the Firm’s service or Client’s fees."
+      ]
+    },
+    {
+      "heading": "Section 19. Entire Agreement",
       "body": [
         "This Agreement constitutes the entire agreement between Attorney and Client regarding the services described above and supersedes any prior discussions or understandings, written or oral.",
         "By signing below, Client confirms the elections above and agrees to the terms of this Agreement."
@@ -2562,6 +2821,7 @@ export const LETTERS = {
 };
 
 export const SCOPES = {
+  "trademark:Knockout Search": "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
   "trademark:Search and Clear": "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
   "trademark:Search and File": "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
   "trademark:File and Protect": "This engagement is limited to the services elected below. No other services are included in this engagement unless set forth in a separate written agreement signed by Attorney and Client.",
