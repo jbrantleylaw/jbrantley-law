@@ -31,8 +31,6 @@ const MAP = {
   'trademark:Knockout Search': '03_Trademark_Knockout_Search_Engagement_Agreement.docx',
   'trademark:Search and Clear': '04_Trademark_Search_and_Clear_Engagement_Agreement.docx',
   'trademark:Search and File': '05_Trademark_Search_and_File_Engagement_Agreement.docx',
-  'trademark:File and Protect': '06_Trademark_File_and_Protect_Engagement_Agreement.docx',
-  'trademark:Full Shield': '07_Trademark_Full_Shield_Engagement_Agreement.docx',
   'copyright:default': '06_Copyright_Registration_Engagement_Agreement.docx',
   // business-formation and contracts each ship as ONE Word document covering all
   // three tiers, elected in the letter by a "check one" box in the Service Tier
