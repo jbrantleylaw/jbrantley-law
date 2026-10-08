@@ -376,10 +376,12 @@ export const PRACTICE_AREAS = [
     // pre-filled with an amount — the client types it in themselves, so
     // every `note` below spells out the exact figure to enter. Search and
     // File carries a three-way election in the signed letter (Paid in Full
-    // / Installment Plan / Buy Now, Pay Later); only the first two have a
-    // LawPay link today, so Installment Plan is called out as "ask the
-    // firm" rather than wired up as a button. Swap in a real installment
-    // link and add an `altPayment` or a second option here once one exists.
+    // / Installment Plan / Buy Now, Pay Later). There is no dedicated
+    // installment-plan link — per the firm, Installment Plan reuses the
+    // same Pay in Full page, with the client simply typing in their share
+    // of $2,000.00 (split 3, 5, or 6 ways, the way the signed letter lets
+    // them elect) each time a payment is due, so the note spells out each
+    // plan's per-payment amount to the cent.
     paymentOptions: [
       {
         label: 'Knockout Search',
@@ -400,7 +402,7 @@ export const PRACTICE_AREAS = [
       {
         label: 'Search and File',
         amount: '$2,000',
-        note: 'Search and Clear, plus preparation and filing of one federal application in one class, Attorney as counsel of record, docketing, and three months of post-registration monitoring. Plus USPTO filing fees (separate government cost, billed separately — do not include it in the amount below). To pay in full, enter $2,000.00 as the amount on the payment page. Prefer an installment plan instead? Reply to the firm’s confirmation email and the firm will set one up — that option is not yet available directly on this page.',
+        note: 'Search and Clear, plus preparation and filing of one federal application in one class, Attorney as counsel of record, docketing, and three months of post-registration monitoring. Plus USPTO filing fees (separate government cost, billed separately — do not include it in the amount below). To pay in full, enter $2,000.00 as the amount on the payment page. Prefer an installment plan instead? Use the same payment button for each installment and enter: for 3 payments, $666.67 the first two times and $666.66 the third; for 5 payments, $400.00 each time; for 6 payments, $333.34 the first two times and $333.33 the remaining four times. Each plan totals $2,000.00.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
         altPayment: {
@@ -526,6 +528,10 @@ export const PRACTICE_AREAS = [
     //
     // LawPay's "pay in full" page isn't pre-filled with an amount — the
     // client types it in — so each note below spells out the exact figure.
+    // Buy Now, Pay Later is offered here too via `altPayment`, same as
+    // trademark's Search and File, even though the signed letter itself
+    // only describes payment in full — BNPL is just a different way to
+    // fund that same full payment, not a different fee structure.
     paymentOptions: [
       {
         label: 'One work — $500 flat fee',
@@ -533,6 +539,11 @@ export const PRACTICE_AREAS = [
         note: 'Plus the U.S. Copyright Office filing fee, paid directly to the government. On the payment page, enter $500.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
+        altPayment: {
+          url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/paylater-tr',
+          label: 'Buy Now, Pay Later',
+          note: 'To use Buy Now, Pay Later instead, enter $500.00 as the amount on the financing page. Subject to approval and the terms of the third-party financing provider; the Copyright Office filing fee is billed separately and is not covered by this financing.',
+        },
         whenAnswer: { field: 'works_elected', equals: 'One work — $500 flat fee' },
       },
       {
@@ -541,6 +552,11 @@ export const PRACTICE_AREAS = [
         note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government. On the payment page, enter $850.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
+        altPayment: {
+          url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/paylater-tr',
+          label: 'Buy Now, Pay Later',
+          note: 'To use Buy Now, Pay Later instead, enter $850.00 as the amount on the financing page. Subject to approval and the terms of the third-party financing provider; the Copyright Office filing fees are billed separately and are not covered by this financing.',
+        },
         whenAnswer: { field: 'works_elected', equals: 'Two works (one plus one additional) — $850 flat fee' },
       },
       {
@@ -549,15 +565,21 @@ export const PRACTICE_AREAS = [
         note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government. On the payment page, enter $1,200.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
+        altPayment: {
+          url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/paylater-tr',
+          label: 'Buy Now, Pay Later',
+          note: 'To use Buy Now, Pay Later instead, enter $1,200.00 as the amount on the financing page. Subject to approval and the terms of the third-party financing provider; the Copyright Office filing fees are billed separately and are not covered by this financing.',
+        },
         whenAnswer: { field: 'works_elected', equals: 'Three works (one plus two additional) — $1,200 flat fee' },
       },
     ],
     feeSummary:
       'The flat fee for this matter is $500.00 for one work, $850.00 for two works, or $1,200.00 for three '
       + 'works (the most this engagement covers), depending on what Client elects. The total fee is due in '
-      + 'full at signing. It does not include the U.S. Copyright Office filing fee — currently $45.00 to '
-      + '$65.00 per work depending on authorship and claimant, or $125.00 for paper filing — which is a '
-      + 'separate government cost paid at the time of filing.',
+      + 'full at signing, either in one payment or through the firm\'s Buy Now, Pay Later financing option. It '
+      + 'does not include the U.S. Copyright Office filing fee — currently $45.00 to $65.00 per work depending '
+      + 'on authorship and claimant, or $125.00 for paper filing — which is a separate government cost paid at '
+      + 'the time of filing.',
     questions: [
       {
         id: 'works_elected',
