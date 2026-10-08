@@ -100,8 +100,15 @@ for (const area of PRACTICE_AREAS) {
       }
     }
   }
+  // A shared link is a bug UNLESS every option sharing it is explicitly
+  // marked `manualAmount: true` — a page like LawPay's general checkout
+  // isn't pre-filled with a price, so the same link legitimately serves
+  // several tiers as long as each option's `note` tells the client what to
+  // type in. A pre-filled link (e.g. PracticePanther OneLink) bakes the
+  // amount into the URL, so sharing one there really would charge the wrong
+  // amount — hence the check still fails for anything not opted in.
   const urls = payOptions.map((o) => o.url);
-  const dupe = urls.find((u, i) => urls.indexOf(u) !== i);
+  const dupe = urls.find((u, i) => urls.indexOf(u) !== i && !(payOptions[i].manualAmount && payOptions[urls.indexOf(u)].manualAmount));
   if (dupe) fail(`${where} uses the same payment link for two options — one of them is probably wrong.`);
 
   // Checkbox lines and merge fields, checked against EVERY reachable letter —

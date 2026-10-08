@@ -718,6 +718,11 @@ function init(area) {
           `Need to spread this out? A ${resolved.installment.fraction} deposit option is available for this ` +
           'service — you will see it on the payment screen after you sign, alongside the option to pay in full.'));
       }
+      if (resolved.altPayment) {
+        box.appendChild(el('p', 'help',
+          `${resolved.altPayment.label || 'An alternate payment option'} is also available for this service — ` +
+          'you will see it on the payment screen after you sign, alongside the option to pay in full.'));
+      }
       box.appendChild(el('p', 'help', 'Payment is due when you sign, on the payment screen at the end of this form.'));
       return;
     }
@@ -807,6 +812,7 @@ function init(area) {
       a.textContent = processor ? `Pay securely with ${processor} →` : 'Go to secure payment →';
       box.appendChild(a);
       if (only.installment) box.appendChild(renderInstallmentOption(only, data));
+      if (only.altPayment) box.appendChild(renderAltPayment(only, data));
       box.appendChild(el('p', 'help', referenceNote(data.id)));
       return;
     }
@@ -845,6 +851,7 @@ function init(area) {
         a.textContent = 'Pay →';
         row.appendChild(a);
         if (opt.installment) row.appendChild(renderInstallmentOption(opt, data));
+        if (opt.altPayment) row.appendChild(renderAltPayment(opt, data));
       } else {
         row.appendChild(el('span', 'pay-option-note', 'Payment link coming soon — the firm will follow up.'));
       }
@@ -904,6 +911,27 @@ function init(area) {
         }),
       }).catch(() => { /* best-effort — the client's own payment click is never blocked on this */ });
     });
+    wrap.appendChild(a);
+    return wrap;
+  }
+
+  /**
+   * A secondary payment path offered alongside the main button — e.g. a
+   * Buy Now, Pay Later link through a separate LawPay checkout page. Unlike
+   * `installment`, this isn't a fraction of the fee; it's a different way to
+   * pay the same amount, so the option carries its own label and note.
+   */
+  function renderAltPayment(opt, data) {
+    const { url } = paymentUrl(opt.altPayment.url, state.contact.email, data.id);
+    const wrap = el('div', 'pay-installment');
+    if (opt.altPayment.note) wrap.appendChild(el('p', 'help', opt.altPayment.note));
+
+    const a = document.createElement('a');
+    a.className = 'btn btn-ghost btn-sm';
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = `${opt.altPayment.label || 'Other payment option'} →`;
     wrap.appendChild(a);
     return wrap;
   }

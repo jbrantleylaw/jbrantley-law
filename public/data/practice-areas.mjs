@@ -337,6 +337,18 @@ const COMMON_CLOSING = [
  *     ]
  *   `equals` also accepts an array if one fee covers several answers.
  *
+ *   An option can offer a second way to pay the same fee — e.g. a Buy Now,
+ *   Pay Later checkout through a different hosted page — via `altPayment`,
+ *   rendered as a secondary button beneath the main one:
+ *     altPayment: { url: '...', label: 'Buy Now, Pay Later', note: 'On the payment page, enter $750.00.' }
+ *   This differs from the (currently unused elsewhere) `installment` field,
+ *   which is for paying a *fraction* of the fee as a deposit, not a full-price
+ *   alternative payment method.
+ *
+ *   A checkout page that isn't pre-filled with the amount (LawPay's general
+ *   payment pages are not) needs its `note` to say exactly what to enter —
+ *   the client sees only the button, not the config.
+ *
  *   IMPORTANT: an option WITH `whenAnswer` is shown only to clients whose
  *   answer matches it — so a divorce client is never offered the name-change
  *   fee. An option WITHOUT `whenAnswer` is shown to everyone. If nothing
@@ -358,37 +370,44 @@ export const PRACTICE_AREAS = [
     blurb: 'Knockout search through full federal filing — three tiers, available nationwide.',
     icon: '®',
     // Rebuilt around the Oct. 2026 letter (3 tiers — File and Protect and
-    // Full Shield were folded out). Every fee is new and there is no LawPay
-    // link yet — `pending: true` keeps the fee itself visible to the client
-    // (on the fee-summary step and the payment step) while honestly saying
-    // the payment link isn't live. Swap in the real LawPay link and drop
-    // `pending` as each one is ready.
+    // Full Shield were folded out).
     //
-    // Search and File now carries a three-way payment election (Paid in
-    // Full / Installment Plan / Buy Now, Pay Later via LawPay) described in
-    // the engagement letter itself. The actual payment UI here is still the
-    // generic `pending` placeholder — there is no election control yet,
-    // since LawPay's checkout isn't set up. Flagged for the firm.
+    // LawPay is now live with two general-purpose pages that are not
+    // pre-filled with an amount — the client types it in themselves, so
+    // every `note` below spells out the exact figure to enter. Search and
+    // File carries a three-way election in the signed letter (Paid in Full
+    // / Installment Plan / Buy Now, Pay Later); only the first two have a
+    // LawPay link today, so Installment Plan is called out as "ask the
+    // firm" rather than wired up as a button. Swap in a real installment
+    // link and add an `altPayment` or a second option here once one exists.
     paymentOptions: [
       {
         label: 'Knockout Search',
         amount: '$350',
-        note: 'A quick USPTO database scan with a brief risk assessment. No filing, and cannot be upgraded to a filing tier later. Paid in full at signing.',
-        pending: true,
+        note: 'A quick USPTO database scan with a brief risk assessment. No filing, and cannot be upgraded to a filing tier later. Paid in full at signing — on the payment page, enter $350.00 as the amount.',
+        url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
+        manualAmount: true,
         whenAnswer: { field: 'service_requested', equals: 'Knockout Search' },
       },
       {
         label: 'Search and Clear',
         amount: '$650',
-        note: 'A deeper clearance search — USPTO, state registries, business directories, domain names, and common-law marks — with a written opinion and consultation. No filing, but can be upgraded to Search and File later. Paid in full at signing.',
-        pending: true,
+        note: 'A deeper clearance search — USPTO, state registries, business directories, domain names, and common-law marks — with a written opinion and consultation. No filing, but can be upgraded to Search and File later. Paid in full at signing — on the payment page, enter $650.00 as the amount.',
+        url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
+        manualAmount: true,
         whenAnswer: { field: 'service_requested', equals: 'Search and Clear' },
       },
       {
         label: 'Search and File',
         amount: '$2,000',
-        note: 'Search and Clear, plus preparation and filing of one federal application in one class, Attorney as counsel of record, docketing, and three months of post-registration monitoring. Plus USPTO filing fees (separate government cost). Client elects Paid in Full, an Installment Plan, or Buy Now, Pay Later at signing.',
-        pending: true,
+        note: 'Search and Clear, plus preparation and filing of one federal application in one class, Attorney as counsel of record, docketing, and three months of post-registration monitoring. Plus USPTO filing fees (separate government cost, billed separately — do not include it in the amount below). To pay in full, enter $2,000.00 as the amount on the payment page. Prefer an installment plan instead? Reply to the firm’s confirmation email and the firm will set one up — that option is not yet available directly on this page.',
+        url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
+        manualAmount: true,
+        altPayment: {
+          url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/paylater-tr',
+          label: 'Buy Now, Pay Later',
+          note: 'To use Buy Now, Pay Later instead, enter $2,000.00 as the amount on the financing page. Subject to approval and the terms of the third-party financing provider; USPTO filing fees are billed separately and are not covered by this financing.',
+        },
         whenAnswer: { field: 'service_requested', equals: 'Search and File' },
       },
     ],
@@ -504,29 +523,32 @@ export const PRACTICE_AREAS = [
     // Fee changed to a $500 base work + optional additional works with the new
     // LawPay-era letter (Sept. 2026); the old PracticePanther OneLink URL was
     // for the old $350 fee, so it's removed rather than left stale.
-    // `pending: true` keeps the fee itself visible while being honest that the
-    // payment link isn't live yet — swap in the real LawPay link and drop
-    // `pending` once it exists.
+    //
+    // LawPay's "pay in full" page isn't pre-filled with an amount — the
+    // client types it in — so each note below spells out the exact figure.
     paymentOptions: [
       {
         label: 'One work — $500 flat fee',
         amount: '$500 (due in full at signing)',
-        note: 'Plus the U.S. Copyright Office filing fee, paid directly to the government',
-        pending: true,
+        note: 'Plus the U.S. Copyright Office filing fee, paid directly to the government. On the payment page, enter $500.00 as the amount.',
+        url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
+        manualAmount: true,
         whenAnswer: { field: 'works_elected', equals: 'One work — $500 flat fee' },
       },
       {
         label: 'Two works (one plus one additional) — $850 flat fee',
         amount: '$850 (due in full at signing)',
-        note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government',
-        pending: true,
+        note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government. On the payment page, enter $850.00 as the amount.',
+        url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
+        manualAmount: true,
         whenAnswer: { field: 'works_elected', equals: 'Two works (one plus one additional) — $850 flat fee' },
       },
       {
         label: 'Three works (one plus two additional) — $1,200 flat fee',
         amount: '$1,200 (due in full at signing)',
-        note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government',
-        pending: true,
+        note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government. On the payment page, enter $1,200.00 as the amount.',
+        url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
+        manualAmount: true,
         whenAnswer: { field: 'works_elected', equals: 'Three works (one plus two additional) — $1,200 flat fee' },
       },
     ],
