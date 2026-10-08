@@ -132,11 +132,15 @@ function init(area) {
   function optionDetailHtml(f, o) {
     if (!area.letterKeyField || f.id !== area.letterKeyField) return '';
     const opt = (area.paymentOptions || []).find((p) => p.label === o);
-    const scope = SCOPES[`${area.slug}:${o}`];
-    if (!opt?.amount && !scope) return '';
+    // Prefer the option's own `description` (the real, per-tier letter language) —
+    // SCOPES is just a fallback for an area with no `description`, and it's the
+    // same generic Section 1 boilerplate for every tier, so using it here made
+    // every choice show identical text instead of what that tier actually includes.
+    const desc = opt?.description || SCOPES[`${area.slug}:${o}`];
+    if (!opt?.amount && !desc) return '';
     const price = opt?.amount ? `<span class="choice-price">${escapeHtml(opt.amount)}</span>` : '';
-    const desc = scope ? `<span class="choice-desc">${escapeHtml(scope)}</span>` : '';
-    return `<span class="choice-detail">${price}${desc}</span>`;
+    const descHtml = desc ? `<span class="choice-desc">${escapeHtml(desc)}</span>` : '';
+    return `<span class="choice-detail">${price}${descHtml}</span>`;
   }
 
   function fieldHtml(f) {
