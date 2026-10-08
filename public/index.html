@@ -63,16 +63,21 @@
   </footer>
 
   <script type="module">
-    import { PRACTICE_AREAS, FIRM, CONSULT_ONLY, otherServiceMessage } from '/data/practice-areas.mjs';
+    import { PRACTICE_AREAS, FIRM, CONSULT_ONLY, otherServiceMessage, priceTeaser } from '/data/practice-areas.mjs';
 
     const grid = document.getElementById('areaGrid');
-    grid.innerHTML = PRACTICE_AREAS.map((a) => `
+    grid.innerHTML = PRACTICE_AREAS.map((a) => {
+      const price = priceTeaser(a);
+      return `
       <a class="area-card" href="/intake.html?area=${encodeURIComponent(a.slug)}">
         <span class="glyph" aria-hidden="true">${a.icon || '§'}</span>
         <h3>${a.name}</h3>
+        ${price ? `<span class="area-price">${price.display}</span>` : ''}
         <p>${a.blurb}</p>
+        ${price && price.hasFinancing ? '<span class="area-financing">Installment plans and Buy Now, Pay Later available</span>' : ''}
         <span class="go">Start intake &rarr;</span>
-      </a>`).join('');
+      </a>`;
+    }).join('');
 
     // Matters that never start with a form.
     const consultTarget = FIRM.consultUrl

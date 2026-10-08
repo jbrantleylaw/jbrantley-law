@@ -323,18 +323,25 @@ const COMMON_CLOSING = [
  *     paymentLink: 'https://app.practicepanther.com/Payment/OneLinkPayment/...'
  *
  *   Several fees — a labeled list. `label` is required (the client has to know
- *   what each button charges for), `amount` and `note` are optional, and
- *   `whenAnswer` optionally ties an option to an intake answer so the right fee
- *   is pulled to the top and marked "Matches your answers":
+ *   what each button charges for); `amount`, `description`, and `note` are
+ *   optional, and `whenAnswer` optionally ties an option to an intake answer
+ *   so the right fee is pulled to the top and marked "Matches your answers":
  *     paymentOptions: [
  *       {
  *         label: 'LLC formation — single member',
  *         amount: '$750',
+ *         description: 'Formation of a single-member LLC, including Articles of Organization, an Operating Agreement, and the initial franchise tax report.',
  *         note: 'Includes the company agreement',
  *         url: 'https://app.practicepanther.com/Payment/OneLinkPayment/...',
  *         whenAnswer: { field: 'formation_need', equals: 'Form a new entity' },
  *       },
  *     ]
+ *   `description` is what the client is actually buying — pull it straight
+ *   from the engagement letter's own scope-of-services language rather than
+ *   paraphrasing, so the fee-summary step never promises something the
+ *   signed letter doesn't. `note` is for payment mechanics (what to type in,
+ *   deposit timing, installment math) — keep service description out of it,
+ *   or it ends up duplicated between the two fields.
  *   `equals` also accepts an array if one fee covers several answers.
  *
  *   An option can offer a second way to pay the same fee — e.g. a Buy Now,
@@ -359,6 +366,17 @@ const COMMON_CLOSING = [
  * an invoice-will-follow message instead of a button, so the portal is safe to
  * launch before every link exists.
  * ------------------------------------------------------------------------- */
+
+// Verbatim from the signed copyright letter's Section 1(A) — identical across
+// all three work-count tiers, since they're the same service at different
+// quantities.
+const COPYRIGHT_APPLICATION_DESCRIPTION =
+  'Attorney will prepare and file an application for federal copyright registration of the Work with the '
+  + 'United States Copyright Office, including preparation of the deposit copy, submission of the applicable '
+  + 'Copyright Office filing fee on Client’s behalf, and a response to one round of Copyright Office '
+  + 'correspondence, if issued. Attorney will complete and file the application within ten (10) business days '
+  + 'of receipt of all materials necessary to complete the application.';
+
 export const PRACTICE_AREAS = [
   /* ======================================================================= */
   {
@@ -386,7 +404,8 @@ export const PRACTICE_AREAS = [
       {
         label: 'Knockout Search',
         amount: '$350',
-        note: 'A quick USPTO database scan with a brief risk assessment. No filing, and cannot be upgraded to a filing tier later. Paid in full at signing — on the payment page, enter $350.00 as the amount.',
+        description: 'A quick scan of the official USPTO database and a brief risk assessment. Choose this or Search and Clear, not both. This option does not include preparation or filing of a federal trademark application. Client cannot upgrade if this search is selected.',
+        note: 'Paid in full at signing — on the payment page, enter $350.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
         whenAnswer: { field: 'service_requested', equals: 'Knockout Search' },
@@ -394,7 +413,8 @@ export const PRACTICE_AREAS = [
       {
         label: 'Search and Clear',
         amount: '$650',
-        note: 'A deeper clearance search — USPTO, state registries, business directories, domain names, and common-law marks — with a written opinion and consultation. No filing, but can be upgraded to Search and File later. Paid in full at signing — on the payment page, enter $650.00 as the amount.',
+        description: 'Comprehensive clearance search for the Proposed Mark, with a written risk assessment, and consultation. Includes a deep-dive search of the USPTO database, state registries, business directories, domain names, and unregistered "common law" marks. This option does not include preparation or filing of a federal trademark application. Client can upgrade to a filing tier if this search is selected.',
+        note: 'Paid in full at signing — on the payment page, enter $650.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
         whenAnswer: { field: 'service_requested', equals: 'Search and Clear' },
@@ -402,7 +422,8 @@ export const PRACTICE_AREAS = [
       {
         label: 'Search and File',
         amount: '$2,000',
-        note: 'Search and Clear, plus preparation and filing of one federal application in one class, Attorney as counsel of record, docketing, and three months of post-registration monitoring. Plus USPTO filing fees (separate government cost, billed separately — do not include it in the amount below). To pay in full, enter $2,000.00 as the amount on the payment page. Prefer an installment plan instead? Use the same payment button for each installment and enter: for 3 payments, $666.67 the first two times and $666.66 the third; for 5 payments, $400.00 each time; for 6 payments, $333.34 the first two times and $333.33 the remaining four times. Each plan totals $2,000.00.',
+        description: 'Search and File includes Search and Clear, plus filing strategy; review of ownership, filing basis, goods/services, classification, and specimen(s) as applicable; preparation of one federal trademark application in one class; one pre-filing revision; filing with the USPTO; Attorney’s appearance as counsel of record; docketing and routine status monitoring; and reporting routine USPTO correspondence. Also includes three (3) months of post-registration monitoring. Office Action responses, Statements of Use, Extension Requests, TTAB matters, and other substantive post-filing work are separate unless expressly included by written addendum.',
+        note: 'Plus USPTO filing fees (separate government cost, billed separately — do not include it in the amount below). To pay in full, enter $2,000.00 as the amount on the payment page. Prefer an installment plan instead? Use the same payment button for each installment and enter: for 3 payments, $666.67 the first two times and $666.66 the third; for 5 payments, $400.00 each time; for 6 payments, $333.34 the first two times and $333.33 the remaining four times. Each plan totals $2,000.00.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
         altPayment: {
@@ -536,6 +557,7 @@ export const PRACTICE_AREAS = [
       {
         label: 'One work — $500 flat fee',
         amount: '$500 (due in full at signing)',
+        description: COPYRIGHT_APPLICATION_DESCRIPTION,
         note: 'Plus the U.S. Copyright Office filing fee, paid directly to the government. On the payment page, enter $500.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
@@ -549,6 +571,7 @@ export const PRACTICE_AREAS = [
       {
         label: 'Two works (one plus one additional) — $850 flat fee',
         amount: '$850 (due in full at signing)',
+        description: COPYRIGHT_APPLICATION_DESCRIPTION,
         note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government. On the payment page, enter $850.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
@@ -562,6 +585,7 @@ export const PRACTICE_AREAS = [
       {
         label: 'Three works (one plus two additional) — $1,200 flat fee',
         amount: '$1,200 (due in full at signing)',
+        description: COPYRIGHT_APPLICATION_DESCRIPTION,
         note: 'Plus the U.S. Copyright Office filing fee per work, paid directly to the government. On the payment page, enter $1,200.00 as the amount.',
         url: 'https://secure.lawpay.com/pages/jenniferbrantleylaw/trust',
         manualAmount: true,
@@ -675,6 +699,27 @@ export const PRACTICE_AREAS = [
 
 export function getArea(slug) {
   return PRACTICE_AREAS.find((a) => a.slug === slug) || null;
+}
+
+/**
+ * A short price teaser for the home page card: the lowest fee, and whether
+ * an installment plan or Buy Now, Pay Later is available for any tier. Pulls
+ * the figure straight out of each option's `amount` so the home page can
+ * never drift from what the fee-summary step actually shows.
+ */
+export function priceTeaser(area) {
+  const opts = area.paymentOptions || [];
+  const amounts = opts
+    .map((o) => {
+      const m = String(o?.amount || '').match(/\$[\d,]+(?:\.\d{2})?/);
+      return m ? Number(m[0].replace(/[$,]/g, '')) : null;
+    })
+    .filter((n) => n !== null);
+  if (!amounts.length) return null;
+  const min = Math.min(...amounts);
+  const display = amounts.length > 1 ? `From $${min.toLocaleString('en-US')}` : `$${min.toLocaleString('en-US')}`;
+  const hasFinancing = opts.some((o) => o?.altPayment) || opts.some((o) => o?.installment);
+  return { display, hasFinancing };
 }
 
 /** Full question list for an area: its own questions plus the shared ones. */

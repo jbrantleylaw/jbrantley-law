@@ -710,7 +710,9 @@ function init(area) {
     const resolved = options.length === 1 ? options[0] : (suggested.length === 1 ? suggested[0] : null);
     if (resolved) {
       box.appendChild(el('h3', '', resolved.label ? `${resolved.label} — ${resolved.amount || ''}`.trim() : `Your fee: ${resolved.amount || ''}`));
-      const description = scopeFor(resolved.label) || generalDescription;
+      // `description` is the service scope pulled straight from the engagement
+      // letter; SCOPES/blurb are only a fallback for an area with no `description`.
+      const description = resolved.description || scopeFor(resolved.label) || generalDescription;
       if (description) box.appendChild(el('p', '', description));
       if (resolved.note) box.appendChild(el('p', 'help', resolved.note));
       if (resolved.installment) {
@@ -741,6 +743,7 @@ function init(area) {
       const row = el('div', 'pay-option');
       const text = el('div', 'pay-option-text');
       text.appendChild(el('span', 'pay-option-label', opt.label));
+      if (opt.description) text.appendChild(el('span', 'pay-option-note', opt.description));
       if (opt.note) text.appendChild(el('span', 'pay-option-note', opt.note));
       if (opt.installment) text.appendChild(el('span', 'pay-option-note', `${opt.installment.fraction} deposit option available`));
       row.appendChild(text);
